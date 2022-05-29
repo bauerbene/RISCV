@@ -5,3 +5,5 @@ Makefile
 # ghdl
 work/
 *.cf
+
+*.vcd
