@@ -66,22 +66,22 @@ BEGIN
             RESET => Reset,
 
             -- out port mapping
-            O     => IAddr_PC_IMem
+            O => IAddr_PC_IMem
         );
 
-    IMEM : ENTITY work.imem_age_in_months
+    IMEM : ENTITY work.Task27
         PORT MAP(
             -- in port mapping
             address => IAddr_PC_IMem,
             Clock   => Clock,
             -- out port mapping
-            q       => Instruction_IMem_Decode
+            q => Instruction_IMem_Decode
         );
 
     DECODE : ENTITY work.Decode
         PORT MAP(
             -- in port mapping
-            Inst      => Instruction_IMem_Decode,
+            Inst => Instruction_IMem_Decode,
 
             -- out port mapping
             Funct     => Funct_Decode_ALU,
@@ -91,9 +91,9 @@ BEGIN
             SrcRegNo1 => SrcRegNo1_Decode_RegisterSet,
             SrcRegNo2 => SrcRegNo2_Decode_RegisterSet,
 
-            SelSrc2   => SelSrc2_Decode_MUX,
-            Imm       => Imm_Decode_MUX,
-            Aux       => AUX_Decode_ALU
+            SelSrc2 => SelSrc2_Decode_MUX,
+            Imm     => Imm_Decode_MUX,
+            Aux     => AUX_Decode_ALU
         );
 
     ALU : ENTITY work.ALU
@@ -103,10 +103,10 @@ BEGIN
             DestWrEnI  => DestWrEn_Decode_ALU,
             DestRegNoI => DestRegNo_Decode_ALU,
 
-            A          => RdData1_RegisterSet_ALU,
-            B          => Data2_MUX_ALU,
+            A => RdData1_RegisterSet_ALU,
+            B => Data2_MUX_ALU,
 
-            Aux        => AUX_Decode_ALU,
+            Aux => AUX_Decode_ALU,
             -- out port mapping
             X          => Data_ALU_RegisterSet,
             DestRegNoO => WrRegNo_ALU_RegisterSet,
@@ -119,16 +119,16 @@ BEGIN
             RdRegNo1 => SrcRegNo1_Decode_RegisterSet,
             RdRegNo2 => SrcRegNo2_Decode_RegisterSet,
 
-            Clock    => Clock,
-            Reset    => Reset,
+            Clock => Clock,
+            Reset => Reset,
 
-            WrData   => Data_ALU_RegisterSet,
-            WrEn     => WrEn_ALU_RegisterSet,
-            WrRegNo  => WrRegNo_ALU_RegisterSet,
+            WrData  => Data_ALU_RegisterSet,
+            WrEn    => WrEn_ALU_RegisterSet,
+            WrRegNo => WrRegNo_ALU_RegisterSet,
 
             -- out port mapping
-            RdData1  => RdData1_RegisterSet_ALU,
-            RdData2  => RdData2_RegisterSet_MUX
+            RdData1 => RdData1_RegisterSet_ALU,
+            RdData2 => RdData2_RegisterSet_MUX
         );
 
     MUX : ENTITY work.MUX
@@ -139,6 +139,6 @@ BEGIN
             Sel => SelSrc2_Decode_MUX,
 
             -- out port mapping
-            O   => Data2_MUX_ALU
+            O => Data2_MUX_ALU
         );
 END Behavioral;

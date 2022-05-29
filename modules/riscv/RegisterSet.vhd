@@ -49,12 +49,12 @@ ARCHITECTURE Behavioral OF RegisterSet IS
 
 BEGIN
 
-    RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
-    RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
-
     PROCESS (Reset, Clock)
 
     BEGIN
+        RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
+        RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
+
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");
         ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (to_integer(unsigned(WrRegNo)) /= 0) THEN

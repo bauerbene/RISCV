@@ -32,10 +32,10 @@ USE IEEE.NUMERIC_STD.ALL;
 
 ENTITY ALU IS
     PORT (
-        A          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        B          : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        Funct      : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        Aux        : IN STD_LOGIC;
+        A     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        B     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        Funct : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        Aux   : IN STD_LOGIC;
         -- PCNext      : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- JumpI       : IN STD_LOGIC;
         -- JumpRel     : IN STD_LOGIC;
@@ -46,7 +46,7 @@ ENTITY ALU IS
         DestWrEnI  : IN STD_LOGIC;
         -- Clear       : IN STD_LOGIC;
         -- Stall       : IN STD_LOGIC;
-        X          : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        X : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- JumpO       : OUT STD_LOGIC;
         -- JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -63,7 +63,7 @@ ARCHITECTURE Behavioral OF ALU IS
     BEGIN
         IF (Aux = '0') THEN
             RETURN STD_LOGIC_VECTOR(unsigned(A) + unsigned(B));
-            ELSE
+        ELSE
             RETURN STD_LOGIC_VECTOR(unsigned(A) - unsigned(B));
         END IF;
     END;
@@ -77,7 +77,7 @@ ARCHITECTURE Behavioral OF ALU IS
     BEGIN
         IF signed(A) < signed(B) THEN
             RETURN x"00000001";
-            ELSE
+        ELSE
             RETURN x"00000000";
         END IF;
     END;
@@ -86,7 +86,7 @@ ARCHITECTURE Behavioral OF ALU IS
     BEGIN
         IF unsigned(A) < unsigned(B) THEN
             RETURN x"00000001";
-            ELSE
+        ELSE
             RETURN x"00000000";
         END IF;
     END;
@@ -95,18 +95,17 @@ ARCHITECTURE Behavioral OF ALU IS
     BEGIN
         IF (Aux = '1') THEN
             RETURN STD_LOGIC_VECTOR(shift_right(signed(A), to_integer(unsigned(B))));
-            ELSE
+        ELSE
             RETURN STD_LOGIC_VECTOR(shift_right(unsigned(A), to_integer(unsigned(B))));
         END IF;
     END;
 
 BEGIN
 
-    DestRegNoO <= DestRegNoI;
-    DestWrEnO <= DestWrEnI;
-
     PROCESS (Funct, A, B)
     BEGIN
+        DestRegNoO <= DestRegNoI;
+        DestWrEnO <= DestWrEnI;
         CASE Funct IS
             WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
             WHEN funct_SLL => X <= SLL_FUNC(A, B);
