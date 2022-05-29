@@ -7,3 +7,5 @@ work/
 *.cf
 
 *.vcd
+
+assembler/*.vhd
