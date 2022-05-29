@@ -36,7 +36,7 @@ USE work.constants.ALL;
 ENTITY Decode IS
     PORT (
         -- in
-        Inst      : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Inst : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         -- PC         : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         -- InterlockI : IN STD_LOGIC;
         -- Clear      : IN STD_LOGIC;
@@ -55,8 +55,8 @@ ENTITY Decode IS
         -- MemAccess  : OUT STD_LOGIC;
         -- MemWrEn    : OUT STD_LOGIC;
         -- InterlockO : OUT STD_LOGIC;
-        Imm       : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        SelSrc2   : OUT STD_LOGIC
+        Imm     : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        SelSrc2 : OUT STD_LOGIC
     );
 END Decode;
 
@@ -64,24 +64,25 @@ ARCHITECTURE Behavioral OF Decode IS
 
 BEGIN
 
-    Funct <= Inst(14 DOWNTO 12);
-    SrcRegNo1 <= Inst(19 DOWNTO 15);
-    SrcRegNo2 <= Inst(24 DOWNTO 20);
-    DestRegNo <= Inst(11 DOWNTO 7);
-
-    SelSrc2 <= Inst(5);
-    Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
-
-    Aux <= Inst(30);
-
     PROCESS (Inst)
     BEGIN
+
+        Funct <= Inst(14 DOWNTO 12);
+        SrcRegNo1 <= Inst(19 DOWNTO 15);
+        SrcRegNo2 <= Inst(24 DOWNTO 20);
+        DestRegNo <= Inst(11 DOWNTO 7);
+
+        SelSrc2 <= Inst(5);
+        Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
+
         IF (Inst(6 DOWNTO 0) = opcode_OP) OR (Inst(6 DOWNTO 0) = opcode_OP_IMM) THEN
             DestWrEn <= '1';
         END IF;
 
         IF ((Inst(14 DOWNTO 12) = funct_ADD) AND (Inst(6 DOWNTO 0) = opcode_regimm)) THEN
             Aux <= '0';
+            ELSE
+            Aux <= Inst(30);
         END IF;
     END PROCESS;
 
