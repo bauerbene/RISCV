@@ -8,4 +8,5 @@ work/
 
 *.vcd
 
-assembler/*.vhd
+*.o
+*.dump
