@@ -1,0 +1,10 @@
+{
+    "editor.formatOnSave": true,
+    "vhdl.formatter.case.keyword": "UpperCase",
+    "vhdl.formatter.case.typename": "UpperCase",
+    "vhdl.formatter.align.all": false,
+    "vhdl.formatter.align.generic": true,
+    "vhdl.formatter.align.function": true,
+    "vhdl.formatter.align.port": true,
+    "vhdl.formatter.align.procedure": true
+}

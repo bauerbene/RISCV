@@ -1,0 +1,7 @@
+# generated Makefile
+
+Makefile
+
+# ghdl
+work/
+*.cf
