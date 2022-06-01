@@ -49,15 +49,21 @@ ARCHITECTURE Behavioral OF RegisterSet IS
 
 BEGIN
 
-    PROCESS (Reset, Clock)
-
+    PROCESS (RdRegNo1, RdRegNo2)
     BEGIN
-        RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
-        RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
+        IF NOT RdRegNo1 = "UUUU" THEN
+            RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
+        END IF;
+        IF NOT RdRegNo2 = "UUUU" THEN
+            RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
+        END IF;
+    END PROCESS;
 
+    PROCESS (Reset, Clock)
+    BEGIN
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");
-        ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (to_integer(unsigned(WrRegNo)) /= 0) THEN
+        ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (unsigned(WrRegNo) /= 0) THEN
             Registers(to_integer(unsigned(WrRegNo))) <= WrData;
         END IF;
 

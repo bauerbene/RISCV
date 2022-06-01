@@ -8,7 +8,10 @@ files = [
     "Inc10Bit.vhd",
     "MUX.vhd",
     "processor.vhd",
-    "RegisterSet.vhd"
+    "RegisterSet.vhd",
+    "DecodeStage.vhd",
+    "ExecutionStage.vhd",
+    "MemStage.vhd"
 ]
 
 modules = {

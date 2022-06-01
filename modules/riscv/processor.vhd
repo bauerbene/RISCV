@@ -10,55 +10,52 @@ ENTITY Processor IS
 END Processor;
 
 ARCHITECTURE Behavioral OF Processor IS
-    ATTRIBUTE debug : STRING;
-
     -- Instruction Address: Programm Counter -> Instruction Memory
     SIGNAL IAddr_PC_IMem : STD_LOGIC_VECTOR(9 DOWNTO 0);
 
     -- Instruction Word: Instruction Memory -> Decode
-    SIGNAL Instruction_IMem_Decode : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Instruction_IMem_DecodeStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Instruction_DecodeStage_Decode : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
-    -- 3 Bit Funct code: Decode -> ALU
-    SIGNAL Funct_Decode_ALU : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    -- todo 
+    SIGNAL Funct_Decode_ExStage : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL SrcData1_RegisterSet_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SrcData2_MUX_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn_Decode_ExStage : STD_LOGIC;
+    SIGNAL DestRegNo_Decode_ExStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Aux_Decode_ExStage : STD_LOGIC;
+    SIGNAL SelSrc2_Decode_ExStage : STD_LOGIC;
 
-    -- DestWrEn: Decode -> ALU
-    SIGNAL DestWrEn_Decode_ALU : STD_LOGIC;
+    SIGNAL Funct_ExStage_ALU : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL SrcData1_ExStage_ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SrcData2_ExStage_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn_ExStage_ALU : STD_LOGIC;
+    SIGNAL DestRegNo_ExStage_ALU : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Aux_ExStage_ALU : STD_LOGIC;
+    SIGNAL Imm_ExStage_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SelSrc2_ExStage_MUX : STD_LOGIC;
 
-    -- Destination Register Number: Decode -> ALU
-    SIGNAL DestRegNo_Decode_ALU : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Data_ALU_MemStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL WrRegNo_ALU_MemStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL WrEn_ALU_MemStage : STD_LOGIC;
+    SIGNAL WrData_MemStage_RegisterSet : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL WrEn_MemStage_RegisterSet : STD_LOGIC;
+    SIGNAL WrRegNo_MemStage_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
     -- Src Register 1: Decode -> Register Set
     SIGNAL SrcRegNo1_Decode_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
     -- Src Register 2: Decode -> Register Set
     SIGNAL SrcRegNo2_Decode_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-    -- Read Data of register number 1: Register Set -> ALU
-    SIGNAL RdData1_RegisterSet_ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
-    -- ALU Result Data: ALU -> Register Set
-    SIGNAL Data_ALU_RegisterSet : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
-    -- Register number to write: ALU -> Register Set
-    SIGNAL WrRegNo_ALU_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL WrEn_ALU_RegisterSet : STD_LOGIC;
-
-    -- Select Immediate: Decode -> MUX
-    SIGNAL SelSrc2_Decode_MUX : STD_LOGIC;
-
     -- Immediate value: Decode -> MUX
-    SIGNAL Imm_Decode_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
-    -- Read Data register 2: Register Set -> MUX
-    SIGNAL RdData2_RegisterSet_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
-    -- TODO
-    SIGNAL AUX_Decode_ALU : STD_LOGIC;
+    SIGNAL Imm_Decode_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     -- TODO
     SIGNAL Data2_MUX_ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
 
+    -- done
     PC : ENTITY work.Inc10Bit
         PORT MAP(
             -- in port mapping
@@ -69,50 +66,96 @@ BEGIN
             O => IAddr_PC_IMem
         );
 
-    IMEM : ENTITY work.Task27
+    -- done
+    IMEM : ENTITY work.SRA_SRL_Test
         PORT MAP(
             -- in port mapping
             address => IAddr_PC_IMem,
             Clock   => Clock,
             -- out port mapping
-            q => Instruction_IMem_Decode
+            q => Instruction_IMem_DecodeStage
         );
 
+    -- done
+    DECODE_STAGE : ENTITY work.DecodeStage
+        PORT MAP(
+            InstI => Instruction_IMem_DecodeStage,
+            InstO => Instruction_DecodeStage_Decode
+        );
+
+    -- done
     DECODE : ENTITY work.Decode
         PORT MAP(
             -- in port mapping
-            Inst => Instruction_IMem_Decode,
+            Inst => Instruction_DecodeStage_Decode,
 
             -- out port mapping
-            Funct     => Funct_Decode_ALU,
-            DestWrEn  => DestWrEn_Decode_ALU,
-            DestRegNo => DestRegNo_Decode_ALU,
+            Funct     => Funct_Decode_ExStage,
+            DestWrEn  => DestWrEn_Decode_ExStage,
+            DestRegNo => DestRegNo_Decode_ExStage,
 
             SrcRegNo1 => SrcRegNo1_Decode_RegisterSet,
             SrcRegNo2 => SrcRegNo2_Decode_RegisterSet,
 
-            SelSrc2 => SelSrc2_Decode_MUX,
-            Imm     => Imm_Decode_MUX,
-            Aux     => AUX_Decode_ALU
+            SelSrc2 => SelSrc2_Decode_ExStage,
+            Imm     => Imm_Decode_ExStage,
+            Aux     => Aux_Decode_ExStage
         );
 
+    -- done
+    EXECUTION_STAGE : ENTITY work.ExecutionStage
+        PORT MAP(
+            -- in port mappings
+            FunctI     => Funct_Decode_ExStage,
+            SrcData1I  => SrcData1_RegisterSet_ExStage,
+            SrcData2I  => SrcData2_MUX_ExStage,
+            DestWrEnI  => DestWrEn_Decode_ExStage,
+            DestRegNoI => DestRegNo_Decode_ExStage,
+            AuxI       => Aux_Decode_ExStage,
+            ImmI       => Imm_Decode_ExStage,
+            SelSrc2I   => SelSrc2_Decode_ExStage,
+
+            -- out port mappings
+            FunctO     => Funct_ExStage_ALU,
+            SrcData1O  => SrcData1_ExStage_ALU,
+            SrcData2O  => SrcData2_ExStage_MUX,
+            DestWrEnO  => DestWrEn_ExStage_ALU,
+            DestRegNoO => DestRegNo_ExStage_ALU,
+            AuxO       => Aux_ExStage_ALU,
+            ImmO       => Imm_ExStage_MUX,
+            SelSrc2O   => SelSrc2_ExStage_MUX
+        );
+    -- done
     ALU : ENTITY work.ALU
         PORT MAP(
             -- in port mapping
-            Funct      => Funct_Decode_ALU,
-            DestWrEnI  => DestWrEn_Decode_ALU,
-            DestRegNoI => DestRegNo_Decode_ALU,
+            Funct      => Funct_ExStage_ALU,
+            DestWrEnI  => DestWrEn_ExStage_ALU,
+            DestRegNoI => DestRegNo_ExStage_ALU,
 
-            A => RdData1_RegisterSet_ALU,
+            A => SrcData1_ExStage_ALU,
             B => Data2_MUX_ALU,
 
-            Aux => AUX_Decode_ALU,
+            Aux => Aux_ExStage_ALU,
+
             -- out port mapping
-            X          => Data_ALU_RegisterSet,
-            DestRegNoO => WrRegNo_ALU_RegisterSet,
-            DestWrEnO  => WrEn_ALU_RegisterSet
+            X          => Data_ALU_MemStage,
+            DestRegNoO => WrRegNo_ALU_MemStage,
+            DestWrEnO  => WrEn_ALU_MemStage
         );
 
+    -- done
+    MemStage : ENTITY work.MemStage
+        PORT MAP(
+            DestDataI  => Data_ALU_MemStage,
+            DestWrEnI  => WrEn_ALU_MemStage,
+            DestRegNoI => WrRegNo_ALU_MemStage,
+            DestDataO  => WrData_MemStage_RegisterSet,
+            DestWrEnO  => WrEn_MemStage_RegisterSet,
+            DestRegNoO => WrRegNo_MemStage_RegisterSet
+        );
+
+    -- done
     REGISTER_SET : ENTITY work.RegisterSet
         PORT MAP(
             -- in port mapping
@@ -122,21 +165,22 @@ BEGIN
             Clock => Clock,
             Reset => Reset,
 
-            WrData  => Data_ALU_RegisterSet,
-            WrEn    => WrEn_ALU_RegisterSet,
-            WrRegNo => WrRegNo_ALU_RegisterSet,
+            WrData  => WrData_MemStage_RegisterSet,
+            WrEn    => WrEn_MemStage_RegisterSet,
+            WrRegNo => WrRegNo_MemStage_RegisterSet,
 
             -- out port mapping
-            RdData1 => RdData1_RegisterSet_ALU,
-            RdData2 => RdData2_RegisterSet_MUX
+            RdData1 => SrcData1_RegisterSet_ExStage,
+            RdData2 => SrcData2_MUX_ExStage
         );
 
+    -- done
     MUX : ENTITY work.MUX
         PORT MAP(
             -- in port mapping
-            In1 => Imm_Decode_MUX,
-            In2 => RdData2_RegisterSet_MUX,
-            Sel => SelSrc2_Decode_MUX,
+            In1 => Imm_ExStage_MUX,
+            In2 => SrcData2_ExStage_MUX,
+            Sel => SelSrc2_ExStage_MUX,
 
             -- out port mapping
             O => Data2_MUX_ALU

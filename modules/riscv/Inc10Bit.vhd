@@ -46,7 +46,7 @@ BEGIN
         IF Reset = '0' THEN
             curr_sum := "0000000000";
             O <= curr_sum;
-            ELSIF rising_edge(Clock) THEN
+        ELSIF rising_edge(Clock) THEN
             curr_sum := STD_LOGIC_VECTOR(unsigned(curr_sum) + to_unsigned(1, 10));
             O <= curr_sum;
         END IF;

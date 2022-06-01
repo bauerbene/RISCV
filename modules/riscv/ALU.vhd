@@ -59,44 +59,44 @@ END ALU;
 
 ARCHITECTURE Behavioral OF ALU IS
 
-    FUNCTION ADD_SUB_FUNC(A : STD_LOGIC_VECTOR; B : STD_LOGIC_VECTOR; Aux : STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
+    FUNCTION ADD_SUB_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR; sub : STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
     BEGIN
-        IF (Aux = '0') THEN
-            RETURN STD_LOGIC_VECTOR(unsigned(A) + unsigned(B));
+        IF (sub = '0') THEN
+            RETURN STD_LOGIC_VECTOR(unsigned(In1) + unsigned(In2));
         ELSE
-            RETURN STD_LOGIC_VECTOR(unsigned(A) - unsigned(B));
+            RETURN STD_LOGIC_VECTOR(unsigned(In1) - unsigned(In2));
         END IF;
     END;
 
-    FUNCTION SLL_FUNC(A : STD_LOGIC_VECTOR; B : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    FUNCTION SLL_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
     BEGIN
-        RETURN STD_LOGIC_VECTOR(shift_left(unsigned(A), to_integer(unsigned(B(4 DOWNTO 0)))));
+        RETURN STD_LOGIC_VECTOR(shift_left(unsigned(In1), to_integer(unsigned(In2(4 DOWNTO 0)))));
     END;
 
-    FUNCTION SLT_FUNC(A : STD_LOGIC_VECTOR; B : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    FUNCTION SLT_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
     BEGIN
-        IF signed(A) < signed(B) THEN
+        IF signed(In1) < signed(In2) THEN
             RETURN x"00000001";
         ELSE
             RETURN x"00000000";
         END IF;
     END;
 
-    FUNCTION SLTU_FUNC(A : STD_LOGIC_VECTOR; B : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    FUNCTION SLTU_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
     BEGIN
-        IF unsigned(A) < unsigned(B) THEN
+        IF unsigned(In1) < unsigned(In2) THEN
             RETURN x"00000001";
         ELSE
             RETURN x"00000000";
         END IF;
     END;
 
-    FUNCTION SRL_SRA_FUNC(A : STD_LOGIC_VECTOR; B : STD_LOGIC_VECTOR; Aux : STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
+    FUNCTION SRL_SRA_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR; useSigned : STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
     BEGIN
-        IF (Aux = '1') THEN
-            RETURN STD_LOGIC_VECTOR(shift_right(signed(A), to_integer(unsigned(B))));
+        IF (useSigned = '0') THEN
+            RETURN STD_LOGIC_VECTOR(shift_right(unsigned(In1), to_integer(unsigned(In2(4 DOWNTO 0)))));
         ELSE
-            RETURN STD_LOGIC_VECTOR(shift_right(unsigned(A), to_integer(unsigned(B))));
+            RETURN STD_LOGIC_VECTOR(shift_right(signed(In1), to_integer(unsigned(In2(4 DOWNTO 0)))));
         END IF;
     END;
 
@@ -104,8 +104,6 @@ BEGIN
 
     PROCESS (Funct, A, B)
     BEGIN
-        DestRegNoO <= DestRegNoI;
-        DestWrEnO <= DestWrEnI;
         CASE Funct IS
             WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
             WHEN funct_SLL => X <= SLL_FUNC(A, B);
@@ -117,6 +115,12 @@ BEGIN
             WHEN funct_AND => X <= A AND B;
             WHEN OTHERS => NULL;
         END CASE;
+    END PROCESS;
+
+    PROCESS (DestRegNoI, DestWrEnI)
+    BEGIN
+        DestRegNoO <= DestRegNoI;
+        DestWrEnO <= DestWrEnI;
     END PROCESS;
 
 END Behavioral;
