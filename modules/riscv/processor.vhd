@@ -11,51 +11,66 @@ END Processor;
 
 ARCHITECTURE Behavioral OF Processor IS
     -- Instruction Address: Programm Counter -> Instruction Memory
-    SIGNAL IAddr_PC_IMem : STD_LOGIC_VECTOR(9 DOWNTO 0);
+    SIGNAL IAddr__PC__IMem : STD_LOGIC_VECTOR(9 DOWNTO 0);
 
     -- Instruction Word: Instruction Memory -> Decode
-    SIGNAL Instruction_IMem_DecodeStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL Instruction_DecodeStage_Decode : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Instruction__IMem__DecodeStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Instruction__DecodeStage__Decode : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     -- todo 
-    SIGNAL Funct_Decode_ExStage : STD_LOGIC_VECTOR(2 DOWNTO 0);
-    SIGNAL SrcData1_RegisterSet_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL SrcData2_MUX_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL DestWrEn_Decode_ExStage : STD_LOGIC;
-    SIGNAL DestRegNo_Decode_ExStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL Aux_Decode_ExStage : STD_LOGIC;
-    SIGNAL SelSrc2_Decode_ExStage : STD_LOGIC;
+    SIGNAL Funct__Decode__ExStage : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL SrcData1__RegisterSet__ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SrcData2__MUX__ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn__Decode__ExStage : STD_LOGIC;
+    SIGNAL DestRegNo__Decode__ExStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Aux__Decode__ExStage : STD_LOGIC;
+    SIGNAL SelSrc2__Decode__ExStage : STD_LOGIC;
 
-    SIGNAL Funct_ExStage_ALU : STD_LOGIC_VECTOR(2 DOWNTO 0);
-    SIGNAL SrcData1_ExStage_ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL SrcData2_ExStage_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL DestWrEn_ExStage_ALU : STD_LOGIC;
-    SIGNAL DestRegNo_ExStage_ALU : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL Aux_ExStage_ALU : STD_LOGIC;
-    SIGNAL Imm_ExStage_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL SelSrc2_ExStage_MUX : STD_LOGIC;
+    SIGNAL Funct__ExStage__ALU : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL SrcData1__ExStage__ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SrcData2__ExStage__MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn__ExStage__ALU : STD_LOGIC;
+    SIGNAL DestRegNo__ExStage__ALU : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Aux__ExStage__ALU : STD_LOGIC;
+    SIGNAL Imm__ExStage__MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SelSrc2__ExStage__MUX : STD_LOGIC;
 
-    SIGNAL Data_ALU_MemStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL WrRegNo_ALU_MemStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
-    SIGNAL WrEn_ALU_MemStage : STD_LOGIC;
-    SIGNAL WrData_MemStage_RegisterSet : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL WrEn_MemStage_RegisterSet : STD_LOGIC;
-    SIGNAL WrRegNo_MemStage_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Data__ALU__MemStage_Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL WrRegNo__ALU__MemStage : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL WrEn__ALU_ExStage__MemStage_Forward_ALU : STD_LOGIC;
+    SIGNAL WrData__MemStage__RegisterSet_Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL WrEn__MemStage__RegisterSet_Forward : STD_LOGIC;
+    SIGNAL WrRegNo__MemStage__RegisterSet_Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
     -- Src Register 1: Decode -> Register Set
-    SIGNAL SrcRegNo1_Decode_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL SrcRegNo1__Decode__RegisterSet_Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
     -- Src Register 2: Decode -> Register Set
-    SIGNAL SrcRegNo2_Decode_RegisterSet : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL SrcRegNo2__Decode__RegisterSet_Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
     -- Immediate value: Decode -> MUX
-    SIGNAL Imm_Decode_ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Imm__Decode__ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     -- TODO
-    SIGNAL Data2_MUX_ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Data2__MUX__ALU : STD_LOGIC_VECTOR(31 DOWNTO 0);
+
+    -- TODO Documentation
+    SIGNAL SrcRegNo1__Decode__Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL SrcRegNo2__Decode__Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL SrcData1__RegisterSet__Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL SrcData2__RegisterSet__Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn__ALU_ExStage__Forward : STD_LOGIC;
+    SIGNAL DestRegNo__ALU_ExStage__Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL DestData__ALU__Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL DestWrEn__MemStage__Forward : STD_LOGIC;
+    SIGNAL DestRegNo__MemStage__Forward : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL DestData__MemStage__Forward : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL FwdData1__Forward__ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL FwdData2__Forward__ExStage : STD_LOGIC_VECTOR(31 DOWNTO 0);
+
+    SIGNAL WrRegNo__ALU_ExStage__MemStage_Forward_ALU : STD_LOGIC_VECTOR(4 DOWNTO 0);
 
 BEGIN
 
-    -- done
     PC : ENTITY work.Inc10Bit
         PORT MAP(
             -- in port mapping
@@ -63,132 +78,144 @@ BEGIN
             RESET => Reset,
 
             -- out port mapping
-            O => IAddr_PC_IMem
+            O => IAddr__PC__IMem
         );
 
-    -- done
     IMEM : ENTITY work.test02fwd
         PORT MAP(
             -- in port mapping
-            address => IAddr_PC_IMem,
+            address => IAddr__PC__IMem,
             Clock   => Clock,
             -- out port mapping
-            q => Instruction_IMem_DecodeStage
+            q => Instruction__IMem__DecodeStage
         );
 
-    -- done
     DECODE_STAGE : ENTITY work.DecodeStage
         PORT MAP(
             Clock => Clock,
             Reset => Reset,
-            InstI => Instruction_IMem_DecodeStage,
-            InstO => Instruction_DecodeStage_Decode
+            InstI => Instruction__IMem__DecodeStage,
+            InstO => Instruction__DecodeStage__Decode
         );
 
-    -- done
     DECODE : ENTITY work.Decode
         PORT MAP(
             -- in port mapping
-            Inst => Instruction_DecodeStage_Decode,
+            Inst => Instruction__DecodeStage__Decode,
 
             -- out port mapping
-            Funct     => Funct_Decode_ExStage,
-            DestWrEn  => DestWrEn_Decode_ExStage,
-            DestRegNo => DestRegNo_Decode_ExStage,
+            Funct     => Funct__Decode__ExStage,
+            DestWrEn  => DestWrEn__Decode__ExStage,
+            DestRegNo => DestRegNo__Decode__ExStage,
 
-            SrcRegNo1 => SrcRegNo1_Decode_RegisterSet,
-            SrcRegNo2 => SrcRegNo2_Decode_RegisterSet,
+            SrcRegNo1 => SrcRegNo1__Decode__RegisterSet_Forward,
+            SrcRegNo2 => SrcRegNo2__Decode__RegisterSet_Forward,
 
-            SelSrc2 => SelSrc2_Decode_ExStage,
-            Imm     => Imm_Decode_ExStage,
-            Aux     => Aux_Decode_ExStage
+            SelSrc2 => SelSrc2__Decode__ExStage,
+            Imm     => Imm__Decode__ExStage,
+            Aux     => Aux__Decode__ExStage
         );
 
-    -- done
     EXECUTION_STAGE : ENTITY work.ExecutionStage
         PORT MAP(
             -- in port mappings
             Clock      => Clock,
             Reset      => Reset,
-            FunctI     => Funct_Decode_ExStage,
-            SrcData1I  => SrcData1_RegisterSet_ExStage,
-            SrcData2I  => SrcData2_MUX_ExStage,
-            DestWrEnI  => DestWrEn_Decode_ExStage,
-            DestRegNoI => DestRegNo_Decode_ExStage,
-            AuxI       => Aux_Decode_ExStage,
-            ImmI       => Imm_Decode_ExStage,
-            SelSrc2I   => SelSrc2_Decode_ExStage,
+            FunctI     => Funct__Decode__ExStage,
+            SrcData1I  => FwdData1__Forward__ExStage,
+            SrcData2I  => FwdData2__Forward__ExStage,
+            DestWrEnI  => SrcData2__MUX__ExStage,
+            DestRegNoI => SrcData2__MUX__ExStage,
+            AuxI       => Aux__Decode__ExStage,
+            ImmI       => Imm__Decode__ExStage,
+            SelSrc2I   => SelSrc2__Decode__ExStage,
 
             -- out port mappings
-            FunctO     => Funct_ExStage_ALU,
-            SrcData1O  => SrcData1_ExStage_ALU,
-            SrcData2O  => SrcData2_ExStage_MUX,
-            DestWrEnO  => DestWrEn_ExStage_ALU,
-            DestRegNoO => DestRegNo_ExStage_ALU,
-            AuxO       => Aux_ExStage_ALU,
-            ImmO       => Imm_ExStage_MUX,
-            SelSrc2O   => SelSrc2_ExStage_MUX
+            FunctO     => Funct__ExStage__ALU,
+            SrcData1O  => SrcData1__ExStage__ALU,
+            SrcData2O  => SrcData2__ExStage__MUX,
+            DestWrEnO  => WrEn__ALU_ExStage__MemStage_Forward_ALU,
+            DestRegNoO => WrRegNo__ALU_ExStage__MemStage_Forward_ALU,
+            AuxO       => Aux__ExStage__ALU,
+            ImmO       => Imm__ExStage__MUX,
+            SelSrc2O   => SelSrc2__ExStage__MUX
         );
-    -- done
+
     ALU : ENTITY work.ALU
         PORT MAP(
             -- in port mapping
-            Funct      => Funct_ExStage_ALU,
-            DestWrEnI  => DestWrEn_ExStage_ALU,
-            DestRegNoI => DestRegNo_ExStage_ALU,
+            Funct      => Funct__ExStage__ALU,
+            DestWrEnI  => WrEn__ALU_ExStage__MemStage_Forward_ALU,
+            DestRegNoI => WrRegNo__ALU_ExStage__MemStage_Forward_ALU,
 
-            A => SrcData1_ExStage_ALU,
-            B => Data2_MUX_ALU,
+            A => SrcData1__ExStage__ALU,
+            B => Data2__MUX__ALU,
 
-            Aux => Aux_ExStage_ALU,
+            Aux => Aux__ExStage__ALU,
 
             -- out port mapping
-            X          => Data_ALU_MemStage,
-            DestRegNoO => WrRegNo_ALU_MemStage,
-            DestWrEnO  => WrEn_ALU_MemStage
+            X          => Data__ALU__MemStage_Forward,
+            DestRegNoO => WrRegNo__ALU_ExStage__MemStage_Forward_ALU,
+            DestWrEnO  => WrEn__ALU_ExStage__MemStage_Forward_ALU
         );
 
-    -- done
     MemStage : ENTITY work.MemStage
         PORT MAP(
             Clock      => Clock,
             Reset      => Reset,
-            DestDataI  => Data_ALU_MemStage,
-            DestWrEnI  => WrEn_ALU_MemStage,
-            DestRegNoI => WrRegNo_ALU_MemStage,
-            DestDataO  => WrData_MemStage_RegisterSet,
-            DestWrEnO  => WrEn_MemStage_RegisterSet,
-            DestRegNoO => WrRegNo_MemStage_RegisterSet
+            DestDataI  => Data__ALU__MemStage_Forward,
+            DestWrEnI  => WrEn__ALU_ExStage__MemStage_Forward_ALU,
+            DestRegNoI => WrRegNo__ALU_ExStage__MemStage_Forward_ALU,
+            DestDataO  => WrData__MemStage__RegisterSet_Forward,
+            DestWrEnO  => WrEn__MemStage__RegisterSet_Forward,
+            DestRegNoO => WrRegNo__MemStage__RegisterSet_Forward
         );
 
-    -- done
     REGISTER_SET : ENTITY work.RegisterSet
         PORT MAP(
             -- in port mapping
-            RdRegNo1 => SrcRegNo1_Decode_RegisterSet,
-            RdRegNo2 => SrcRegNo2_Decode_RegisterSet,
+            RdRegNo1 => SrcRegNo1__Decode__RegisterSet_Forward,
+            RdRegNo2 => SrcRegNo2__Decode__RegisterSet_Forward,
 
             Clock => Clock,
             Reset => Reset,
 
-            WrData  => WrData_MemStage_RegisterSet,
-            WrEn    => WrEn_MemStage_RegisterSet,
-            WrRegNo => WrRegNo_MemStage_RegisterSet,
+            WrData  => WrData__MemStage__RegisterSet_Forward,
+            WrEn    => WrEn__MemStage__RegisterSet_Forward,
+            WrRegNo => WrRegNo__MemStage__RegisterSet_Forward,
 
             -- out port mapping
-            RdData1 => SrcData1_RegisterSet_ExStage,
-            RdData2 => SrcData2_MUX_ExStage
+            RdData1 => SrcData1__RegisterSet__Forward,
+            RdData2 => SrcData2__RegisterSet__Forward
         );
 
-    -- done
     MUX : ENTITY work.MUX
         PORT MAP(
             -- in port mapping
-            In1 => Imm_ExStage_MUX,
-            In2 => SrcData2_ExStage_MUX,
-            Sel => SelSrc2_ExStage_MUX,
+            In1 => Imm__ExStage__MUX,
+            In2 => SrcData2__ExStage__MUX,
+            Sel => Imm__ExStage__MUX,
 
             -- out port mapping
-            O => Data2_MUX_ALU
+            O => Data2__MUX__ALU
+        );
+
+    Forward : ENTITY work.Forward
+        PORT MAP(
+            -- in port mapping
+            SrcRegNo1     => SrcRegNo1__Decode__RegisterSet_Forward,
+            SrcRegNo2     => SrcRegNo2__Decode__RegisterSet_Forward,
+            SrcData1      => SrcData1__RegisterSet__Forward,
+            SrcData2      => SrcData2__RegisterSet__Forward,
+            DestWrEn_EX   => WrEn__ALU_ExStage__MemStage_Forward_ALU,
+            DestRegNo_EX  => WrRegNo__ALU_ExStage__MemStage_Forward_ALU,
+            DestData_EX   => Data__ALU__MemStage_Forward,
+            DestWrEn_MEM  => WrEn__MemStage__RegisterSet_Forward,
+            DestRegNo_MEM => WrRegNo__MemStage__RegisterSet_Forward,
+            DestData_MEM  => WrData__MemStage__RegisterSet_Forward,
+
+            -- out port mapping
+            FwdData1 => FwdData1__Forward__ExStage,
+            FwdData2 => FwdData2__Forward__ExStage
         );
 END Behavioral;
