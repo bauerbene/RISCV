@@ -11,7 +11,8 @@ files = [
     "RegisterSet.vhd",
     "DecodeStage.vhd",
     "ExecutionStage.vhd",
-    "MemStage.vhd"
+    "MemStage.vhd",
+    "Forward.vhd"
 ]
 
 modules = {
