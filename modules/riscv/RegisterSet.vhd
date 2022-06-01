@@ -49,14 +49,10 @@ ARCHITECTURE Behavioral OF RegisterSet IS
 
 BEGIN
 
-    PROCESS (RdRegNo1, RdRegNo2)
+    PROCESS (RdRegNo1, RdRegNo2, Registers)
     BEGIN
-        IF NOT RdRegNo1 = "UUUU" THEN
-            RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
-        END IF;
-        IF NOT RdRegNo2 = "UUUU" THEN
-            RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
-        END IF;
+        RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
+        RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
     END PROCESS;
 
     PROCESS (Reset, Clock)
