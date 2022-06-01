@@ -4,20 +4,20 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build riscv simulation",
+            "label": "riscv simulation",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/sim/ghdl/riscv"
             },
-            "command": "hdlmake"
+            "command": "hdlmake && make"
         },
         {
-            "label": "run riscv simulation",
+            "label": "run riscv gtkwave",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}/sim/ghdl/riscv"
             },
-            "command": "make"
+            "command": "gtkwave riscv_tb.ghw"
         }
     ]
 }
