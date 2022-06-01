@@ -6,8 +6,8 @@ USE IEEE.std_logic_1164.ALL;
 
 ENTITY MemStage IS
     PORT (
-        -- Clock      : IN STD_LOGIC;
-        -- Reset      : IN STD_LOGIC;
+        Clock      : IN STD_LOGIC;
+        Reset      : IN STD_LOGIC;
         DestDataI  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnI  : IN STD_LOGIC;
         DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -29,11 +29,24 @@ END MemStage;
 
 ARCHITECTURE Behavioral OF MemStage IS
 BEGIN
-    DestDataO <= DestDataI;
-    DestWrEnO <= DestWrEnI;
-    DestRegNoO <= DestRegNoI;
-    -- MemAccessO <= MemAccessI;
-    -- MemRdData <= MemWrData;
-    -- FunctO <= FunctI;
-    -- StallO <= StallI;
+    PROCESS (Reset, Clock)
+    BEGIN
+        IF Reset = '0' THEN
+            DestDataO <= x"00000000";
+            DestWrEnO <= '0';
+            DestRegNoO <= "00000";
+            -- MemAccessO <= '0';
+            -- MemRdData <= x"00000000";
+            -- FunctO <= "000";
+            -- StallO <= '0';
+        ELSIF rising_edge(Clock) THEN
+            DestDataO <= DestDataI;
+            DestWrEnO <= DestWrEnI;
+            DestRegNoO <= DestRegNoI;
+            -- MemAccessO <= MemAccessI;
+            -- MemRdData <= MemWrData;
+            -- FunctO <= FunctI;
+            -- StallO <= StallI;
+        END IF;
+    END PROCESS;
 END Behavioral;

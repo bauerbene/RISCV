@@ -67,7 +67,7 @@ BEGIN
         );
 
     -- done
-    IMEM : ENTITY work.SRA_SRL_Test
+    IMEM : ENTITY work.test02fwd
         PORT MAP(
             -- in port mapping
             address => IAddr_PC_IMem,
@@ -79,6 +79,8 @@ BEGIN
     -- done
     DECODE_STAGE : ENTITY work.DecodeStage
         PORT MAP(
+            Clock => Clock,
+            Reset => Reset,
             InstI => Instruction_IMem_DecodeStage,
             InstO => Instruction_DecodeStage_Decode
         );
@@ -106,6 +108,8 @@ BEGIN
     EXECUTION_STAGE : ENTITY work.ExecutionStage
         PORT MAP(
             -- in port mappings
+            Clock      => Clock,
+            Reset      => Reset,
             FunctI     => Funct_Decode_ExStage,
             SrcData1I  => SrcData1_RegisterSet_ExStage,
             SrcData2I  => SrcData2_MUX_ExStage,
@@ -147,6 +151,8 @@ BEGIN
     -- done
     MemStage : ENTITY work.MemStage
         PORT MAP(
+            Clock      => Clock,
+            Reset      => Reset,
             DestDataI  => Data_ALU_MemStage,
             DestWrEnI  => WrEn_ALU_MemStage,
             DestRegNoI => WrRegNo_ALU_MemStage,

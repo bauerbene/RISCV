@@ -6,8 +6,8 @@ USE ieee.std_logic_1164.ALL;
 
 ENTITY DecodeStage IS
     PORT (
-        -- Clock      : IN STD_LOGIC;
-        -- Reset      : IN STD_LOGIC;
+        Clock : IN STD_LOGIC;
+        Reset : IN STD_LOGIC;
         InstI : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- PCI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- InterlockI : IN STD_LOGIC;
@@ -23,9 +23,18 @@ END DecodeStage;
 
 ARCHITECTURE Behavioral OF DecodeStage IS
 BEGIN
-
-    InstO <= InstI;
-    -- PCO <= PCI;
-    -- InterlockO <= InterlockI;
-    -- ClearO <= ClearI;
+    PROCESS (Reset, Clock)
+    BEGIN
+        IF Reset = '0' THEN
+            InstO <= x"00000000";
+            -- PCO <= x"00000000";
+            -- InterlockO <= '0';
+            -- ClearO <= '0';
+        ELSIF rising_edge(Clock) THEN
+            InstO <= InstI;
+            -- PCO <= PCI;
+            -- InterlockO <= InterlockI;
+            -- ClearO <= ClearI;
+        END IF;
+    END PROCESS;
 END Behavioral;
