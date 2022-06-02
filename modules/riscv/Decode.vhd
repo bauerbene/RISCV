@@ -67,23 +67,45 @@ BEGIN
     PROCESS (Inst)
     BEGIN
 
-        Funct <= Inst(14 DOWNTO 12);
-        SrcRegNo1 <= Inst(19 DOWNTO 15);
-        SrcRegNo2 <= Inst(24 DOWNTO 20);
-        DestRegNo <= Inst(11 DOWNTO 7);
-
-        SelSrc2 <= Inst(5);
-        Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
-
-        IF (Inst(6 DOWNTO 0) = opcode_OP) OR (Inst(6 DOWNTO 0) = opcode_OP_IMM) THEN
-            DestWrEn <= '1';
-        END IF;
-
-        IF ((Inst(14 DOWNTO 12) = funct_ADD) AND (Inst(6 DOWNTO 0) = opcode_regimm)) THEN
-            Aux <= '0';
-            ELSE
-            Aux <= Inst(30);
-        END IF;
+        CASE Inst(6 DOWNTO 0) IS
+            WHEN opcode_OP =>
+                Funct <= Inst(14 DOWNTO 12);
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                DestWrEn <= '1';
+                DestRegNo <= Inst(11 DOWNTO 7);
+                SelSrc2 <= Inst(5);
+            WHEN opcode_OP_IMM =>
+                Funct <= Inst(14 DOWNTO 12);
+                DestWrEn <= '1';
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                DestRegNo <= Inst(11 DOWNTO 7);
+                SelSrc2 <= Inst(5);
+                IF Inst(14 DOWNTO 12) = funct_ADD THEN
+                    Aux <= '0';
+                ELSE
+                    Aux <= Inst(30);
+                END IF;
+            WHEN opcode_LUI =>
+                Funct <= funct_ADD;
+                DestWrEn <= '1';
+                SrcRegNo1 <= x0;
+                DestRegNo <= Inst(11 DOWNTO 7);
+                SelSrc2 <= '0';
+                Imm <= STD_LOGIC_VECTOR(Inst(31 DOWNTO 12) & x"000");
+                Aux <= '0';
+            WHEN OTHERS =>
+                Funct <= (OTHERS => '-');
+                SrcRegNo1 <= (OTHERS => '-');
+                SrcRegNo2 <= (OTHERS => '-');
+                DestRegNo <= (OTHERS => '-');
+                DestWrEn <= '-';
+                Aux <= '-';
+                Imm <= (OTHERS => '-');
+                SelSrc2 <= '-';
+        END CASE;
     END PROCESS;
 
 END Behavioral;

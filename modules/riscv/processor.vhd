@@ -99,7 +99,7 @@ BEGIN
             O => InstrAddr_IF
         );
 
-    IMEM : ENTITY work.test02fwd
+    IMEM : ENTITY work.Task31
         PORT MAP(
             -- in port mapping
             Clock   => Clock,
