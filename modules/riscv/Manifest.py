@@ -12,7 +12,9 @@ files = [
     "DecodeStage.vhd",
     "ExecutionStage.vhd",
     "MemStage.vhd",
-    "Forward.vhd"
+    "Forward.vhd",
+    "Fetch.vhd",
+    "FetchStage.vhd"
 ]
 
 modules = {

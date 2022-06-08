@@ -10,18 +10,18 @@ ENTITY Fetch IS
         PCI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Jump       : IN STD_LOGIC;
         JumpTarget : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        InterlockI : IN STD_LOGIC;
-        Stall      : IN STD_LOGIC;
-        PCNext     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        PC         : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        ImemAddr   : OUT STD_LOGIC_VECTOR(9 DOWNTO 0)
+        -- InterlockI : IN STD_LOGIC;
+        -- Stall    : IN STD_LOGIC;
+        PCNext   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        PC       : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        ImemAddr : OUT STD_LOGIC_VECTOR(9 DOWNTO 0)
     );
 END Fetch;
 
 ARCHITECTURE Behavioral OF Fetch IS
-    VARIABLE varPCNext : STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
 BEGIN
     PROCESS (PCI, Jump, JumpTarget)
+        VARIABLE varPCNext : STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
     BEGIN
         varPCNext := STD_LOGIC_VECTOR(unsigned(PCI) + 4);
 

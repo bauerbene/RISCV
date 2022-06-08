@@ -37,21 +37,21 @@ ENTITY Decode IS
     PORT (
         -- in
         Inst : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        -- PC         : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        PC   : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         -- InterlockI : IN STD_LOGIC;
         -- Clear      : IN STD_LOGIC;
 
         -- out
-        Funct     : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
-        SrcRegNo1 : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        SrcRegNo2 : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        DestWrEn  : OUT STD_LOGIC;
-        DestRegNo : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        Aux       : OUT STD_LOGIC;
-        -- PCNext     : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        -- Jump       : OUT STD_LOGIC;
-        -- JumpRel    : OUT STD_LOGIC;
-        -- JumpTarget : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Funct      : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
+        SrcRegNo1  : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        SrcRegNo2  : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        DestWrEn   : OUT STD_LOGIC;
+        DestRegNo  : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        Aux        : OUT STD_LOGIC;
+        PCNext     : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Jump       : OUT STD_LOGIC;
+        JumpRel    : OUT STD_LOGIC;
+        JumpTarget : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         -- MemAccess  : OUT STD_LOGIC;
         -- MemWrEn    : OUT STD_LOGIC;
         -- InterlockO : OUT STD_LOGIC;

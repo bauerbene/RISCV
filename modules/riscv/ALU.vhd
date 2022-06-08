@@ -32,25 +32,25 @@ USE IEEE.NUMERIC_STD.ALL;
 
 ENTITY ALU IS
     PORT (
-        A     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        B     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        Funct : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        Aux   : IN STD_LOGIC;
-        -- PCNext      : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- JumpI       : IN STD_LOGIC;
-        -- JumpRel     : IN STD_LOGIC;
-        -- JumpTargetI : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        A           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        B           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        Funct       : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        Aux         : IN STD_LOGIC;
+        PCNext      : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        JumpI       : IN STD_LOGIC;
+        JumpRel     : IN STD_LOGIC;
+        JumpTargetI : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- MemAccessI  : IN STD_LOGIC;
         -- SrcData2    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         DestWrEnI  : IN STD_LOGIC;
         -- Clear       : IN STD_LOGIC;
         -- Stall       : IN STD_LOGIC;
-        X : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- JumpO       : OUT STD_LOGIC;
-        -- JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
-        DestWrEnO  : OUT STD_LOGIC
+        X           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        JumpO       : OUT STD_LOGIC;
+        JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        DestRegNoO  : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        DestWrEnO   : OUT STD_LOGIC
         -- MemAccessO  : OUT STD_LOGIC;
         -- MemWrData   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- MemByteEna  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
@@ -102,7 +102,10 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    PROCESS (Funct, A, B)
+    JumpO <= JumpI;
+    JumpTargetO <= JumpTargetO;
+
+    PROCESS (Funct, A, B, Aux)
     BEGIN
         CASE Funct IS
             WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
