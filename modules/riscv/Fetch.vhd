@@ -23,15 +23,14 @@ BEGIN
     PROCESS (PCI, Jump, JumpTarget)
         VARIABLE varPCNext : STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
     BEGIN
-        varPCNext := STD_LOGIC_VECTOR(unsigned(PCI) + 4);
-
         PC <= PCI;
-        ImemAddr <= varPCNext(11 DOWNTO 2);
         IF Jump = '1' THEN
-            PCNext <= JumpTarget;
+            varPCNext := JumpTarget;
         ELSE
-            PCNext <= varPCNext;
+            varPCNext := STD_LOGIC_VECTOR(signed(PCI) + 4);
         END IF;
+        ImemAddr <= varPCNext(11 DOWNTO 2);
+        PCNext <= varPCNext;
     END PROCESS;
 
 END Behavioral;

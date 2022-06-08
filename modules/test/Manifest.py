@@ -3,5 +3,6 @@ files = [
     "Task27.vhd",
     "SRA_SRL_Test.vhd",
     "test02fwd.vhd",
-    "Task31.vhd"
+    "Task31.vhd",
+    "test03jal.vhd"
 ]

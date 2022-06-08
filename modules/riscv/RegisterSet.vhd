@@ -55,7 +55,7 @@ BEGIN
         RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
     END PROCESS;
 
-    PROCESS (Reset, Clock)
+    PROCESS (Reset, Clock, WrEn, WrRegNo, WrData)
     BEGIN
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");

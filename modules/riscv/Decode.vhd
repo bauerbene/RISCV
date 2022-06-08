@@ -75,6 +75,7 @@ BEGIN
                 DestWrEn <= '1';
                 DestRegNo <= Inst(11 DOWNTO 7);
                 SelSrc2 <= Inst(5);
+                Jump <= '0';
             WHEN opcode_OP_IMM =>
                 Funct <= Inst(14 DOWNTO 12);
                 DestWrEn <= '1';
@@ -83,6 +84,7 @@ BEGIN
                 SrcRegNo2 <= Inst(24 DOWNTO 20);
                 DestRegNo <= Inst(11 DOWNTO 7);
                 SelSrc2 <= Inst(5);
+                Jump <= '0';
                 IF Inst(14 DOWNTO 12) = funct_ADD THEN
                     Aux <= '0';
                 ELSE
@@ -96,6 +98,19 @@ BEGIN
                 SelSrc2 <= '0';
                 Imm <= STD_LOGIC_VECTOR(Inst(31 DOWNTO 12) & x"000");
                 Aux <= '0';
+                Jump <= '0';
+            WHEN opcode_JAL =>
+                Jump <= '1';
+                JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
+                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
+                DestWrEn <= '1';
+                DestRegNo <= Inst(11 DOWNTO 7);
+                Funct <= (OTHERS => '-');
+                SrcRegNo1 <= (OTHERS => '-');
+                SrcRegNo2 <= (OTHERS => '-');
+                Aux <= '-';
+                SelSrc2 <= '-';
+                Imm <= (OTHERS => '-');
             WHEN OTHERS =>
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
@@ -105,6 +120,8 @@ BEGIN
                 Aux <= '-';
                 Imm <= (OTHERS => '-');
                 SelSrc2 <= '-';
+                Jump <= '-';
+                JumpTarget <= (OTHERS => '-');
         END CASE;
     END PROCESS;
 

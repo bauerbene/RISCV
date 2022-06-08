@@ -119,7 +119,7 @@ BEGIN
             PCO   => PC_IF
         );
 
-    PC : ENTITY work.Fetch
+    Fetch : ENTITY work.Fetch
         PORT MAP(
             PCI        => PC_IF,
             Jump       => Jump_EX_IF,
@@ -129,7 +129,7 @@ BEGIN
             ImemAddr   => ImemAddr_IF
         );
 
-    IMEM : ENTITY work.test02fwd
+    IMEM : ENTITY work.test03jal
         PORT MAP(
             -- in port mapping
             Clock   => Clock,

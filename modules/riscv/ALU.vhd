@@ -102,26 +102,27 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    JumpO <= JumpI;
-    JumpTargetO <= JumpTargetO;
+    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI)
 
-    PROCESS (Funct, A, B, Aux)
     BEGIN
-        CASE Funct IS
-            WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
-            WHEN funct_SLL => X <= SLL_FUNC(A, B);
-            WHEN funct_SLT => X <= SLT_FUNC(A, B);
-            WHEN funct_SLTU => X <= SLTU_FUNC(A, B);
-            WHEN funct_XOR => X <= A XOR B;
-            WHEN funct_SRL => X <= SRL_SRA_FUNC(A, B, Aux);
-            WHEN funct_OR => X <= A OR B;
-            WHEN funct_AND => X <= A AND B;
-            WHEN OTHERS => NULL;
-        END CASE;
-    END PROCESS;
+        JumpO <= JumpI;
+        JumpTargetO <= JumpTargetI;
+        IF JumpI = '1' THEN
+            X <= PCNext;
+        ELSE
+            CASE Funct IS
+                WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
+                WHEN funct_SLL => X <= SLL_FUNC(A, B);
+                WHEN funct_SLT => X <= SLT_FUNC(A, B);
+                WHEN funct_SLTU => X <= SLTU_FUNC(A, B);
+                WHEN funct_XOR => X <= A XOR B;
+                WHEN funct_SRL => X <= SRL_SRA_FUNC(A, B, Aux);
+                WHEN funct_OR => X <= A OR B;
+                WHEN funct_AND => X <= A AND B;
+                WHEN OTHERS => NULL;
+            END CASE;
+        END IF;
 
-    PROCESS (DestRegNoI, DestWrEnI)
-    BEGIN
         DestRegNoO <= DestRegNoI;
         DestWrEnO <= DestWrEnI;
     END PROCESS;
