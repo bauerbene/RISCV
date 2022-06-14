@@ -59,6 +59,16 @@ END ALU;
 
 ARCHITECTURE Behavioral OF ALU IS
 
+    -- TODO move this to a general file maybe
+    FUNCTION BOOLEAN_TO_STDL(Input : BOOLEAN) RETURN STD_LOGIC IS
+    BEGIN
+        IF Input THEN
+            RETURN '1';
+        ELSE
+            RETURN '0';
+        END IF;
+    END;
+
     FUNCTION ADD_SUB_FUNC(In1 : STD_LOGIC_VECTOR; In2 : STD_LOGIC_VECTOR; sub : STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
     BEGIN
         IF (sub = '0') THEN
@@ -104,9 +114,8 @@ BEGIN
 
     PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel)
         VARIABLE Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
+        VARIABLE Cond : BOOLEAN;
     BEGIN
-        JumpO <= JumpI;
-
         CASE Funct IS
             WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
             WHEN funct_SLL => Result := SLL_FUNC(A, B);
@@ -119,9 +128,29 @@ BEGIN
             WHEN OTHERS => NULL;
         END CASE;
 
+        CASE Funct IS
+            WHEN funct_BEQ => Cond := A = B;
+            WHEN funct_BNE => Cond := A /= B;
+            WHEN funct_BGE => Cond := signed(A) >= signed(B);
+            WHEN funct_BGEU => Cond := unsigned(A) >= unsigned(B);
+            WHEN funct_BLT => Cond := signed(A) < signed(B);
+            WHEN funct_BLTU => Cond := unsigned(A) < unsigned(B);
+            WHEN OTHERS => Cond := false;
+        END CASE;
+
+        JumpO <= JumpI;
+
+        -- no branch or conditional branch
         IF JumpI = '0' THEN
+            IF JumpRel = '1' THEN -- conditional branch
+                JumpO <= BOOLEAN_TO_STDL(Cond);
+                JumpTargetO <= JumpTargetI; -- for conditional branches the jumptarget is calculated in decode
+            END IF;
+
+            -- no branch
             x <= Result;
         ELSE
+            -- unconditional branch
             x <= PCNext;
         END IF;
 

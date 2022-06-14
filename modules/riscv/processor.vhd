@@ -129,7 +129,7 @@ BEGIN
             ImemAddr   => ImemAddr_IF
         );
 
-    IMEM : ENTITY work.test04jalr
+    IMEM : ENTITY work.test05branch
         PORT MAP(
             -- in port mapping
             Clock   => Clock,
