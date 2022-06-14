@@ -102,25 +102,33 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI)
-
+    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel)
+        VARIABLE Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
     BEGIN
         JumpO <= JumpI;
-        JumpTargetO <= JumpTargetI;
-        IF JumpI = '1' THEN
-            X <= PCNext;
+
+        CASE Funct IS
+            WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
+            WHEN funct_SLL => Result := SLL_FUNC(A, B);
+            WHEN funct_SLT => Result := SLT_FUNC(A, B);
+            WHEN funct_SLTU => Result := SLTU_FUNC(A, B);
+            WHEN funct_XOR => Result := A XOR B;
+            WHEN funct_SRL => Result := SRL_SRA_FUNC(A, B, Aux);
+            WHEN funct_OR => Result := A OR B;
+            WHEN funct_AND => Result := A AND B;
+            WHEN OTHERS => NULL;
+        END CASE;
+
+        IF JumpI = '0' THEN
+            x <= Result;
         ELSE
-            CASE Funct IS
-                WHEN funct_ADD => X <= ADD_SUB_FUNC(A, B, Aux);
-                WHEN funct_SLL => X <= SLL_FUNC(A, B);
-                WHEN funct_SLT => X <= SLT_FUNC(A, B);
-                WHEN funct_SLTU => X <= SLTU_FUNC(A, B);
-                WHEN funct_XOR => X <= A XOR B;
-                WHEN funct_SRL => X <= SRL_SRA_FUNC(A, B, Aux);
-                WHEN funct_OR => X <= A OR B;
-                WHEN funct_AND => X <= A AND B;
-                WHEN OTHERS => NULL;
-            END CASE;
+            x <= PCNext;
+        END IF;
+
+        IF JumpRel = '0' THEN
+            JumpTargetO <= Result;
+        ELSE
+            JumpTargetO <= JumpTargetI;
         END IF;
 
         DestRegNoO <= DestRegNoI;

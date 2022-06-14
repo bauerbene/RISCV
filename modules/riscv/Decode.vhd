@@ -111,6 +111,20 @@ BEGIN
                 Aux <= '-';
                 SelSrc2 <= '-';
                 Imm <= (OTHERS => '-');
+                JumpRel <= '1';
+            WHEN opcode_JALR =>
+                Jump <= '1';
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
+                SelSrc2 <= '0';
+                Funct <= funct_ADD;
+                Aux <= '0';
+                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
+                DestWrEn <= '1';
+                DestRegNo <= Inst(11 DOWNTO 7);
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                SrcRegNo2 <= (OTHERS => '-');
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
             WHEN OTHERS =>
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
