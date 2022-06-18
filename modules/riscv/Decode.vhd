@@ -102,6 +102,16 @@ BEGIN
                 Aux <= '0';
                 Jump <= '0';
                 JumpRel <= '0';
+            WHEN opcode_AUIPC =>
+                Funct <= funct_ADD;
+                DestWrEn <= '1';
+                SrcRegNo1 <= x0;
+                DestRegNo <= Inst(11 DOWNTO 7);
+                SelSrc2 <= '0';
+                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 12) & x"000") + signed(PC));
+                Aux <= '0';
+                Jump <= '0';
+                JumpRel <= '0';
             WHEN opcode_JAL =>
                 Jump <= '1';
                 JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));

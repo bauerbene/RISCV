@@ -7,5 +7,6 @@ files = [
     "test03jal.vhd",
     "JALR_test.vhd",
     "test04jalr.vhd",
-    "test05branch.vhd"
+    "test05branch.vhd",
+    "Task37.vhd"
 ]
