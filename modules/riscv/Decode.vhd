@@ -39,7 +39,7 @@ ENTITY Decode IS
         Inst : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         PC   : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         -- InterlockI : IN STD_LOGIC;
-        -- Clear      : IN STD_LOGIC;
+        Clear : IN STD_LOGIC;
 
         -- out
         Funct      : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
@@ -64,7 +64,7 @@ ARCHITECTURE Behavioral OF Decode IS
 
 BEGIN
 
-    PROCESS (Inst)
+    PROCESS (Inst, Clear, PC)
     BEGIN
 
         CASE Inst(6 DOWNTO 0) IS
@@ -153,6 +153,12 @@ BEGIN
                 JumpTarget <= (OTHERS => '-');
                 JumpRel <= '-';
         END CASE;
+
+        IF Clear = '1' THEN
+            DestWrEn <= '0';
+            Jump <= '0';
+            JumpRel <= '0';
+        END IF;
     END PROCESS;
 
 END Behavioral;

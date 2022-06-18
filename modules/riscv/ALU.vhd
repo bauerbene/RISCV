@@ -44,7 +44,7 @@ ENTITY ALU IS
         -- SrcData2    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         DestWrEnI  : IN STD_LOGIC;
-        -- Clear       : IN STD_LOGIC;
+        Clear      : IN STD_LOGIC;
         -- Stall       : IN STD_LOGIC;
         X           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         JumpO       : OUT STD_LOGIC;
@@ -112,7 +112,7 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel)
+    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel, Clear)
         VARIABLE Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
         VARIABLE Cond : BOOLEAN;
     BEGIN
@@ -162,6 +162,11 @@ BEGIN
 
         DestRegNoO <= DestRegNoI;
         DestWrEnO <= DestWrEnI;
+
+        IF Clear = '1' THEN
+            DestWrEnO <= '0';
+            JumpO <= '0';
+        END IF;
     END PROCESS;
 
 END Behavioral;

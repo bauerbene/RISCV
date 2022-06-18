@@ -32,6 +32,8 @@ ARCHITECTURE Behavioral OF Processor IS
     SIGNAL JumpRel_ID_EX : STD_LOGIC;
     SIGNAL JumpTarget_ID_EX : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
+    SIGNAL Clear_ID : STD_LOGIC;
+
     -- signals in General
     SIGNAL SrcData1_General, SrcData2_General : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL SrcData1_General_EX, SrcData2_General_EX : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -57,6 +59,9 @@ ARCHITECTURE Behavioral OF Processor IS
     SIGNAL Jump_EX : STD_LOGIC;
     SIGNAL JumpRel_EX : STD_LOGIC;
     SIGNAL JumpTarget_EX : STD_LOGIC_VECTOR(31 DOWNTO 0);
+
+    SIGNAL Clear_EX : STD_LOGIC;
+    SIGNAL Clear_EX_ALU : STD_LOGIC;
 
     -- signal in Mem
     SIGNAL DestWrData_Mem_General : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -144,19 +149,22 @@ BEGIN
 
     DECODE_STAGE : ENTITY work.DecodeStage
         PORT MAP(
-            Clock => Clock,
-            Reset => Reset,
-            InstI => Instr_IF_ID,
-            InstO => Instr_ID,
-            PCI   => PC_IF_ID,
-            PCO   => PC_ID
+            Clock  => Clock,
+            Reset  => Reset,
+            InstI  => Instr_IF_ID,
+            InstO  => Instr_ID,
+            PCI    => PC_IF_ID,
+            PCO    => PC_ID,
+            ClearI => Jump_EX_IF,
+            ClearO => Clear_ID
         );
 
     DECODE : ENTITY work.Decode
         PORT MAP(
             -- in port mapping
-            Inst => Instr_ID,
-            PC   => PC_ID,
+            Inst  => Instr_ID,
+            PC    => PC_ID,
+            Clear => Clear_ID,
 
             -- out port mapping
             Funct      => Funct_ID_EX,
@@ -193,6 +201,7 @@ BEGIN
             JumpI       => Jump_ID_EX,
             JumpRelI    => JumpRel_ID_EX,
             JumpTargetI => JumpTarget_ID_EX,
+            ClearI      => Jump_EX_IF,
 
             -- out port mappings
             FunctO      => Funct_EX,
@@ -205,7 +214,8 @@ BEGIN
             PCNextO     => PCNext_EX,
             JumpO       => Jump_EX,
             JumpRelO    => JumpRel_EX,
-            JumpTargetO => JumpTarget_EX
+            JumpTargetO => JumpTarget_EX,
+            ClearO      => Clear_EX_ALU
         );
 
     MUX : ENTITY work.MUX
@@ -235,6 +245,7 @@ BEGIN
             JumpI       => Jump_EX,
             JumpRel     => JumpRel_EX,
             JumpTargetI => JumpTarget_EX,
+            Clear       => Clear_EX_ALU,
 
             -- out port mapping
             X           => DestWrData_EX_Mem_General,
