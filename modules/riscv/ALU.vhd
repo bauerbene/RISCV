@@ -178,7 +178,7 @@ BEGIN
             MemByteEna <= "0000";
         END IF;
 
-        IF MemAccessI <= 1 THEN
+        IF MemAccessI <= '1' THEN
             X <= ADD_SUB_FUNC(A, B, '0');
         END IF;
     END PROCESS;

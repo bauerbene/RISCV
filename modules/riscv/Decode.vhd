@@ -174,7 +174,7 @@ BEGIN
                 SrcRegNo1 <= Inst(19 DOWNTO 15);
                 SrcRegNo2 <= (OTHERS => '-');
                 Funct <= Inst(14 DOWNTO 12);
-                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 20)));
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
                 SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
@@ -188,7 +188,7 @@ BEGIN
                 SrcRegNo1 <= Inst(19 DOWNTO 15);
                 SrcRegNo2 <= Inst(24 DOWNTO 20);
                 Funct <= Inst(14 DOWNTO 12);
-                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)));
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)), 32));
                 SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
