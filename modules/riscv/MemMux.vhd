@@ -1,6 +1,7 @@
 -- todo documentation
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
 
 USE work.constants.ALL;
 
@@ -16,6 +17,51 @@ ENTITY MemMux IS
 END MemMux;
 
 ARCHITECTURE Behavioral OF MemMux IS
+
+    FUNCTION LB(AddressLastTwo : STD_LOGIC_VECTOR; MemoryData : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    BEGIN
+        IF AddressLastTwo = "00" THEN
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(7 DOWNTO 0)), 32));
+        ELSIF AddressLastTwo = "01" THEN
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(15 DOWNTO 0)), 32));
+        ELSIF AddressLastTwo = "10" THEN
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(23 DOWNTO 16)), 32));
+        ELSE
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(31 DOWNTO 24)), 32));
+        END IF;
+    END;
+
+    FUNCTION LBU(AddressLastTwo : STD_LOGIC_VECTOR; MemoryData : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    BEGIN
+        IF AddressLastTwo = "00" THEN
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(7 DOWNTO 0)), 32));
+        ELSIF AddressLastTwo = "01" THEN
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(15 DOWNTO 0)), 32));
+        ELSIF AddressLastTwo = "10" THEN
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(23 DOWNTO 16)), 32));
+        ELSE
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(31 DOWNTO 24)), 32));
+        END IF;
+    END;
+
+    FUNCTION LH(AddressLastTwo : STD_LOGIC_VECTOR; MemoryData : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    BEGIN
+        IF AddressLastTwo = "00" THEN
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(15 DOWNTO 0)), 32));
+        ELSE
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(31 DOWNTO 16)), 32));
+        END IF;
+    END;
+
+    FUNCTION LHU(AddressLastTwo : STD_LOGIC_VECTOR; MemoryData : STD_LOGIC_VECTOR) RETURN STD_LOGIC_VECTOR IS
+    BEGIN
+        IF AddressLastTwo = "00" THEN
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(15 DOWNTO 0)), 32));
+        ELSE
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(31 DOWNTO 16)), 32));
+        END IF;
+    END;
+
 BEGIN
 
     PROCESS (Sel, MemoryDataIn, ALUDataIn, FunctI)
@@ -23,13 +69,13 @@ BEGIN
         IF Sel = '1' THEN
             CASE FunctI IS
                 WHEN funct_LB =>
-                    WrData <= STD_LOGIC_VECTOR(x"FFFFFF" & MemoryDataIn(31 DOWNTO 24));
+                    WrData <= LB(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
                 WHEN funct_LBU =>
-                    WrData <= STD_LOGIC_VECTOR(x"000000" & MemoryDataIn(31 DOWNTO 24));
+                    WrData <= LBU(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
                 WHEN funct_LH =>
-                    WrData <= STD_LOGIC_VECTOR(x"FFFF" & MemoryDataIn(31 DOWNTO 16));
+                    WrData <= LH(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
                 WHEN funct_LHU =>
-                    WrData <= STD_LOGIC_VECTOR(x"0000" & MemoryDataIn(31 DOWNTO 16));
+                    WrData <= LHU(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
                 WHEN funct_LW =>
                     WrData <= MemoryDataIn;
                 WHEN OTHERS =>
