@@ -11,7 +11,7 @@ ENTITY MemStage IS
         DestDataI  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnI  : IN STD_LOGIC;
         DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-        -- MemAccessI : IN STD_LOGIC;
+        MemAccessI : IN STD_LOGIC;
         -- MemWrData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- MemByteEna : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
         -- FunctI : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -19,8 +19,8 @@ ENTITY MemStage IS
 
         DestDataO  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnO  : OUT STD_LOGIC;
-        DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
-        -- MemAccessO : OUT STD_LOGIC;
+        DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        MemAccessO : OUT STD_LOGIC
         -- MemRdData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         -- FunctO : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         -- StallO : OUT STD_LOGIC
@@ -35,7 +35,7 @@ BEGIN
             DestDataO <= x"00000000";
             DestWrEnO <= '0';
             DestRegNoO <= "00000";
-            -- MemAccessO <= '0';
+            MemAccessO <= '0';
             -- MemRdData <= x"00000000";
             -- FunctO <= "000";
             -- StallO <= '0';
@@ -43,7 +43,7 @@ BEGIN
             DestDataO <= DestDataI;
             DestWrEnO <= DestWrEnI;
             DestRegNoO <= DestRegNoI;
-            -- MemAccessO <= MemAccessI;
+            MemAccessO <= MemAccessI;
             -- MemRdData <= MemWrData;
             -- FunctO <= FunctI;
             -- StallO <= StallI;
