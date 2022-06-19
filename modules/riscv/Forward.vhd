@@ -6,6 +6,7 @@ USE ieee.std_logic_1164.ALL;
 
 USE work.constants.ALL;
 
+
 ENTITY Forward IS
     PORT (
         -- from Decode
