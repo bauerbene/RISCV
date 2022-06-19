@@ -12,12 +12,12 @@ ENTITY MemStage IS
         DestWrEnI  : IN STD_LOGIC;
         DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         MemAccessI : IN STD_LOGIC;
-        -- MemWrData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- MemByteEna : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        FunctI    : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        StallI    : IN STD_LOGIC;
-        RamRdData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        RamBusy   : IN STD_LOGIC;
+        MemWrData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        MemByteEna : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        FunctI     : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        StallI     : IN STD_LOGIC;
+        RamRdData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        RamBusy    : IN STD_LOGIC;
 
         DestDataO  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnO  : OUT STD_LOGIC;
