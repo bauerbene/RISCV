@@ -212,6 +212,8 @@ BEGIN
             DestWrEn <= '0';
             Jump <= '0';
             JumpRel <= '0';
+            MemAccess <= '0';
+            MemWrEn <= '0';
         END IF;
     END PROCESS;
 

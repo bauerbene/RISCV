@@ -170,9 +170,11 @@ BEGIN
         IF Clear = '1' THEN
             DestWrEnO <= '0';
             JumpO <= '0';
+            MemAccessO <= '0';
+            MemByteEna <= "0000";
         END IF;
 
-        IF MemWrEn = '1' THEN
+        IF MemWrEn = '1' AND Clear = '0' THEN
             MemByteEna <= "1111";
         ELSE
             MemByteEna <= "0000";
