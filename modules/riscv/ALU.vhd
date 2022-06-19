@@ -54,7 +54,8 @@ ENTITY ALU IS
         DestWrEnO   : OUT STD_LOGIC;
         MemAccessO  : OUT STD_LOGIC;
         MemWrData   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        MemByteEna  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+        MemByteEna  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
     );
 END ALU;
 
@@ -196,6 +197,7 @@ BEGIN
             MemByteEna <= "0000";
         END IF;
 
+        FunctO <= Funct;
         IF MemWrEn <= '1' AND Clear = '0' THEN
             Result := ADD_SUB_FUNC(A, B, '0');
             X <= Result;
