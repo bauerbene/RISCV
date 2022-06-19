@@ -29,7 +29,7 @@ BEGIN
                 WHEN funct_LH =>
                     WrData <= STD_LOGIC_VECTOR(x"FFFF" & MemoryDataIn(31 DOWNTO 16));
                 WHEN funct_LHU =>
-                    WrData <= STD_LOGIC_VECTOR(x"000" & MemoryDataIn(31 DOWNTO 16));
+                    WrData <= STD_LOGIC_VECTOR(x"0000" & MemoryDataIn(31 DOWNTO 16));
                 WHEN funct_LW =>
                     WrData <= MemoryDataIn;
                 WHEN OTHERS =>
