@@ -52,8 +52,8 @@ ENTITY Decode IS
         Jump       : OUT STD_LOGIC;
         JumpRel    : OUT STD_LOGIC;
         JumpTarget : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        -- MemAccess  : OUT STD_LOGIC;
-        -- MemWrEn    : OUT STD_LOGIC;
+        MemAccess  : OUT STD_LOGIC;
+        MemWrEn    : OUT STD_LOGIC;
         -- InterlockO : OUT STD_LOGIC;
         Imm     : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         SelSrc2 : OUT STD_LOGIC
@@ -77,6 +77,8 @@ BEGIN
                 SelSrc2 <= Inst(5);
                 Jump <= '0';
                 JumpRel <= '0';
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_OP_IMM =>
                 Funct <= Inst(14 DOWNTO 12);
                 DestWrEn <= '1';
@@ -92,6 +94,8 @@ BEGIN
                 ELSE
                     Aux <= Inst(30);
                 END IF;
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_LUI =>
                 Funct <= funct_ADD;
                 DestWrEn <= '1';
@@ -102,6 +106,8 @@ BEGIN
                 Aux <= '0';
                 Jump <= '0';
                 JumpRel <= '0';
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_AUIPC =>
                 Funct <= funct_ADD;
                 DestWrEn <= '1';
@@ -112,6 +118,8 @@ BEGIN
                 Aux <= '0';
                 Jump <= '0';
                 JumpRel <= '0';
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_JAL =>
                 Jump <= '1';
                 JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
@@ -125,6 +133,8 @@ BEGIN
                 SelSrc2 <= '-';
                 Imm <= (OTHERS => '-');
                 JumpRel <= '1';
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_JALR =>
                 Jump <= '1';
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
@@ -138,6 +148,8 @@ BEGIN
                 SrcRegNo2 <= (OTHERS => '-');
                 JumpRel <= '0';
                 JumpTarget <= (OTHERS => '-');
+                MemAccess <= '0';
+                MemWrEn <= '0';
             WHEN opcode_BRANCH =>
                 Jump <= '0';
                 JumpRel <= '1';
@@ -150,6 +162,36 @@ BEGIN
                 Aux <= '-';
                 SelSrc2 <= '1';
                 PCNext <= (OTHERS => '-');
+                MemAccess <= '0';
+                MemWrEn <= '0';
+            WHEN opcode_LOAD =>
+                MemAccess <= '1';
+                MemWrEn <= '0';
+                DestRegNo <= Inst(11 DOWNTO 7);
+                Jump <= '0';
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                SrcRegNo2 <= (OTHERS => '-');
+                Funct <= Inst(14 DOWNTO 12);
+                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 20)));
+                SelSrc2 <= '0';
+                PCNext <= (OTHERS => '-');
+                Aux <= '-';
+            WHEN opcode_STORE =>
+                MemAccess <= '1';
+                MemWrEn <= '1';
+                DestRegNo <= (OTHERS => '-');
+                Jump <= '0';
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                Funct <= Inst(14 DOWNTO 12);
+                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)));
+                SelSrc2 <= '0';
+                PCNext <= (OTHERS => '-');
+                Aux <= '-';
             WHEN OTHERS =>
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
@@ -162,6 +204,8 @@ BEGIN
                 Jump <= '-';
                 JumpTarget <= (OTHERS => '-');
                 JumpRel <= '-';
+                MemAccess <= '-';
+                MemWrEn <= '-';
         END CASE;
 
         IF Clear = '1' THEN

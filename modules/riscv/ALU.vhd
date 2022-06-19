@@ -40,11 +40,12 @@ ENTITY ALU IS
         JumpI       : IN STD_LOGIC;
         JumpRel     : IN STD_LOGIC;
         JumpTargetI : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- MemAccessI  : IN STD_LOGIC;
-        -- SrcData2    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-        DestWrEnI  : IN STD_LOGIC;
-        Clear      : IN STD_LOGIC;
+        MemAccessI  : IN STD_LOGIC;
+        SrcData2    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        DestRegNoI  : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        DestWrEnI   : IN STD_LOGIC;
+        Clear       : IN STD_LOGIC;
+        MemWrEn     : IN STD_LOGIC;
         -- Stall       : IN STD_LOGIC;
         X           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         JumpO       : OUT STD_LOGIC;
@@ -112,10 +113,13 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel, Clear)
+    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel, Clear, MemAccessI, SrcData2, MemWrEn)
         VARIABLE Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
         VARIABLE Cond : BOOLEAN;
     BEGIN
+        MemAccessO <= MemAccessI;
+        MemWrData <= SrcData2;
+
         CASE Funct IS
             WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
             WHEN funct_SLL => Result := SLL_FUNC(A, B);
@@ -166,6 +170,16 @@ BEGIN
         IF Clear = '1' THEN
             DestWrEnO <= '0';
             JumpO <= '0';
+        END IF;
+
+        IF MemWrEn = '1' THEN
+            MemByteEna <= "1111";
+        ELSE
+            MemByteEna <= "0000";
+        END IF;
+
+        IF MemAccessI <= 1 THEN
+            X <= ADD_SUB_FUNC(A, B, '0');
         END IF;
     END PROCESS;
 

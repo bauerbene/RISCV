@@ -18,11 +18,11 @@ ENTITY ExecutionStage IS
         JumpI       : IN STD_LOGIC;
         JumpRelI    : IN STD_LOGIC;
         JumpTargetI : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- MemAccessI  : IN STD_LOGIC;
-        -- MemWrEnI    : IN STD_LOGIC;
-        ClearI   : IN STD_LOGIC;
-        ImmI     : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        SelSrc2I : IN STD_LOGIC;
+        MemAccessI  : IN STD_LOGIC;
+        MemWrEnI    : IN STD_LOGIC;
+        ClearI      : IN STD_LOGIC;
+        ImmI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        SelSrc2I    : IN STD_LOGIC;
         -- Stall    : IN STD_LOGIC;
 
         FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -35,11 +35,11 @@ ENTITY ExecutionStage IS
         JumpO       : OUT STD_LOGIC;
         JumpRelO    : OUT STD_LOGIC;
         JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- MemAccessO  : OUT STD_LOGIC;
-        -- MemWrEnO    : OUT STD_LOGIC;
-        ClearO   : OUT STD_LOGIC;
-        ImmO     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        SelSrc2O : OUT STD_LOGIC
+        MemAccessO  : OUT STD_LOGIC;
+        MemWrEnO    : OUT STD_LOGIC;
+        ClearO      : OUT STD_LOGIC;
+        ImmO        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        SelSrc2O    : OUT STD_LOGIC
     );
 END ExecutionStage;
 
@@ -58,8 +58,8 @@ BEGIN
             JumpO <= '0';
             JumpRelO <= '0';
             JumpTargetO <= x"00000000";
-            -- MemAccessO <= '0';
-            -- MemWrEnO <= '0';
+            MemAccessO <= '0';
+            MemWrEnO <= '0';
             ImmO <= x"00000000";
             SelSrc2O <= '0';
             ClearO <= '0';
@@ -74,8 +74,8 @@ BEGIN
             JumpO <= JumpI;
             JumpRelO <= JumpRelI;
             JumpTargetO <= JumpTargetI;
-            -- MemAccessO <= MemAccessI;
-            -- MemWrEnO <= MemWrEnI;
+            MemAccessO <= MemAccessI;
+            MemWrEnO <= MemWrEnI;
             ImmO <= ImmI;
             SelSrc2O <= SelSrc2I;
             ClearO <= ClearI;
