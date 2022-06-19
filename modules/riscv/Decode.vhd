@@ -36,10 +36,10 @@ USE work.constants.ALL;
 ENTITY Decode IS
     PORT (
         -- in
-        Inst : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        PC   : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        -- InterlockI : IN STD_LOGIC;
-        Clear : IN STD_LOGIC;
+        Inst       : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        PC         : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        InterlockI : IN STD_LOGIC;
+        Clear      : IN STD_LOGIC;
 
         -- out
         Funct      : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
@@ -54,9 +54,9 @@ ENTITY Decode IS
         JumpTarget : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         MemAccess  : OUT STD_LOGIC;
         MemWrEn    : OUT STD_LOGIC;
-        -- InterlockO : OUT STD_LOGIC;
-        Imm     : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        SelSrc2 : OUT STD_LOGIC
+        InterlockO : OUT STD_LOGIC;
+        Imm        : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        SelSrc2    : OUT STD_LOGIC
     );
 END Decode;
 
@@ -64,7 +64,7 @@ ARCHITECTURE Behavioral OF Decode IS
 
 BEGIN
 
-    PROCESS (Inst, Clear, PC)
+    PROCESS (Inst, Clear, PC, InterlockI)
     BEGIN
 
         CASE Inst(6 DOWNTO 0) IS
@@ -79,6 +79,7 @@ BEGIN
                 JumpRel <= '0';
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_OP_IMM =>
                 Funct <= Inst(14 DOWNTO 12);
                 DestWrEn <= '1';
@@ -96,6 +97,7 @@ BEGIN
                 END IF;
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_LUI =>
                 Funct <= funct_ADD;
                 DestWrEn <= '1';
@@ -108,6 +110,7 @@ BEGIN
                 JumpRel <= '0';
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_AUIPC =>
                 Funct <= funct_ADD;
                 DestWrEn <= '1';
@@ -120,6 +123,7 @@ BEGIN
                 JumpRel <= '0';
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_JAL =>
                 Jump <= '1';
                 JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
@@ -135,6 +139,7 @@ BEGIN
                 JumpRel <= '1';
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_JALR =>
                 Jump <= '1';
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
@@ -150,6 +155,7 @@ BEGIN
                 JumpTarget <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_BRANCH =>
                 Jump <= '0';
                 JumpRel <= '1';
@@ -164,6 +170,7 @@ BEGIN
                 PCNext <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
+                InterlockO <= '0';
             WHEN opcode_LOAD =>
                 MemAccess <= '1';
                 MemWrEn <= '0';
@@ -178,6 +185,7 @@ BEGIN
                 SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
+                InterlockO <= '1';
             WHEN opcode_STORE =>
                 MemAccess <= '1';
                 MemWrEn <= '1';
@@ -192,6 +200,7 @@ BEGIN
                 SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
+                InterlockO <= '0';
             WHEN OTHERS =>
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
@@ -206,14 +215,16 @@ BEGIN
                 JumpRel <= '-';
                 MemAccess <= '-';
                 MemWrEn <= '-';
+                InterlockO <= '-';
         END CASE;
 
-        IF Clear = '1' THEN
+        IF Clear = '1' OR InterlockI = '1' THEN
             DestWrEn <= '0';
             Jump <= '0';
             JumpRel <= '0';
             MemAccess <= '0';
             MemWrEn <= '0';
+            InterlockO <= '0';
         END IF;
     END PROCESS;
 
