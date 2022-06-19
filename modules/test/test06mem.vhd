@@ -1,6 +1,6 @@
 LIBRARY ieee;
-USE ieee.std_logic_1164.all;
-USE ieee.numeric_std.all;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
 ENTITY imem_test06mem IS PORT (
   address : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
   Clock   : IN STD_LOGIC;
@@ -1032,13 +1032,11 @@ ARCHITECTURE SYN OF imem_test06mem IS
     x"00000000",
     x"00000000",
     x"00000000",
-    x"00000000" 
+    x"00000000"
   );
 BEGIN
-  PROCESS (Clock)
+  PROCESS (address)
   BEGIN
-    IF RISING_EDGE(Clock) THEN
-      q <= Mem(TO_INTEGER(UNSIGNED(address)));
-    END IF;
+    q <= Mem(TO_INTEGER(UNSIGNED(address)));
   END PROCESS;
 END;
