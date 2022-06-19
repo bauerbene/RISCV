@@ -198,21 +198,26 @@ BEGIN
         END IF;
 
         FunctO <= Funct;
-        IF MemWrEn <= '1' AND Clear = '0' THEN
+
+        IF MemAccessI = '1' AND Clear = '0' THEN
             Result := ADD_SUB_FUNC(A, B, '0');
             X <= Result;
-            CASE Funct IS
-                WHEN funct_SB =>
-                    MemByteEna <= MemByteEna_SB(Result(1 DOWNTO 0));
-                    MemWrData <= STD_LOGIC_VECTOR(SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0));
-                WHEN funct_SH =>
-                    MemByteEna <= MemByteEna_SH(Result(1 DOWNTO 0));
-                    MemWrData <= STD_LOGIC_VECTOR(SrcData2(15 DOWNTO 0) & SrcData2(15 DOWNTO 0));
-                WHEN funct_SW =>
-                    MemByteEna <= "1111";
-                    MemWrData <= SrcData2; -- not neccesary
-                WHEN OTHERS => MemByteEna <= "0000";
-            END CASE;
+            IF MemWrEn = '1' THEN
+                CASE Funct IS
+                    WHEN funct_SB =>
+                        MemByteEna <= MemByteEna_SB(Result(1 DOWNTO 0));
+                        MemWrData <= STD_LOGIC_VECTOR(SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0));
+                    WHEN funct_SH =>
+                        MemByteEna <= MemByteEna_SH(Result(1 DOWNTO 0));
+                        MemWrData <= STD_LOGIC_VECTOR(SrcData2(15 DOWNTO 0) & SrcData2(15 DOWNTO 0));
+                    WHEN funct_SW =>
+                        MemByteEna <= "1111";
+                        MemWrData <= SrcData2; -- not neccesary
+                    WHEN OTHERS => MemByteEna <= "0000";
+                END CASE;
+            ELSE
+                MemByteEna <= "0000";
+            END IF;
         ELSE
             MemByteEna <= "0000";
         END IF;
