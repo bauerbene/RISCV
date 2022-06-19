@@ -175,6 +175,7 @@ BEGIN
                 MemAccess <= '1';
                 MemWrEn <= '0';
                 DestRegNo <= Inst(11 DOWNTO 7);
+                DestWrEn <= '1';
                 Jump <= '0';
                 JumpRel <= '0';
                 JumpTarget <= (OTHERS => '-');
