@@ -10,6 +10,8 @@ ENTITY Processor IS
 END Processor;
 
 ARCHITECTURE Behavioral OF Processor IS
+    Attribute DEBUG: string;
+    Attribute MARK_DEBUG: boolean;
 
     -- signals in IF
     SIGNAL Instr_IF_ID : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -40,6 +42,8 @@ ARCHITECTURE Behavioral OF Processor IS
 
     -- signals in EX
     SIGNAL Funct_EX : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    Attribute DEBUG of Funct_EX : signal is "true";
+    Attribute MARK_DEBUG of Funct_EX : signal is true;
     SIGNAL SrcData1_EX, SrcData2_EX : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL DestWrEn_EX_General : STD_LOGIC;
     SIGNAL DestWrRegNo_EX_General : STD_LOGIC_VECTOR(4 DOWNTO 0);

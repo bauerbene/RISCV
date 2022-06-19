@@ -50,10 +50,10 @@ ENTITY ALU IS
         JumpO       : OUT STD_LOGIC;
         JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestRegNoO  : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
-        DestWrEnO   : OUT STD_LOGIC
-        -- MemAccessO  : OUT STD_LOGIC;
-        -- MemWrData   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        -- MemByteEna  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+        DestWrEnO   : OUT STD_LOGIC;
+        MemAccessO  : OUT STD_LOGIC;
+        MemWrData   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        MemByteEna  : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
     );
 END ALU;
 
