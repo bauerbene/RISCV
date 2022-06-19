@@ -23,7 +23,7 @@ ARCHITECTURE Behavioral OF MemMux IS
         IF AddressLastTwo = "00" THEN
             RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(7 DOWNTO 0)), 32));
         ELSIF AddressLastTwo = "01" THEN
-            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(15 DOWNTO 0)), 32));
+            RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(15 DOWNTO 8)), 32));
         ELSIF AddressLastTwo = "10" THEN
             RETURN STD_LOGIC_VECTOR(resize(signed(MemoryData(23 DOWNTO 16)), 32));
         ELSE
@@ -36,7 +36,7 @@ ARCHITECTURE Behavioral OF MemMux IS
         IF AddressLastTwo = "00" THEN
             RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(7 DOWNTO 0)), 32));
         ELSIF AddressLastTwo = "01" THEN
-            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(15 DOWNTO 0)), 32));
+            RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(15 DOWNTO 8)), 32));
         ELSIF AddressLastTwo = "10" THEN
             RETURN STD_LOGIC_VECTOR(resize(unsigned(MemoryData(23 DOWNTO 16)), 32));
         ELSE
