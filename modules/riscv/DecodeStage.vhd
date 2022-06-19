@@ -12,7 +12,7 @@ ENTITY DecodeStage IS
         PCI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         InterlockI : IN STD_LOGIC;
         ClearI     : IN STD_LOGIC;
-        -- Stall      : IN STD_LOGIC;
+        Stall      : IN STD_LOGIC;
 
         InstO      : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         PCO        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -31,10 +31,12 @@ BEGIN
             InterlockO <= '0';
             ClearO <= '0';
         ELSIF rising_edge(Clock) THEN
-            InstO <= InstI;
-            PCO <= PCI;
-            InterlockO <= InterlockI;
-            ClearO <= ClearI;
+            IF Stall = '0' THEN
+                InstO <= InstI;
+                PCO <= PCI;
+                InterlockO <= InterlockI;
+                ClearO <= ClearI;
+            END IF;
         END IF;
     END PROCESS;
 END Behavioral;

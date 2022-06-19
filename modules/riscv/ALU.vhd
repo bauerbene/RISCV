@@ -46,7 +46,7 @@ ENTITY ALU IS
         DestWrEnI   : IN STD_LOGIC;
         Clear       : IN STD_LOGIC;
         MemWrEn     : IN STD_LOGIC;
-        -- Stall       : IN STD_LOGIC;
+
         X           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         JumpO       : OUT STD_LOGIC;
         JumpTargetO : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);

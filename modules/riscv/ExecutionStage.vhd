@@ -23,7 +23,7 @@ ENTITY ExecutionStage IS
         ClearI      : IN STD_LOGIC;
         ImmI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         SelSrc2I    : IN STD_LOGIC;
-        -- Stall    : IN STD_LOGIC;
+        Stall       : IN STD_LOGIC;
 
         FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         SrcData1O   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -64,21 +64,23 @@ BEGIN
             SelSrc2O <= '0';
             ClearO <= '0';
         ELSIF rising_edge(Clock) THEN
-            FunctO <= FunctI;
-            SrcData1O <= SrcData1I;
-            SrcData2O <= SrcData2I;
-            DestWrEnO <= DestWrEnI;
-            DestRegNoO <= DestRegNoI;
-            AuxO <= AuxI;
-            PCNextO <= PCNextI;
-            JumpO <= JumpI;
-            JumpRelO <= JumpRelI;
-            JumpTargetO <= JumpTargetI;
-            MemAccessO <= MemAccessI;
-            MemWrEnO <= MemWrEnI;
-            ImmO <= ImmI;
-            SelSrc2O <= SelSrc2I;
-            ClearO <= ClearI;
+            IF Stall = '0' THEN
+                FunctO <= FunctI;
+                SrcData1O <= SrcData1I;
+                SrcData2O <= SrcData2I;
+                DestWrEnO <= DestWrEnI;
+                DestRegNoO <= DestRegNoI;
+                AuxO <= AuxI;
+                PCNextO <= PCNextI;
+                JumpO <= JumpI;
+                JumpRelO <= JumpRelI;
+                JumpTargetO <= JumpTargetI;
+                MemAccessO <= MemAccessI;
+                MemWrEnO <= MemWrEnI;
+                ImmO <= ImmI;
+                SelSrc2O <= SelSrc2I;
+                ClearO <= ClearI;
+            END IF;
         END IF;
     END PROCESS;
 
