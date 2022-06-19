@@ -35,6 +35,8 @@ ENTITY MemStage IS
 END MemStage;
 
 ARCHITECTURE Behavioral OF MemStage IS
+    TYPE state_type IS (Idle, Stalled);
+    SIGNAL currentState : state_type;
 BEGIN
     PROCESS (Reset, Clock)
     BEGIN
@@ -48,7 +50,22 @@ BEGIN
             -- MemRdData <= x"00000000";
             FunctO <= "000";
             StallO <= '0';
+            currentState <= Idle;
         ELSIF rising_edge(Clock) THEN
+
+            -- Stall state machine
+            CASE currentState IS
+                WHEN Idle =>
+                    IF MemAccessI <= '1' THEN
+                        StallO <= '1';
+                        currentState <= Stalled;
+                    END IF;
+                WHEN Stalled =>
+                    StallO <= '0';
+                    currentState <= Idle;
+                WHEN OTHERS => NULL;
+            END CASE;
+
             IF StallI = '0' THEN
                 DestDataO <= DestDataI;
                 DestWrEnO <= DestWrEnI;
@@ -56,7 +73,6 @@ BEGIN
                 MemAccessO <= MemAccessI;
                 -- MemRdData <= MemWrData;
                 FunctO <= FunctI;
-                StallO <= StallI;
             END IF;
         END IF;
     END PROCESS;
