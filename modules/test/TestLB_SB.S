@@ -3,5 +3,5 @@
 _start:
 
     addi x2, x0, 1
-    sb x2, 0(x0)
-    lb x3, 0(x0)
+    sh x2, 0x200(x0)
+    lh x3, 0x200(x0)
