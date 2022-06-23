@@ -1035,8 +1035,10 @@ ARCHITECTURE SYN OF imem_test06mem IS
     x"00000000"
   );
 BEGIN
-  PROCESS (address)
+  PROCESS (Clock)
   BEGIN
-    q <= Mem(TO_INTEGER(UNSIGNED(address)));
+    IF RISING_EDGE(Clock) THEN
+      q <= Mem(TO_INTEGER(UNSIGNED(address)));
+    END IF;
   END PROCESS;
 END;
