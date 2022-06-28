@@ -20,27 +20,25 @@ END Fetch;
 
 ARCHITECTURE Behavioral OF Fetch IS
 BEGIN
+
     PROCESS (PCI, Jump, JumpTarget, InterlockI, Stall)
-        VARIABLE varPCNext : STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
+        VARIABLE varPCNext : STD_LOGIC_VECTOR(31 DOWNTO 0);
     BEGIN
-        IF Stall = '1' THEN
-            PCNext <= PCI;
-            ImemAddr <= PCI(11 DOWNTO 2);
+        IF Jump = '1' THEN
+            varPCNext := JumpTarget;
         ELSE
-            PC <= PCI;
-            IF Jump = '1' THEN
-                varPCNext := JumpTarget;
+            IF InterlockI = '1' THEN
+                varPCNext := PCI;
             ELSE
-                varPCNext := STD_LOGIC_VECTOR(signed(PCI) + 4);
+                varPCNext := STD_LOGIC_VECTOR (unsigned(PCI) + 4);
             END IF;
+        END IF;
 
+        PC <= PCI;
+
+        IF Stall = '0' THEN
+            PCNext <= varPCNext;
             ImemAddr <= varPCNext(11 DOWNTO 2);
-
-            IF InterlockI = '1' AND Jump = '0' THEN
-                PCNext <= PCI;
-            ELSE
-                PCNext <= varPCNext;
-            END IF;
         END IF;
     END PROCESS;
 
