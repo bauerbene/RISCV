@@ -23,7 +23,7 @@ ENTITY MemStage IS
         DestWrEnO  : OUT STD_LOGIC;
         DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
         MemAccessO : OUT STD_LOGIC;
-        -- MemRdData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        MemRdData  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         FunctO     : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         RamReadEn  : OUT STD_LOGIC;
         RamWriteEn : OUT STD_LOGIC;
@@ -35,7 +35,7 @@ ENTITY MemStage IS
 END MemStage;
 
 ARCHITECTURE Behavioral OF MemStage IS
-    TYPE state_type IS (Idle, Stalled);
+    TYPE state_type IS (Idle, Read, Write);
     SIGNAL currentState : state_type;
 BEGIN
     PROCESS (Reset, Clock)
@@ -47,7 +47,7 @@ BEGIN
             MemAccessO <= '0';
             RamReadEn <= '0';
             RamWriteEn <= '0';
-            -- MemRdData <= x"00000000";
+            -- MemRdData <= x"00000000";--TODO
             FunctO <= "000";
             StallO <= '0';
             currentState <= Idle;
@@ -55,14 +55,38 @@ BEGIN
 
             -- Stall state machine
             CASE currentState IS
+
                 WHEN Idle =>
                     IF MemAccessI = '1' THEN
+                        RamAddress <= DestDataI(31 DOWNTO 2) & b"00";
                         StallO <= '1';
-                        currentState <= Stalled;
+
+                        IF MemByteEna /= "0000" THEN -- write access
+                            currentState <= Write;
+                            RamWriteEn <= '1';
+                            RamByteEna <= MemByteEna;
+                            RamWrData <= MemWrData;
+                        ELSE -- read access
+                            currentState <= Read;
+                            RamReadEn <= '1';
+                        END IF;
+
                     END IF;
-                WHEN Stalled =>
-                    StallO <= '0';
-                    currentState <= Idle;
+
+                WHEN Read =>
+                    RamReadEn <= '0'; -- prevent another read access
+                    IF RamBusy = '0' THEN -- read access finished
+                        StallO <= '0';
+                        currentState <= Idle;
+                        MemRdData <= RamRdData;
+                    END IF;
+
+                WHEN Write =>
+                    RamWriteEn <= '0'; -- prevent another write access
+                    IF RamBusy <= '0' THEN -- write access finished
+                        StallO <= '0';
+                        currentState <= Idle;
+                    END IF;
                 WHEN OTHERS => NULL;
             END CASE;
 
@@ -71,7 +95,6 @@ BEGIN
                 DestWrEnO <= DestWrEnI;
                 DestRegNoO <= DestRegNoI;
                 MemAccessO <= MemAccessI;
-                -- MemRdData <= MemWrData;
                 FunctO <= FunctI;
             END IF;
         END IF;
