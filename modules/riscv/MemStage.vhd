@@ -54,17 +54,17 @@ BEGIN
         ELSIF rising_edge(Clock) THEN
 
             -- Stall state machine
-            -- CASE currentState IS
-            --     WHEN Idle =>
-            --         IF MemAccessI = '1' THEN
-            --             StallO <= '1';
-            --             currentState <= Stalled;
-            --         END IF;
-            --     WHEN Stalled =>
-            --         StallO <= '0';
-            --         currentState <= Idle;
-            --     WHEN OTHERS => NULL;
-            -- END CASE;
+            CASE currentState IS
+                WHEN Idle =>
+                    IF MemAccessI = '1' THEN
+                        StallO <= '1';
+                        currentState <= Stalled;
+                    END IF;
+                WHEN Stalled =>
+                    StallO <= '0';
+                    currentState <= Idle;
+                WHEN OTHERS => NULL;
+            END CASE;
 
             IF StallI = '0' THEN
                 DestDataO <= DestDataI;
