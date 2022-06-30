@@ -2,8 +2,5 @@
 # vhdl_ls.toml file and supports glob-style patterns.
 [libraries]
 lib2.files = [
-  'modules/**/*.vhd',
-]
-lib1.files = [
-  'testbench/**/*.vhd'
+  'src/**/*.vhd'
 ]
