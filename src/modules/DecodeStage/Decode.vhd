@@ -33,10 +33,9 @@ END Decode;
 ARCHITECTURE Behavioral OF Decode IS
 
 BEGIN
-
+    -- das ist ein test kommentar
     PROCESS (Inst, Clear, PC, InterlockI)
     BEGIN
-
         CASE Inst(6 DOWNTO 0) IS
             WHEN opcode_OP =>
                 -- S-Type Instruction
