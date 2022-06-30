@@ -1,37 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 05/19/2022 03:29:50 PM
--- Design Name: 
--- Module Name: Decode - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
-
-
-USE work.constants.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 USE IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 USE work.constants.ALL;
 
 ENTITY Decode IS
@@ -70,100 +39,135 @@ BEGIN
 
         CASE Inst(6 DOWNTO 0) IS
             WHEN opcode_OP =>
-                Funct <= Inst(14 DOWNTO 12);
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                -- S-Type Instruction
                 SrcRegNo2 <= Inst(24 DOWNTO 20);
-                DestWrEn <= '1';
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                Funct <= Inst(14 DOWNTO 12);
                 DestRegNo <= Inst(11 DOWNTO 7);
                 SelSrc2 <= Inst(5);
+
+                DestWrEn <= '1';
+
                 Jump <= '0';
                 JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
+                Aux <= '-';
+                PCNext <= (OTHERS => '-');
+                Imm <= (OTHERS => '-');
             WHEN opcode_OP_IMM =>
-                Funct <= Inst(14 DOWNTO 12);
-                DestWrEn <= '1';
+                -- I-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
                 SrcRegNo1 <= Inst(19 DOWNTO 15);
-                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                Funct <= Inst(14 DOWNTO 12);
                 DestRegNo <= Inst(11 DOWNTO 7);
                 SelSrc2 <= Inst(5);
-                Jump <= '0';
-                JumpRel <= '0';
+
                 IF Inst(14 DOWNTO 12) = funct_ADD THEN
                     Aux <= '0';
                 ELSE
                     Aux <= Inst(30);
                 END IF;
+
+                DestWrEn <= '1';
+
+                Jump <= '0';
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
+                SrcRegNo2 <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
+                PCNext <= (OTHERS => '-');
             WHEN opcode_LUI =>
-                Funct <= funct_ADD;
-                DestWrEn <= '1';
-                SrcRegNo1 <= x0;
-                DestRegNo <= Inst(11 DOWNTO 7);
-                SelSrc2 <= '0';
+                -- U-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(Inst(31 DOWNTO 12) & x"000");
-                Aux <= '0';
-                Jump <= '0';
-                JumpRel <= '0';
-                MemAccess <= '0';
-                MemWrEn <= '0';
-                InterlockO <= '0';
-            WHEN opcode_AUIPC =>
+                DestRegNo <= Inst(11 DOWNTO 7);
+
                 Funct <= funct_ADD;
-                DestWrEn <= '1';
                 SrcRegNo1 <= x0;
-                DestRegNo <= Inst(11 DOWNTO 7);
+                DestWrEn <= '1';
                 SelSrc2 <= '0';
-                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 12) & x"000") + signed(PC));
                 Aux <= '0';
+
                 Jump <= '0';
                 JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
-            WHEN opcode_JAL =>
-                Jump <= '1';
-                JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
-                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
-                DestWrEn <= '1';
+                SrcRegNo2 <= (OTHERS => '-');
+                PCNext <= (OTHERS => '-');
+            WHEN opcode_AUIPC =>
+                -- U-Type Instruction
+                Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 12) & x"000") + signed(PC));
                 DestRegNo <= Inst(11 DOWNTO 7);
+
+                Funct <= funct_ADD;
+                SrcRegNo1 <= x0;
+                DestWrEn <= '1';
+                SelSrc2 <= '0';
+                Aux <= '0';
+
+                Jump <= '0';
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
+                MemAccess <= '0';
+                MemWrEn <= '0';
+                InterlockO <= '0';
+                SrcRegNo2 <= (OTHERS => '-');
+                PCNext <= (OTHERS => '-');
+            WHEN opcode_JAL =>
+                -- J-Type instruction
+                JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
+                DestRegNo <= Inst(11 DOWNTO 7);
+
+                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
+                Jump <= '1';
+                JumpRel <= '1';
+                DestWrEn <= '1';
+
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
                 SrcRegNo2 <= (OTHERS => '-');
                 Aux <= '-';
                 SelSrc2 <= '-';
                 Imm <= (OTHERS => '-');
-                JumpRel <= '1';
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
             WHEN opcode_JALR =>
-                Jump <= '1';
+                -- I-Type instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                DestRegNo <= Inst(11 DOWNTO 7);
+
+                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
+
+                Jump <= '1';
+                JumpRel <= '0';
                 SelSrc2 <= '0';
                 Funct <= funct_ADD;
                 Aux <= '0';
-                PCNext <= STD_LOGIC_VECTOR(signed(PC) + 4);
                 DestWrEn <= '1';
-                DestRegNo <= Inst(11 DOWNTO 7);
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
+
                 SrcRegNo2 <= (OTHERS => '-');
-                JumpRel <= '0';
                 JumpTarget <= (OTHERS => '-');
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
             WHEN opcode_BRANCH =>
+                -- B-Type Instruction
+                JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(7) & Inst(30 DOWNTO 25) & Inst(11 DOWNTO 8) & "0"));
+                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                Funct <= Inst(14 DOWNTO 12);
+
                 Jump <= '0';
                 JumpRel <= '1';
-                JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(7) & Inst(30 DOWNTO 25) & Inst(11 DOWNTO 8) & "0"));
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
-                SrcRegNo2 <= Inst(24 DOWNTO 20);
-                Funct <= Inst(14 DOWNTO 12);
+
                 DestWrEn <= '0';
                 DestRegNo <= (OTHERS => '-');
                 Aux <= '-';
@@ -172,52 +176,63 @@ BEGIN
                 MemAccess <= '0';
                 MemWrEn <= '0';
                 InterlockO <= '0';
+                Imm <= (OTHERS => '-');
             WHEN opcode_LOAD =>
+                -- I-Type Instruction
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                Funct <= Inst(14 DOWNTO 12);
+                DestRegNo <= Inst(11 DOWNTO 7);
+
+                SelSrc2 <= '0';
                 MemAccess <= '1';
                 MemWrEn <= '0';
-                DestRegNo <= Inst(11 DOWNTO 7);
                 DestWrEn <= '1';
+                InterlockO <= '1';
+
                 Jump <= '0';
                 JumpRel <= '0';
                 JumpTarget <= (OTHERS => '-');
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
                 SrcRegNo2 <= (OTHERS => '-');
-                Funct <= Inst(14 DOWNTO 12);
-                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
-                SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
-                InterlockO <= '1';
             WHEN opcode_STORE =>
+                -- S-Type Instruction
+                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)), 32));
+                SrcRegNo2 <= Inst(24 DOWNTO 20);
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                Funct <= Inst(14 DOWNTO 12);
+
                 MemAccess <= '1';
                 MemWrEn <= '1';
+
                 DestRegNo <= (OTHERS => '-');
+
+                DestWrEn <= '0';
                 Jump <= '0';
                 JumpRel <= '0';
                 JumpTarget <= (OTHERS => '-');
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
-                SrcRegNo2 <= Inst(24 DOWNTO 20);
-                Funct <= Inst(14 DOWNTO 12);
-                Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)), 32));
                 SelSrc2 <= '0';
                 PCNext <= (OTHERS => '-');
                 Aux <= '-';
                 InterlockO <= '0';
             WHEN OTHERS =>
+                DestWrEn <= '0';
+                MemWrEn <= '0';
+                MemAccess <= '0';
+                InterlockO <= '0';
+                Jump <= '0';
+                JumpRel <= '0';
+
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
                 SrcRegNo2 <= (OTHERS => '-');
                 DestRegNo <= (OTHERS => '-');
-                DestWrEn <= '-';
                 Aux <= '-';
                 Imm <= (OTHERS => '-');
                 SelSrc2 <= '-';
-                Jump <= '-';
                 JumpTarget <= (OTHERS => '-');
-                JumpRel <= '-';
-                MemAccess <= '-';
-                MemWrEn <= '-';
-                InterlockO <= '-';
+                PCNext <= (OTHERS => '-');
         END CASE;
 
         IF Clear = '1' OR InterlockI = '1' THEN
