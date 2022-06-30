@@ -13,4 +13,4 @@ work/
 
 *.ghw
 
-vivado/riscv_project/
+/vivado/RISCV/riscv_project/
