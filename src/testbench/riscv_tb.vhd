@@ -1,9 +1,9 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 
-ENTITY test_design_riscv IS
-END test_design_riscv;
-ARCHITECTURE TB OF test_design_riscv IS
+ENTITY riscv_tb IS
+END riscv_tb;
+ARCHITECTURE TB OF riscv_tb IS
 
     COMPONENT design_riscv IS
         PORT (
