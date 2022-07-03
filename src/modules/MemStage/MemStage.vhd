@@ -3,6 +3,7 @@
 ----------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
+USE work.constants.ALL;
 
 ENTITY MemStage IS
     PORT (
@@ -57,7 +58,7 @@ BEGIN
             CASE currentState IS
 
                 WHEN Idle =>
-                    IF MemAccessI = '1' THEN
+                    IF MemAccessI = '1' AND DestDataI >= ROM_DEPTH THEN
                         RamAddress <= DestDataI(31 DOWNTO 2) & b"00";
                         StallO <= '1';
 

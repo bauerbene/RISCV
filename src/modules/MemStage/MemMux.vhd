@@ -11,6 +11,7 @@ ENTITY MemMux IS
         MemoryDataIn : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Sel          : IN STD_LOGIC;
         FunctI       : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        ROMDataIn    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         WrData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
@@ -64,18 +65,25 @@ ARCHITECTURE Behavioral OF MemMux IS
 
 BEGIN
 
-    PROCESS (Sel, MemoryDataIn, ALUDataIn, FunctI)
+    PROCESS (Sel, MemoryDataIn, ALUDataIn, FunctI, ROMDataIn)
+        VARIABLE varDataIn : STD_LOGIC_VECTOR(31 DOWNTO 0);
     BEGIN
+        IF ALUDataIn < ROM_DEPTH THEN
+            varDataIn := ROMDataIn;
+        ELSE
+            varDataIn := MemoryDataIn;
+        END IF;
+
         IF Sel = '1' THEN
             CASE FunctI IS
                 WHEN funct_LB =>
-                    WrData <= LB(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
+                    WrData <= LB(ALUDataIn(1 DOWNTO 0), varDataIn);
                 WHEN funct_LBU =>
-                    WrData <= LBU(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
+                    WrData <= LBU(ALUDataIn(1 DOWNTO 0), varDataIn);
                 WHEN funct_LH =>
-                    WrData <= LH(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
+                    WrData <= LH(ALUDataIn(1 DOWNTO 0), varDataIn);
                 WHEN funct_LHU =>
-                    WrData <= LHU(ALUDataIn(1 DOWNTO 0), MemoryDataIn);
+                    WrData <= LHU(ALUDataIn(1 DOWNTO 0), varDataIn);
                 WHEN funct_LW =>
                     WrData <= MemoryDataIn;
                 WHEN OTHERS =>
