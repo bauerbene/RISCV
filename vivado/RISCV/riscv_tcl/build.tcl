@@ -29,7 +29,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../../src/test/vhdl/Task37.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/test05branch.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/TestLB_SB.vhd"]"\
- "[file normalize "$origin_dir/../../../../../../test_design_riscv.vhd"]"\
+ "[file noramlize "$origin_dir/../../../src/test/vhdl/memory_test.vhd"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -124,6 +124,7 @@ set files [list \
  [file normalize "${origin_dir}/../../../src/test/vhdl/Task37.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/test05branch.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/TestLB_SB.vhd"] \
+ [file normalize "${origin_dir}/../../../src/test/vhdl/memory_test.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -254,6 +255,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../../../src/test/vhdl/TestLB_SB.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/test/vhdl/memory_test.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
