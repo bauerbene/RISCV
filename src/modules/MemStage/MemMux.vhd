@@ -79,7 +79,7 @@ BEGIN
                 WHEN funct_LW =>
                     WrData <= MemoryDataIn;
                 WHEN OTHERS =>
-                    NULL; -- maybe handle this case
+                    WrData <= (OTHERS => '-');
             END CASE;
         ELSE
             WrData <= ALUDataIn;

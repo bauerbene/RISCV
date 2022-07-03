@@ -1,33 +1,7 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 05/18/2022 03:54:30 PM
--- Design Name: 
--- Module Name: RegisterSet - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 USE IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 ENTITY RegisterSet IS
     PORT (
@@ -36,6 +10,7 @@ ENTITY RegisterSet IS
         WrEn     : IN STD_LOGIC;
         WrRegNo  : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
         WrData   : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Stall    : IN STD_LOGIC := '0';
         RdData1  : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         RdData2  : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         Clock    : IN STD_LOGIC;
@@ -55,11 +30,11 @@ BEGIN
         RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
     END PROCESS;
 
-    PROCESS (Reset, Clock, WrEn, WrRegNo, WrData)
+    PROCESS (Reset, Clock, WrEn, WrRegNo, WrData, Stall)
     BEGIN
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");
-        ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (unsigned(WrRegNo) /= 0) THEN
+        ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (unsigned(WrRegNo) /= 0) AND Stall /= '1' THEN
             Registers(to_integer(unsigned(WrRegNo))) <= WrData;
         END IF;
 
