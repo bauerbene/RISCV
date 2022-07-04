@@ -24,6 +24,7 @@ ENTITY ExecutionStage IS
         ImmI        : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         SelSrc2I    : IN STD_LOGIC;
         Stall       : IN STD_LOGIC;
+        Set7SegI    : IN STD_LOGIC;
 
         FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         SrcData1O   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -39,7 +40,8 @@ ENTITY ExecutionStage IS
         MemWrEnO    : OUT STD_LOGIC;
         ClearO      : OUT STD_LOGIC;
         ImmO        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        SelSrc2O    : OUT STD_LOGIC
+        SelSrc2O    : OUT STD_LOGIC;
+        Set7SegO    : OUT STD_LOGIC
     );
 END ExecutionStage;
 
@@ -63,6 +65,7 @@ BEGIN
             ImmO <= x"00000000";
             SelSrc2O <= '0';
             ClearO <= '0';
+            Set7SegO <= '0';
         ELSIF rising_edge(Clock) THEN
             IF Stall = '0' THEN
                 FunctO <= FunctI;
@@ -80,6 +83,7 @@ BEGIN
                 ImmO <= ImmI;
                 SelSrc2O <= SelSrc2I;
                 ClearO <= ClearI;
+                Set7SegO <= Set7SegI;
             END IF;
         END IF;
     END PROCESS;

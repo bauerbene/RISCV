@@ -11,7 +11,7 @@ ENTITY MemMux IS
         MemoryDataIn : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Sel          : IN STD_LOGIC;
         FunctI       : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        ROMDataIn    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        ROMDataIn    : IN STD_LOGIC_VECTOR(31 DOWNTO 0) := x"00000000";
 
         WrData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );

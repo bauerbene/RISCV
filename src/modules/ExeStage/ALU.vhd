@@ -114,7 +114,7 @@ BEGIN
         VARIABLE Cond : BOOLEAN;
     BEGIN
         MemAccessO <= MemAccessI;
-        MemWrData <= SrcData2;
+        -- MemWrData <= SrcData2;
 
         CASE Funct IS
             WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
@@ -185,7 +185,7 @@ BEGIN
                         MemWrData <= STD_LOGIC_VECTOR(SrcData2(15 DOWNTO 0) & SrcData2(15 DOWNTO 0));
                     WHEN funct_SW =>
                         MemByteEna <= "1111";
-                        MemWrData <= SrcData2; -- not neccesary
+                        MemWrData <= SrcData2;
                     WHEN OTHERS => MemByteEna <= "0000";
                 END CASE;
             ELSE
