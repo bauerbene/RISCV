@@ -20,6 +20,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../../src/test/vhdl/test02fwd.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/JALR_test.vhd"]"\
  "[file normalize "$origin_dir/../../../src/modules/General/Inc10Bit.vhd"]"\
+ "[file normalize "$origin_dir/../../../src/modules/General/Inverse.vhd"]"\
  "[file normalize "$origin_dir/../../../src/modules/SevenSeg/SevenSeg.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/test04jalr.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/Task26.vhd"]"\
@@ -116,6 +117,7 @@ set files [list \
  [file normalize "${origin_dir}/../../../src/test/vhdl/test02fwd.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/JALR_test.vhd"] \
  [file normalize "${origin_dir}/../../../src/modules/General/Inc10Bit.vhd"] \
+ [file normalize "${origin_dir}/../../../src/modules/General/Inverse.vhd"] \
  [file normalize "${origin_dir}/../../../src/modules/SevenSeg/SevenSeg.vhd"]\
  [file normalize "${origin_dir}/../../../src/test/vhdl/test04jalr.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/Task26.vhd"] \
@@ -212,6 +214,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../../../src/modules/General/Inc10Bit.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/General/Inverse.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
