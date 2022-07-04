@@ -19,7 +19,7 @@ ARCHITECTURE Behavioral OF SevenSeg IS
     SIGNAL State : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL Seg1, Seg2 : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL currentDigit : STD_LOGIC;
-    VARIABLE counter : INTEGER := 0;
+    SIGNAL counter : INTEGER := 0;
 BEGIN
 
     PROCESS (Reset, Clock)
@@ -29,7 +29,7 @@ BEGIN
             Seg1 <= (OTHERS => '0');
             Seg2 <= (OTHERS => '0');
             currentDigit <= '0';
-            counter := 0;
+            counter <= 0;
         ELSIF rising_edge(Clock) THEN
             IF Set = '1' THEN
                 State <= V;
@@ -51,10 +51,10 @@ BEGIN
                 Seg2(6 DOWNTO 0) <= State(30 DOWNTO 24);
             END IF;
 
-            counter := counter + 1;
+            counter <= counter + 1;
 
             IF counter = 1000000 THEN
-                counter := 0;
+                counter <= 0;
                 IF currentDigit = '0' THEN
                     currentDigit <= '1';
                 ELSE
