@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# ALU, AXI_Mem_Interface, Decode, DecodeStage, ExecutionStage, Fetch, FetchStage, Forward, MUX, MemMux, MemStage, RegisterSet, SevenSeg, inverse
+# ALU, AXI_Mem_Interface, Decode, DecodeStage, ExecutionStage, Fetch, FetchStage, Forward, MUX, MemMux, MemStage, RegisterSet, SevenSeg
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -172,7 +172,6 @@ MemMux\
 MemStage\
 RegisterSet\
 SevenSeg\
-inverse\
 "
 
    set list_mods_missing ""
@@ -336,7 +335,7 @@ proc create_root_design { parentCell } {
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
-   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/test07sram.coe} \
+   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/test10esel.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
@@ -421,17 +420,6 @@ proc create_root_design { parentCell } {
    CONFIG.EN_SAFETY_CKT {false} \
  ] $blk_mem_gen_1
 
-  # Create instance: inverse_0, and set properties
-  set block_name inverse
-  set block_cell_name inverse_0
-  if { [catch {set inverse_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   } elseif { $inverse_0 eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   }
-  
   # Create instance: xlslice_0, and set properties
   set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
   set_property -dict [ list \
@@ -456,8 +444,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net ALU_MemWrData [get_bd_pins ALU/MemWrData] [get_bd_pins MemStage/MemWrData]
   connect_bd_net -net AXI_Mem_Interface_0_DataOut [get_bd_pins AXI_Mem_Interface_0/DataOut] [get_bd_pins MemStage/RamRdData]
   connect_bd_net -net AXI_Mem_Interface_0_busy [get_bd_pins AXI_Mem_Interface_0/busy] [get_bd_pins MemStage/RamBusy]
-  connect_bd_net -net BTNL_1 [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins inverse_0/inv]
-  connect_bd_net -net BTNL_2 [get_bd_ports BTNL] [get_bd_pins inverse_0/val]
+  connect_bd_net -net BTNL_1 [get_bd_ports BTNL] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]
   connect_bd_net -net DecodeStage_0_ClearO [get_bd_pins Decode/Clear] [get_bd_pins DecodeStage/ClearO]
   connect_bd_net -net DecodeStage_0_InstO [get_bd_pins Decode/Inst] [get_bd_pins DecodeStage/InstO]
   connect_bd_net -net DecodeStage_0_PCO [get_bd_pins Decode/PC] [get_bd_pins DecodeStage/PCO]
