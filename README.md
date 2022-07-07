@@ -17,3 +17,6 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 ```
+
+# Running on a different computer
+1. in the config of the IMemory moduel in riscv_bd.tcl change the path of the .coe file to the absolute path on the curren computer
