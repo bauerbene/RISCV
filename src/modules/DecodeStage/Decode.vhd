@@ -27,7 +27,9 @@ ENTITY Decode IS
         InterlockO : OUT STD_LOGIC;
         Imm        : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
         SelSrc2    : OUT STD_LOGIC;
-        Set7Seg    : OUT STD_LOGIC
+        Set7Seg    : OUT STD_LOGIC;
+        AESEncrypt : OUT STD_LOGIC;
+        AESDecrypt : OUT STD_LOGIC
     );
 END Decode;
 
@@ -47,6 +49,8 @@ BEGIN
                 SelSrc2 <= Inst(5);
 
                 DestWrEn <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Jump <= '0';
                 JumpRel <= '0';
@@ -73,6 +77,8 @@ BEGIN
                 END IF;
 
                 DestWrEn <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Jump <= '0';
                 JumpRel <= '0';
@@ -93,6 +99,8 @@ BEGIN
                 DestWrEn <= '1';
                 SelSrc2 <= '0';
                 Aux <= '0';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Jump <= '0';
                 JumpRel <= '0';
@@ -113,6 +121,8 @@ BEGIN
                 DestWrEn <= '1';
                 SelSrc2 <= '0';
                 Aux <= '0';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Jump <= '0';
                 JumpRel <= '0';
@@ -132,6 +142,8 @@ BEGIN
                 Jump <= '1';
                 JumpRel <= '1';
                 DestWrEn <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');
@@ -157,6 +169,8 @@ BEGIN
                 Funct <= funct_ADD;
                 Aux <= '0';
                 DestWrEn <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 SrcRegNo2 <= (OTHERS => '-');
                 JumpTarget <= (OTHERS => '-');
@@ -173,6 +187,8 @@ BEGIN
 
                 Jump <= '0';
                 JumpRel <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 DestWrEn <= '0';
                 DestRegNo <= (OTHERS => '-');
@@ -196,6 +212,8 @@ BEGIN
                 MemWrEn <= '0';
                 DestWrEn <= '1';
                 InterlockO <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Jump <= '0';
                 JumpRel <= '0';
@@ -213,6 +231,8 @@ BEGIN
 
                 MemAccess <= '1';
                 MemWrEn <= '1';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 DestRegNo <= (OTHERS => '-');
 
@@ -241,6 +261,8 @@ BEGIN
                 InterlockO <= '0';
                 Jump <= '0';
                 JumpRel <= '0';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Funct <= (OTHERS => '-');
                 SrcRegNo2 <= (OTHERS => '-');
@@ -251,6 +273,27 @@ BEGIN
                 JumpTarget <= (OTHERS => '-');
                 PCNext <= (OTHERS => '-');
 
+            WHEN opcode_AES =>
+                -- I-Type-Instruction
+                SrcRegNo1 <= Inst(19 DOWNTO 15);
+                DestRegNo <= Inst(11 DOWNTO 7);
+                DestWrEn <= '1';
+
+                AESEncrypt <= '1';
+                AESDecrypt <= '0';
+
+                SelSrc2 <= '0';
+                MemAccess <= '0';
+                MemWrEn <= '0';
+                InterlockO <= '0';
+                Jump <= '0';
+                JumpRel <= '0';
+                JumpTarget <= (OTHERS => '-');
+                SrcRegNo2 <= (OTHERS => '-');
+                PCNext <= (OTHERS => '-');
+                Aux <= '-';
+                Set7Seg <= '0';
+
             WHEN OTHERS =>
                 DestWrEn <= '0';
                 MemWrEn <= '0';
@@ -259,6 +302,8 @@ BEGIN
                 Jump <= '0';
                 JumpRel <= '0';
                 Set7Seg <= '0';
+                AESEncrypt <= '0';
+                AESDecrypt <= '0';
 
                 Funct <= (OTHERS => '-');
                 SrcRegNo1 <= (OTHERS => '-');

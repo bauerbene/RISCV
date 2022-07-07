@@ -19,6 +19,8 @@ ENTITY ALU IS
         DestWrEnI   : IN STD_LOGIC;
         Clear       : IN STD_LOGIC;
         MemWrEn     : IN STD_LOGIC;
+        AESEncrypt  : IN STD_LOGIC;
+        AESDecrypt  : IN STD_LOGIC;
 
         X           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         JumpO       : OUT STD_LOGIC;
@@ -109,90 +111,92 @@ ARCHITECTURE Behavioral OF ALU IS
 
 BEGIN
 
-    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel, Clear, MemAccessI, SrcData2, MemWrEn)
+    PROCESS (Funct, A, B, Aux, JumpI, PCNext, JumpTargetI, DestRegNoI, DestWrEnI, JumpRel, Clear, MemAccessI, SrcData2, MemWrEn, AESEncrypt, AESDecrypt)
         VARIABLE Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
         VARIABLE Cond : BOOLEAN;
     BEGIN
-        MemAccessO <= MemAccessI;
-        -- MemWrData <= SrcData2;
+        IF AESEncrypt = '0' AND AESDecrypt = '0' THEN
+            MemAccessO <= MemAccessI;
+            -- MemWrData <= SrcData2;
 
-        CASE Funct IS
-            WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
-            WHEN funct_SLL => Result := SLL_FUNC(A, B);
-            WHEN funct_SLT => Result := SLT_FUNC(A, B);
-            WHEN funct_SLTU => Result := SLTU_FUNC(A, B);
-            WHEN funct_XOR => Result := A XOR B;
-            WHEN funct_SRL => Result := SRL_SRA_FUNC(A, B, Aux);
-            WHEN funct_OR => Result := A OR B;
-            WHEN funct_AND => Result := A AND B;
-            WHEN OTHERS => NULL;
-        END CASE;
+            CASE Funct IS
+                WHEN funct_ADD => Result := ADD_SUB_FUNC(A, B, Aux);
+                WHEN funct_SLL => Result := SLL_FUNC(A, B);
+                WHEN funct_SLT => Result := SLT_FUNC(A, B);
+                WHEN funct_SLTU => Result := SLTU_FUNC(A, B);
+                WHEN funct_XOR => Result := A XOR B;
+                WHEN funct_SRL => Result := SRL_SRA_FUNC(A, B, Aux);
+                WHEN funct_OR => Result := A OR B;
+                WHEN funct_AND => Result := A AND B;
+                WHEN OTHERS => NULL;
+            END CASE;
 
-        CASE Funct IS
-            WHEN funct_BEQ => Cond := A = B;
-            WHEN funct_BNE => Cond := A /= B;
-            WHEN funct_BGE => Cond := signed(A) >= signed(B);
-            WHEN funct_BGEU => Cond := unsigned(A) >= unsigned(B);
-            WHEN funct_BLT => Cond := signed(A) < signed(B);
-            WHEN funct_BLTU => Cond := unsigned(A) < unsigned(B);
-            WHEN OTHERS => Cond := false;
-        END CASE;
+            CASE Funct IS
+                WHEN funct_BEQ => Cond := A = B;
+                WHEN funct_BNE => Cond := A /= B;
+                WHEN funct_BGE => Cond := signed(A) >= signed(B);
+                WHEN funct_BGEU => Cond := unsigned(A) >= unsigned(B);
+                WHEN funct_BLT => Cond := signed(A) < signed(B);
+                WHEN funct_BLTU => Cond := unsigned(A) < unsigned(B);
+                WHEN OTHERS => Cond := false;
+            END CASE;
 
-        JumpO <= JumpI;
+            JumpO <= JumpI;
 
-        -- no branch or conditional branch
-        IF JumpI = '0' THEN
-            IF JumpRel = '1' THEN -- conditional branch
-                JumpO <= BOOLEAN_TO_STDL(Cond);
-                JumpTargetO <= JumpTargetI; -- for conditional branches the jumptarget is calculated in decode
+            -- no branch or conditional branch
+            IF JumpI = '0' THEN
+                IF JumpRel = '1' THEN -- conditional branch
+                    JumpO <= BOOLEAN_TO_STDL(Cond);
+                    JumpTargetO <= JumpTargetI; -- for conditional branches the jumptarget is calculated in decode
+                END IF;
+
+                -- no branch
+                x <= Result;
+            ELSE
+                -- unconditional branch
+                x <= PCNext;
             END IF;
 
-            -- no branch
-            x <= Result;
-        ELSE
-            -- unconditional branch
-            x <= PCNext;
-        END IF;
+            IF JumpRel = '0' THEN
+                JumpTargetO <= Result;
+            ELSE
+                JumpTargetO <= JumpTargetI;
+            END IF;
 
-        IF JumpRel = '0' THEN
-            JumpTargetO <= Result;
-        ELSE
-            JumpTargetO <= JumpTargetI;
-        END IF;
+            DestRegNoO <= DestRegNoI;
+            DestWrEnO <= DestWrEnI;
 
-        DestRegNoO <= DestRegNoI;
-        DestWrEnO <= DestWrEnI;
+            IF Clear = '1' THEN
+                DestWrEnO <= '0';
+                JumpO <= '0';
+                MemAccessO <= '0';
+                MemByteEna <= "0000";
+            END IF;
 
-        IF Clear = '1' THEN
-            DestWrEnO <= '0';
-            JumpO <= '0';
-            MemAccessO <= '0';
-            MemByteEna <= "0000";
-        END IF;
+            FunctO <= Funct;
 
-        FunctO <= Funct;
-
-        IF MemAccessI = '1' AND Clear = '0' THEN
-            Result := ADD_SUB_FUNC(A, B, '0');
-            X <= Result;
-            IF MemWrEn = '1' THEN
-                CASE Funct IS
-                    WHEN funct_SB =>
-                        MemByteEna <= MemByteEna_SB(Result(1 DOWNTO 0));
-                        MemWrData <= STD_LOGIC_VECTOR(SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0));
-                    WHEN funct_SH =>
-                        MemByteEna <= MemByteEna_SH(Result(1 DOWNTO 0));
-                        MemWrData <= STD_LOGIC_VECTOR(SrcData2(15 DOWNTO 0) & SrcData2(15 DOWNTO 0));
-                    WHEN funct_SW =>
-                        MemByteEna <= "1111";
-                        MemWrData <= SrcData2;
-                    WHEN OTHERS => MemByteEna <= "0000";
-                END CASE;
+            IF MemAccessI = '1' AND Clear = '0' THEN
+                Result := ADD_SUB_FUNC(A, B, '0');
+                X <= Result;
+                IF MemWrEn = '1' THEN
+                    CASE Funct IS
+                        WHEN funct_SB =>
+                            MemByteEna <= MemByteEna_SB(Result(1 DOWNTO 0));
+                            MemWrData <= STD_LOGIC_VECTOR(SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0) & SrcData2(7 DOWNTO 0));
+                        WHEN funct_SH =>
+                            MemByteEna <= MemByteEna_SH(Result(1 DOWNTO 0));
+                            MemWrData <= STD_LOGIC_VECTOR(SrcData2(15 DOWNTO 0) & SrcData2(15 DOWNTO 0));
+                        WHEN funct_SW =>
+                            MemByteEna <= "1111";
+                            MemWrData <= SrcData2;
+                        WHEN OTHERS => MemByteEna <= "0000";
+                    END CASE;
+                ELSE
+                    MemByteEna <= "0000";
+                END IF;
             ELSE
                 MemByteEna <= "0000";
             END IF;
-        ELSE
-            MemByteEna <= "0000";
         END IF;
     END PROCESS;
 
