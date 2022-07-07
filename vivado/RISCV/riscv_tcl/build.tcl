@@ -32,6 +32,10 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../../src/test/vhdl/test05branch.vhd"]"\
  "[file normalize "$origin_dir/../../../src/test/vhdl/TestLB_SB.vhd"]"\
  "[file noramlize "$origin_dir/../../../src/test/vhdl/memory_test.vhd"]"\
+ "[file normalize "$origin_dir/../../../src/modules/AES/AddRoundKey.vhd"]"\
+ "[file normalize "$origin_dir/../../../src/modules/AES/AESKey.vhd"]"\
+ "[file normalize "$origin_dir/../../../src/modules/AES/SubBytes.vhd"]"\
+ "[file normalize "$origin_dir/../../../src/modules/AES/ZeroPadding.vhd]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -119,6 +123,11 @@ set files [list \
  [file normalize "${origin_dir}/../../../src/modules/General/Inc10Bit.vhd"] \
  [file normalize "${origin_dir}/../../../src/modules/General/Inverse.vhd"] \
  [file normalize "${origin_dir}/../../../src/modules/SevenSeg/SevenSeg.vhd"]\
+ [file normalize "${origin_dir}/../../../src/modules/AES/AddRoundKey.vhd"] \
+ [file normalize "${origin_dir}/../../../src/modules/AES/AESKey.vhd"] \
+ [file normalize "${origin_dir}/../../../src/modules/AES/AESStage.vhd"] \
+ [file normalize "${origin_dir}/../../../src/modules/AES/SubBytes.vhd"] \
+ [file normalize "${origin_dir}/../../../src/modules/AES/ZeroPadding.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/test04jalr.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/Task26.vhd"] \
  [file normalize "${origin_dir}/../../../src/test/vhdl/SRA_SRL_Test.vhd"] \
@@ -224,6 +233,31 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "$origin_dir/../../../src/modules/SevenSeg/SevenSeg.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/AES/AddRoundKey.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/AES/AESKey.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/AES/AESStage.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/AES/SubBytes.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/../../../src/modules/AES/ZeroPadding.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
