@@ -1,17 +1,9 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
 
-ENTITY SubBytes IS
-    PORT (
-        CurrentCypher   : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
-        TempSubstituion : OUT STD_LOGIC_VECTOR(127 DOWNTO 0)
-    );
-END SubBytes;
-
-ARCHITECTURE Behavioral OF SubBytes IS
+PACKAGE AesSubstitutionBoxes IS
     TYPE TSBox IS ARRAY(0 TO 255) OF STD_LOGIC_VECTOR(7 DOWNTO 0);
-    SIGNAL SBox : TSBox := (
+    CONSTANT SBox : TSBox := (
         x"63",
         x"7c",
         x"77",
@@ -269,17 +261,4 @@ ARCHITECTURE Behavioral OF SubBytes IS
         x"bb",
         x"16"
     );
-    CONSTANT FOR_START : NATURAL := 7;
-    CONSTANT FOR_STEP : NATURAL := 8;
-BEGIN
-
-    PROCESS (CurrentCypher)
-        VARIABLE idx_v : NATURAL;
-    BEGIN
-        FOR idx_pre IN 0 TO 15 LOOP
-            idx_v := FOR_START + FOR_STEP * idx_pre;
-            TempSubstituion(idx_v DOWNTO idx_v - 7) <= SBox(to_integer(unsigned(CurrentCypher(idx_v DOWNTO idx_v - 7))));
-        END LOOP;
-    END PROCESS;
-
-END Behavioral;
+END PACKAGE AesSubstitutionBoxes;

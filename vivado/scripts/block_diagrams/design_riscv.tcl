@@ -20,15 +20,15 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-#set scripts_vivado_version 2022.1
-#set current_vivado_version [version -short]
+set scripts_vivado_version 2022.1
+set current_vivado_version [version -short]
 
-#if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-#   puts ""
-#   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+   puts ""
+   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
 
-#   return 1
-#}
+   return 1
+}
 
 ################################################################
 # START
@@ -43,6 +43,13 @@ set script_folder [_tcl::get_script_folder]
 # ALU, AXI_Mem_Interface, Decode, DecodeStage, ExecutionStage, Fetch, FetchStage, Forward, MUX, MemMux, MemStage, RegisterSet, SevenSeg
 
 # Please add the sources of those modules before sourcing this Tcl script.
+
+
+# The design that will be created by this Tcl script contains the following 
+# block design container source references:
+# design_aes
+
+# Please add the sources before sourcing this Tcl script.
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -190,6 +197,44 @@ SevenSeg\
    }
 }
 
+##################################################################
+# CHECK Block Design Container Sources
+##################################################################
+set bCheckSources 1
+set list_bdc_active "design_aes"
+
+array set map_bdc_missing {}
+set map_bdc_missing(ACTIVE) ""
+set map_bdc_missing(BDC) ""
+
+if { $bCheckSources == 1 } {
+   set list_check_srcs "\ 
+design_aes \
+"
+
+   common::send_gid_msg -ssname BD::TCL -id 2056 -severity "INFO" "Checking if the following sources for block design container exist in the project: $list_check_srcs .\n\n"
+
+   foreach src $list_check_srcs {
+      if { [can_resolve_reference $src] == 0 } {
+         if { [lsearch $list_bdc_active $src] != -1 } {
+            set map_bdc_missing(ACTIVE) "$map_bdc_missing(ACTIVE) $src"
+         } else {
+            set map_bdc_missing(BDC) "$map_bdc_missing(BDC) $src"
+         }
+      }
+   }
+
+   if { [llength $map_bdc_missing(ACTIVE)] > 0 } {
+      catch {common::send_gid_msg -ssname BD::TCL -id 2057 -severity "ERROR" "The following source(s) of Active variants are not found in the project: $map_bdc_missing(ACTIVE)" }
+      common::send_gid_msg -ssname BD::TCL -id 2060 -severity "INFO" "Please add source files for the missing source(s) above."
+      set bCheckIPsPassed 0
+   }
+   if { [llength $map_bdc_missing(BDC)] > 0 } {
+      catch {common::send_gid_msg -ssname BD::TCL -id 2059 -severity "WARNING" "The following source(s) of variants are not found in the project: $map_bdc_missing(BDC)" }
+      common::send_gid_msg -ssname BD::TCL -id 2060 -severity "INFO" "Please add source files for the missing source(s) above."
+   }
+}
+
 if { $bCheckIPsPassed != 1 } {
   common::send_gid_msg -ssname BD::TCL -id 2023 -severity "WARNING" "Will not continue with creation of design due to the error(s) above."
   return 3
@@ -331,17 +376,15 @@ proc create_root_design { parentCell } {
      return 1
    }
   
-  set origin_dir [file dirname [info script]]
-
   # Create instance: IMemory, and set properties
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
+   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/test10esel.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
    CONFIG.Load_Init_File {true} \
-   CONFIG.Coe_File /cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/test10esel.coe \
    CONFIG.Memory_Type {Dual_Port_ROM} \
    CONFIG.Port_A_Write_Rate {0} \
    CONFIG.Port_B_Clock {100} \
@@ -421,6 +464,17 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.EN_SAFETY_CKT {false} \
  ] $blk_mem_gen_1
+
+  # Create instance: design_aes_0, and set properties
+  set design_aes_0 [ create_bd_cell -type container -reference design_aes design_aes_0 ]
+  set_property -dict [ list \
+   CONFIG.ACTIVE_SIM_BD {design_aes.bd} \
+   CONFIG.ACTIVE_SYNTH_BD {design_aes.bd} \
+   CONFIG.ENABLE_DFX {0} \
+   CONFIG.LIST_SIM_BD {design_aes.bd} \
+   CONFIG.LIST_SYNTH_BD {design_aes.bd} \
+   CONFIG.LOCK_PROPAGATE {0} \
+ ] $design_aes_0
 
   # Create instance: xlslice_0, and set properties
   set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
@@ -506,7 +560,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net MemStage_RamWrData [get_bd_pins AXI_Mem_Interface_0/DataIn] [get_bd_pins MemStage/RamWrData]
   connect_bd_net -net MemStage_RamWriteEn [get_bd_pins AXI_Mem_Interface_0/WriteEn] [get_bd_pins MemStage/RamWriteEn]
   connect_bd_net -net MemStage_StallO [get_bd_pins DecodeStage/Stall] [get_bd_pins ExecutionStage/Stall] [get_bd_pins Fetch/Stall] [get_bd_pins MemStage/StallI] [get_bd_pins MemStage/StallO] [get_bd_pins RegisterSet/Stall]
-  connect_bd_net -net RegisterSet_0_RdData1 [get_bd_pins Forward/SrcData1] [get_bd_pins RegisterSet/RdData1]
+  connect_bd_net -net RegisterSet_0_RdData1 [get_bd_pins Forward/SrcData1] [get_bd_pins RegisterSet/RdData1] [get_bd_pins design_aes_0/ClearText]
   connect_bd_net -net RegisterSet_0_RdData2 [get_bd_pins Forward/SrcData2] [get_bd_pins RegisterSet/RdData2]
   connect_bd_net -net SevenSeg_0_Pmod0 [get_bd_ports JA] [get_bd_pins SevenSeg_0/Pmod0]
   connect_bd_net -net SevenSeg_0_Pmod1 [get_bd_ports JB] [get_bd_pins SevenSeg_0/Pmod1]

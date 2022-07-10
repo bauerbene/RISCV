@@ -14,5 +14,6 @@ work/
 *.ghw
 
 /vivado/RISCV/riscv_project/
+/vivado/riscv_project/
 
 *.elf
