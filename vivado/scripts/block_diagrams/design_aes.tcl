@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# AESKey, AesAddRoundKey, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, ZeroPadding
+# AESKey, AesAddRoundKey, AesDecryptionFirstRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesAddRoundKey, ZeroPadding
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -133,6 +133,16 @@ if { $bCheckModules == 1 } {
    set list_check_mods "\ 
 AESKey\
 AesAddRoundKey\
+AesDecryptionFirstRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
+AesDecryptionRound\
 AesEncryptionLastRound\
 AesEncryptionRound\
 AesEncryptionRound\
@@ -143,6 +153,7 @@ AesEncryptionRound\
 AesEncryptionRound\
 AesEncryptionRound\
 AesEncryptionRound\
+AesAddRoundKey\
 ZeroPadding\
 "
 
@@ -228,6 +239,116 @@ proc create_root_design { parentCell } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    } elseif { $AesAddRoundKey_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionFirstRo_0, and set properties
+  set block_name AesDecryptionFirstRound
+  set block_cell_name AesDecryptionFirstRo_0
+  if { [catch {set AesDecryptionFirstRo_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionFirstRo_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_0, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_0
+  if { [catch {set AesDecryptionRound_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_1, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_1
+  if { [catch {set AesDecryptionRound_1 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_1 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_2, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_2
+  if { [catch {set AesDecryptionRound_2 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_2 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_3, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_3
+  if { [catch {set AesDecryptionRound_3 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_3 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_4, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_4
+  if { [catch {set AesDecryptionRound_4 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_4 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_5, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_5
+  if { [catch {set AesDecryptionRound_5 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_5 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_6, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_6
+  if { [catch {set AesDecryptionRound_6 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_6 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_7, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_7
+  if { [catch {set AesDecryptionRound_7 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_7 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesDecryptionRound_8, and set properties
+  set block_name AesDecryptionRound
+  set block_cell_name AesDecryptionRound_8
+  if { [catch {set AesDecryptionRound_8 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesDecryptionRound_8 eq "" } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    }
@@ -342,6 +463,17 @@ proc create_root_design { parentCell } {
      return 1
    }
   
+  # Create instance: LastDecryption, and set properties
+  set block_name AesAddRoundKey
+  set block_cell_name LastDecryption
+  if { [catch {set LastDecryption [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $LastDecryption eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: ZeroPadding_0, and set properties
   set block_name ZeroPadding
   set block_cell_name ZeroPadding_0
@@ -354,18 +486,29 @@ proc create_root_design { parentCell } {
    }
   
   # Create port connections
-  connect_bd_net -net AESKey_0_KeyO [get_bd_pins AESKey_0/KeyO] [get_bd_pins AesAddRoundKey_0/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR1 [get_bd_pins AESKey_0/KeyR1] [get_bd_pins AesEncryptionRound1/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR2 [get_bd_pins AESKey_0/KeyR2] [get_bd_pins AesEncryptionRound2/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR3 [get_bd_pins AESKey_0/KeyR3] [get_bd_pins AesEncryptionRound3/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR4 [get_bd_pins AESKey_0/KeyR4] [get_bd_pins AesEncryptionRound4/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR5 [get_bd_pins AESKey_0/KeyR5] [get_bd_pins AesEncryptionRound5/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR6 [get_bd_pins AESKey_0/KeyR6] [get_bd_pins AesEncryptionRound6/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR7 [get_bd_pins AESKey_0/KeyR7] [get_bd_pins AesEncryptionRound7/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR8 [get_bd_pins AESKey_0/KeyR8] [get_bd_pins AesEncryptionRound8/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR9 [get_bd_pins AESKey_0/KeyR9] [get_bd_pins AesEncryptionRound9/RoundKey]
-  connect_bd_net -net AESKey_0_KeyR10 [get_bd_pins AESKey_0/KeyR10] [get_bd_pins AesEncryptionLastRou_0/RoundKey]
+  connect_bd_net -net AESKey_0_KeyO [get_bd_pins AESKey_0/KeyO] [get_bd_pins AesAddRoundKey_0/RoundKey] [get_bd_pins LastDecryption/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR1 [get_bd_pins AESKey_0/KeyR1] [get_bd_pins AesDecryptionRound_8/RoundKey] [get_bd_pins AesEncryptionRound1/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR2 [get_bd_pins AESKey_0/KeyR2] [get_bd_pins AesDecryptionRound_7/RoundKey] [get_bd_pins AesEncryptionRound2/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR3 [get_bd_pins AESKey_0/KeyR3] [get_bd_pins AesDecryptionRound_6/RoundKey] [get_bd_pins AesEncryptionRound3/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR4 [get_bd_pins AESKey_0/KeyR4] [get_bd_pins AesDecryptionRound_5/RoundKey] [get_bd_pins AesEncryptionRound4/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR5 [get_bd_pins AESKey_0/KeyR5] [get_bd_pins AesDecryptionRound_4/RoundKey] [get_bd_pins AesEncryptionRound5/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR6 [get_bd_pins AESKey_0/KeyR6] [get_bd_pins AesDecryptionRound_3/RoundKey] [get_bd_pins AesEncryptionRound6/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR7 [get_bd_pins AESKey_0/KeyR7] [get_bd_pins AesDecryptionRound_2/RoundKey] [get_bd_pins AesEncryptionRound7/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR8 [get_bd_pins AESKey_0/KeyR8] [get_bd_pins AesDecryptionRound_1/RoundKey] [get_bd_pins AesEncryptionRound8/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR9 [get_bd_pins AESKey_0/KeyR9] [get_bd_pins AesDecryptionRound_0/RoundKey] [get_bd_pins AesEncryptionRound9/RoundKey]
+  connect_bd_net -net AESKey_0_KeyR10 [get_bd_pins AESKey_0/KeyR10] [get_bd_pins AesDecryptionFirstRo_0/RoundKey] [get_bd_pins AesEncryptionLastRou_0/RoundKey]
   connect_bd_net -net AesAddRoundKey_0_CypherO [get_bd_pins AesAddRoundKey_0/CypherO] [get_bd_pins AesEncryptionRound1/CypherI]
+  connect_bd_net -net AesDecryptionFirstRo_0_CypherO [get_bd_pins AesDecryptionFirstRo_0/CypherO] [get_bd_pins AesDecryptionRound_0/CypherI]
+  connect_bd_net -net AesDecryptionRound_0_CypherO [get_bd_pins AesDecryptionRound_0/CypherO] [get_bd_pins AesDecryptionRound_1/CypherI]
+  connect_bd_net -net AesDecryptionRound_1_CypherO [get_bd_pins AesDecryptionRound_1/CypherO] [get_bd_pins AesDecryptionRound_2/CypherI]
+  connect_bd_net -net AesDecryptionRound_2_CypherO [get_bd_pins AesDecryptionRound_2/CypherO] [get_bd_pins AesDecryptionRound_3/CypherI]
+  connect_bd_net -net AesDecryptionRound_3_CypherO [get_bd_pins AesDecryptionRound_3/CypherO] [get_bd_pins AesDecryptionRound_4/CypherI]
+  connect_bd_net -net AesDecryptionRound_4_CypherO [get_bd_pins AesDecryptionRound_4/CypherO] [get_bd_pins AesDecryptionRound_5/CypherI]
+  connect_bd_net -net AesDecryptionRound_5_CypherO [get_bd_pins AesDecryptionRound_5/CypherO] [get_bd_pins AesDecryptionRound_6/CypherI]
+  connect_bd_net -net AesDecryptionRound_6_CypherO [get_bd_pins AesDecryptionRound_6/CypherO] [get_bd_pins AesDecryptionRound_7/CypherI]
+  connect_bd_net -net AesDecryptionRound_7_CypherO [get_bd_pins AesDecryptionRound_7/CypherO] [get_bd_pins AesDecryptionRound_8/CypherI]
+  connect_bd_net -net AesDecryptionRound_8_CypherO [get_bd_pins AesDecryptionRound_8/CypherO] [get_bd_pins LastDecryption/CypherI]
+  connect_bd_net -net AesEncryptionLastRou_0_CypherO [get_bd_pins AesDecryptionFirstRo_0/CypherI] [get_bd_pins AesEncryptionLastRou_0/CypherO]
   connect_bd_net -net AesEncryptionRound9_CypherO [get_bd_pins AesEncryptionLastRou_0/CypherI] [get_bd_pins AesEncryptionRound9/CypherO]
   connect_bd_net -net AesEncryptionRound_1_CypherO [get_bd_pins AesEncryptionRound1/CypherO] [get_bd_pins AesEncryptionRound2/CypherI]
   connect_bd_net -net AesEncryptionRound_2_CypherO [get_bd_pins AesEncryptionRound2/CypherO] [get_bd_pins AesEncryptionRound3/CypherI]
