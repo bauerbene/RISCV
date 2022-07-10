@@ -1,6 +1,7 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE work.AesEncryptionOperations.ALL;
+USE work.AesGeneralOperations.ALL;
 
 ENTITY AesEncryptionLastRound IS
     PORT (

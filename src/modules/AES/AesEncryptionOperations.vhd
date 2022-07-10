@@ -2,13 +2,12 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 USE work.AesSubstitutionBoxes.ALL;
+USE work.AesGeneralOperations.ALL;
 
 PACKAGE AesEncryptionOperations IS
     FUNCTION SubBytes(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR;
     FUNCTION ShiftRows(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR;
     FUNCTION MixColumns(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR;
-    FUNCTION AddRoundKey(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0); RoundKey : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR;
-
 END PACKAGE AesEncryptionOperations;
 
 PACKAGE BODY AesEncryptionOperations IS
@@ -16,11 +15,11 @@ PACKAGE BODY AesEncryptionOperations IS
     FUNCTION SubBytes(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR IS
         VARIABLE idx_v : NATURAL;
         VARIABLE Result : STD_LOGIC_VECTOR(127 DOWNTO 0);
-        CONSTANT FOR_START_SUB_BYTES : NATURAL := 7;
-        CONSTANT FOR_STEP_SUB_BYTES : NATURAL := 8;
+        CONSTANT FOR_START : NATURAL := 7;
+        CONSTANT FOR_STEP : NATURAL := 8;
     BEGIN
         FOR idx_pre IN 0 TO 15 LOOP
-            idx_v := FOR_START_SUB_BYTES + FOR_STEP_SUB_BYTES * idx_pre;
+            idx_v := FOR_START + FOR_STEP * idx_pre;
             Result(idx_v DOWNTO idx_v - 7) := SBox(to_integer(unsigned(CypherI(idx_v DOWNTO idx_v - 7))));
         END LOOP;
         RETURN Result;
@@ -60,16 +59,6 @@ PACKAGE BODY AesEncryptionOperations IS
         RETURN Result;
     END FUNCTION;
 
-    FUNCTION MULGAL (InByte : STD_LOGIC_VECTOR(7 DOWNTO 0)) RETURN STD_LOGIC_VECTOR IS
-        VARIABLE Result : STD_LOGIC_VECTOR(7 DOWNTO 0);
-    BEGIN
-        Result := STD_LOGIC_VECTOR(shift_left(unsigned(InByte), 1));
-        IF ((InByte AND x"80") = x"80") THEN
-            Result := Result XOR x"1B";
-        END IF;
-        RETURN Result;
-    END FUNCTION;
-
     FUNCTION MixColumns(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR IS
         VARIABLE idx_v : NATURAL;
         VARIABLE Byte1 : STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -78,10 +67,10 @@ PACKAGE BODY AesEncryptionOperations IS
         VARIABLE Byte4 : STD_LOGIC_VECTOR(7 DOWNTO 0);
         VARIABLE Temp : STD_LOGIC_VECTOR(7 DOWNTO 0);
         VARIABLE Result : STD_LOGIC_VECTOR(127 DOWNTO 0);
-        CONSTANT FOR_STEP_MIX_COLUMNS : NATURAL := 32;
+        CONSTANT FOR_STEP : NATURAL := 32;
     BEGIN
         FOR idx_pre IN 4 DOWNTO 1 LOOP
-            idx_v := FOR_STEP_MIX_COLUMNS * idx_pre - 1;
+            idx_v := FOR_STEP * idx_pre - 1;
             Byte1 := CypherI(idx_v DOWNTO idx_v - 7);
             Byte2 := CypherI(idx_v - 8 DOWNTO idx_v - 15);
             Byte3 := CypherI(idx_v - 16 DOWNTO idx_v - 23);
@@ -94,11 +83,6 @@ PACKAGE BODY AesEncryptionOperations IS
             Result(idx_v - 24 DOWNTO idx_v - 31) := MULGAL(Byte4 XOR Byte1) XOR Byte4 XOR Temp;
         END LOOP;
         RETURN Result;
-    END FUNCTION;
-
-    FUNCTION AddRoundKey(CypherI : STD_LOGIC_VECTOR(127 DOWNTO 0); RoundKey : STD_LOGIC_VECTOR(127 DOWNTO 0)) RETURN STD_LOGIC_VECTOR IS
-    BEGIN
-        RETURN CypherI XOR RoundKey;
     END FUNCTION;
 
 END PACKAGE BODY AesEncryptionOperations;

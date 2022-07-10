@@ -1,25 +1,25 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
-USE work.AesEncryptionOperations.ALL;
 USE work.AesGeneralOperations.ALL;
+USE work.AesDecryptionOperations.ALL;
 
-ENTITY AesEncryptionRound IS
+ENTITY AesDecryptionFirstRound IS
     PORT (
         CypherI  : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
         RoundKey : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
 
         CypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0)
     );
-END AesEncryptionRound;
+END AesDecryptionFirstRound;
 
-ARCHITECTURE Behavioral OF AESEncryptionRound IS
+ARCHITECTURE Behavioral OF AesDecryptionFirstRound IS
+
 BEGIN
     PROCESS (CypherI, RoundKey)
         VARIABLE CurrentCypher : STD_LOGIC_VECTOR(127 DOWNTO 0);
     BEGIN
-        CurrentCypher := SubBytes(CypherI);
-        CurrentCypher := ShiftRows(CurrentCypher);
-        CurrentCypher := MixColumns(CurrentCypher);
-        CypherO <= AddRoundKey(CurrentCypher, RoundKey);
+        CurrentCypher := AddRoundKey(CypherI, RoundKey);
+        CurrentCypher := InvShiftRows(CurrentCypher);
+        CypherO <= InvSubBytes(CurrentCypher);
     END PROCESS;
 END Behavioral;

@@ -1,6 +1,6 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
-USE work.AesEncryptionOperations.ALL;
+USE work.AesGeneralOperations.ALL;
 
 ENTITY AesAddRoundKey IS
     PORT (
