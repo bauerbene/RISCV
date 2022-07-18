@@ -517,6 +517,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Decode_0_SelSrc2 [get_bd_pins Decode/SelSrc2] [get_bd_pins ExecutionStage/SelSrc2I]
   connect_bd_net -net Decode_0_SrcRegNo1 [get_bd_pins Decode/SrcRegNo1] [get_bd_pins Forward/SrcRegNo1] [get_bd_pins RegisterSet/RdRegNo1]
   connect_bd_net -net Decode_0_SrcRegNo2 [get_bd_pins Decode/SrcRegNo2] [get_bd_pins Forward/SrcRegNo2] [get_bd_pins RegisterSet/RdRegNo2]
+  connect_bd_net -net Decode_AESDecrypt [get_bd_pins Decode/AESDecrypt] [get_bd_pins ExecutionStage/AESDecryptI]
+  connect_bd_net -net Decode_AESEncrypt [get_bd_pins Decode/AESEncrypt] [get_bd_pins ExecutionStage/AESEncryptI]
   connect_bd_net -net Decode_InterlockO [get_bd_pins Decode/InterlockO] [get_bd_pins DecodeStage/InterlockI] [get_bd_pins Fetch/InterlockI]
   connect_bd_net -net Decode_MemAccess [get_bd_pins Decode/MemAccess] [get_bd_pins ExecutionStage/MemAccessI]
   connect_bd_net -net Decode_MemWrEn [get_bd_pins Decode/MemWrEn] [get_bd_pins ExecutionStage/MemWrEnI]
