@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# AESKey, AesAddRoundKey, AesDecryptionFirstRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesAddRoundKey, ZeroPadding
+# AESKey, AesAddRoundKey, AesDecryptionFirstRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesMux, AesAddRoundKey
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -153,8 +153,8 @@ AesEncryptionRound\
 AesEncryptionRound\
 AesEncryptionRound\
 AesEncryptionRound\
+AesMux\
 AesAddRoundKey\
-ZeroPadding\
 "
 
    set list_mods_missing ""
@@ -219,11 +219,12 @@ proc create_root_design { parentCell } {
   # Create interface ports
 
   # Create ports
-  set AesDecrypt [ create_bd_port -dir I AesDecrypt ]
-  set AesEncrypt [ create_bd_port -dir I AesEncrypt ]
-  set ClearText [ create_bd_port -dir I -from 31 -to 0 ClearText ]
-  set Decrypted [ create_bd_port -dir O -from 127 -to 0 Decrypted ]
-  set Encrypted [ create_bd_port -dir O -from 127 -to 0 Encrypted ]
+  set CypherI [ create_bd_port -dir I -from 127 -to 0 CypherI ]
+  set CypherO [ create_bd_port -dir O -from 127 -to 0 CypherO ]
+  set DecryptI [ create_bd_port -dir I DecryptI ]
+  set DecryptO [ create_bd_port -dir O DecryptO ]
+  set EncryptI [ create_bd_port -dir I EncryptI ]
+  set EncryptO [ create_bd_port -dir O EncryptO ]
 
   # Create instance: AESKey_0, and set properties
   set block_name AESKey
@@ -467,6 +468,17 @@ proc create_root_design { parentCell } {
      return 1
    }
   
+  # Create instance: AesMux_0, and set properties
+  set block_name AesMux
+  set block_cell_name AesMux_0
+  if { [catch {set AesMux_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesMux_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: LastDecryption, and set properties
   set block_name AesAddRoundKey
   set block_cell_name LastDecryption
@@ -474,17 +486,6 @@ proc create_root_design { parentCell } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    } elseif { $LastDecryption eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   }
-  
-  # Create instance: ZeroPadding_0, and set properties
-  set block_name ZeroPadding
-  set block_cell_name ZeroPadding_0
-  if { [catch {set ZeroPadding_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   } elseif { $ZeroPadding_0 eq "" } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    }
@@ -502,7 +503,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AESKey_0_KeyR9 [get_bd_pins AESKey_0/KeyR9] [get_bd_pins AesDecryptionRound_0/RoundKey] [get_bd_pins AesEncryptionRound9/RoundKey]
   connect_bd_net -net AESKey_0_KeyR10 [get_bd_pins AESKey_0/KeyR10] [get_bd_pins AesDecryptionFirstRo_0/RoundKey] [get_bd_pins AesEncryptionLastRou_0/RoundKey]
   connect_bd_net -net AesAddRoundKey_0_CypherO [get_bd_pins AesAddRoundKey_0/CypherO] [get_bd_pins AesEncryptionRound1/CypherI]
-  connect_bd_net -net AesDecrypt_1 [get_bd_ports AesDecrypt] [get_bd_pins AesDecryptionFirstRo_0/CypherI]
   connect_bd_net -net AesDecryptionFirstRo_0_CypherO [get_bd_pins AesDecryptionFirstRo_0/CypherO] [get_bd_pins AesDecryptionRound_0/CypherI]
   connect_bd_net -net AesDecryptionRound_0_CypherO [get_bd_pins AesDecryptionRound_0/CypherO] [get_bd_pins AesDecryptionRound_1/CypherI]
   connect_bd_net -net AesDecryptionRound_1_CypherO [get_bd_pins AesDecryptionRound_1/CypherO] [get_bd_pins AesDecryptionRound_2/CypherI]
@@ -513,8 +513,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AesDecryptionRound_6_CypherO [get_bd_pins AesDecryptionRound_6/CypherO] [get_bd_pins AesDecryptionRound_7/CypherI]
   connect_bd_net -net AesDecryptionRound_7_CypherO [get_bd_pins AesDecryptionRound_7/CypherO] [get_bd_pins AesDecryptionRound_8/CypherI]
   connect_bd_net -net AesDecryptionRound_8_CypherO [get_bd_pins AesDecryptionRound_8/CypherO] [get_bd_pins LastDecryption/CypherI]
-  connect_bd_net -net AesEncrypt_1 [get_bd_ports AesEncrypt] [get_bd_pins AesAddRoundKey_0/CypherI]
-  connect_bd_net -net AesEncryptionLastRou_0_CypherO [get_bd_ports Encrypted] [get_bd_pins AesEncryptionLastRou_0/CypherO]
+  connect_bd_net -net AesEncryptionLastRou_0_CypherO [get_bd_pins AesEncryptionLastRou_0/CypherO] [get_bd_pins AesMux_0/EncryptedCypherI]
   connect_bd_net -net AesEncryptionRound9_CypherO [get_bd_pins AesEncryptionLastRou_0/CypherI] [get_bd_pins AesEncryptionRound9/CypherO]
   connect_bd_net -net AesEncryptionRound_1_CypherO [get_bd_pins AesEncryptionRound1/CypherO] [get_bd_pins AesEncryptionRound2/CypherI]
   connect_bd_net -net AesEncryptionRound_2_CypherO [get_bd_pins AesEncryptionRound2/CypherO] [get_bd_pins AesEncryptionRound3/CypherI]
@@ -524,8 +523,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AesEncryptionRound_6_CypherO [get_bd_pins AesEncryptionRound6/CypherO] [get_bd_pins AesEncryptionRound7/CypherI]
   connect_bd_net -net AesEncryptionRound_7_CypherO [get_bd_pins AesEncryptionRound7/CypherO] [get_bd_pins AesEncryptionRound8/CypherI]
   connect_bd_net -net AesEncryptionRound_8_CypherO [get_bd_pins AesEncryptionRound8/CypherO] [get_bd_pins AesEncryptionRound9/CypherI]
-  connect_bd_net -net ClearText_1 [get_bd_ports ClearText] [get_bd_pins ZeroPadding_0/DataI]
-  connect_bd_net -net LastDecryption_CypherO [get_bd_ports Decrypted] [get_bd_pins LastDecryption/CypherO]
+  connect_bd_net -net AesMux_0_CypherO [get_bd_ports CypherO] [get_bd_pins AesMux_0/CypherO]
+  connect_bd_net -net CypherI_1 [get_bd_ports CypherI] [get_bd_pins AesAddRoundKey_0/CypherI] [get_bd_pins AesDecryptionFirstRo_0/CypherI]
+  connect_bd_net -net DecryptI_1 [get_bd_ports DecryptI] [get_bd_ports DecryptO] [get_bd_pins AesMux_0/AesDecrypt]
+  connect_bd_net -net EncryptI_1 [get_bd_ports EncryptI] [get_bd_ports EncryptO] [get_bd_pins AesMux_0/AesEncrypt]
+  connect_bd_net -net LastDecryption_CypherO [get_bd_pins AesMux_0/DecryptedCypherI] [get_bd_pins LastDecryption/CypherO]
 
   # Create address segments
 

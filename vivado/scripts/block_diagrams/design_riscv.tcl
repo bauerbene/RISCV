@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# ALU, AXI_Mem_Interface, Decode, DecodeStage, ExecutionStage, Fetch, FetchStage, Forward, MUX, MemMux, MemStage, RegisterSet, SevenSeg
+# AESStage, ALU, AXI_Mem_Interface, Combine, Decode, DecodeStage, ExecutionStage, Fetch, FetchStage, Forward, MUX, MemMux, MemStage, RegisterSet, SevenSeg, Split
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -166,8 +166,10 @@ xilinx.com:ip:xlslice:1.0\
 set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
+AESStage\
 ALU\
 AXI_Mem_Interface\
+Combine\
 Decode\
 DecodeStage\
 ExecutionStage\
@@ -179,6 +181,7 @@ MemMux\
 MemStage\
 RegisterSet\
 SevenSeg\
+Split\
 "
 
    set list_mods_missing ""
@@ -288,6 +291,17 @@ proc create_root_design { parentCell } {
   set JC [ create_bd_port -dir O -from 3 -to 0 JC ]
   set JD [ create_bd_port -dir O -from 3 -to 0 JD ]
 
+  # Create instance: AESStage_0, and set properties
+  set block_name AESStage
+  set block_cell_name AESStage_0
+  if { [catch {set AESStage_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AESStage_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: ALU, and set properties
   set block_name ALU
   set block_cell_name ALU
@@ -306,6 +320,17 @@ proc create_root_design { parentCell } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    } elseif { $AXI_Mem_Interface_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: Combine_0, and set properties
+  set block_name Combine
+  set block_cell_name Combine_0
+  if { [catch {set Combine_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $Combine_0 eq "" } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    }
@@ -452,6 +477,17 @@ proc create_root_design { parentCell } {
      return 1
    }
   
+  # Create instance: Split_0, and set properties
+  set block_name Split
+  set block_cell_name Split_0
+  if { [catch {set Split_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $Split_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: axi_bram_ctrl_0, and set properties
   set axi_bram_ctrl_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl_0 ]
   set_property -dict [ list \
@@ -489,6 +525,8 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins blk_mem_gen_1/BRAM_PORTA]
 
   # Create port connections
+  connect_bd_net -net AESStage_0_AesStallO [get_bd_pins AESStage_0/AesStallO] [get_bd_pins RegisterSet/AesWr]
+  connect_bd_net -net AESStage_0_CypherO [get_bd_pins AESStage_0/CypherO] [get_bd_pins Split_0/I]
   connect_bd_net -net ALU_0_DestRegNoO [get_bd_pins ALU/DestRegNoO] [get_bd_pins MemStage/DestRegNoI]
   connect_bd_net -net ALU_0_DestWrEnO [get_bd_pins ALU/DestWrEnO] [get_bd_pins MemStage/DestWrEnI]
   connect_bd_net -net ALU_0_JumpO [get_bd_pins ALU/JumpO] [get_bd_pins DecodeStage/ClearI] [get_bd_pins ExecutionStage/ClearI] [get_bd_pins Fetch/Jump]
@@ -500,7 +538,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net ALU_MemWrData [get_bd_pins ALU/MemWrData] [get_bd_pins MemStage/MemWrData]
   connect_bd_net -net AXI_Mem_Interface_0_DataOut [get_bd_pins AXI_Mem_Interface_0/DataOut] [get_bd_pins MemStage/RamRdData]
   connect_bd_net -net AXI_Mem_Interface_0_busy [get_bd_pins AXI_Mem_Interface_0/busy] [get_bd_pins MemStage/RamBusy]
-  connect_bd_net -net BTNL_1 [get_bd_ports BTNL] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]
+  connect_bd_net -net BTNL_1 [get_bd_ports BTNL] [get_bd_pins AESStage_0/Reset] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn]
+  connect_bd_net -net Combine_0_O [get_bd_pins Combine_0/O] [get_bd_pins design_aes_0/CypherI]
   connect_bd_net -net DecodeStage_0_ClearO [get_bd_pins Decode/Clear] [get_bd_pins DecodeStage/ClearO]
   connect_bd_net -net DecodeStage_0_InstO [get_bd_pins Decode/Inst] [get_bd_pins DecodeStage/InstO]
   connect_bd_net -net DecodeStage_0_PCO [get_bd_pins Decode/PC] [get_bd_pins DecodeStage/PCO]
@@ -536,6 +575,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net ExecutionStage_0_SelSrc2O [get_bd_pins ExecutionStage/SelSrc2O] [get_bd_pins MUX/Sel]
   connect_bd_net -net ExecutionStage_0_SrcData1O [get_bd_pins ALU/A] [get_bd_pins ExecutionStage/SrcData1O] [get_bd_pins SevenSeg_0/V]
   connect_bd_net -net ExecutionStage_0_SrcData2O [get_bd_pins ALU/SrcData2] [get_bd_pins ExecutionStage/SrcData2O] [get_bd_pins MUX/In2]
+  connect_bd_net -net ExecutionStage_AESDecryptO [get_bd_pins ExecutionStage/AESDecryptO] [get_bd_pins design_aes_0/DecryptI]
+  connect_bd_net -net ExecutionStage_AESEncryptO [get_bd_pins ExecutionStage/AESEncryptO] [get_bd_pins design_aes_0/EncryptI]
   connect_bd_net -net ExecutionStage_MemAccessO [get_bd_pins ALU/MemAccessI] [get_bd_pins ExecutionStage/MemAccessO]
   connect_bd_net -net ExecutionStage_MemWrEnO [get_bd_pins ALU/MemWrEn] [get_bd_pins ExecutionStage/MemWrEnO]
   connect_bd_net -net ExecutionStage_Set7SegO [get_bd_pins ExecutionStage/Set7SegO] [get_bd_pins SevenSeg_0/Set]
@@ -545,7 +586,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Fetch_ImemAddr [get_bd_pins Fetch/ImemAddr] [get_bd_pins IMemory/addrb]
   connect_bd_net -net Forward_0_FwdData1 [get_bd_pins ExecutionStage/SrcData1I] [get_bd_pins Forward/FwdData1]
   connect_bd_net -net Forward_0_FwdData2 [get_bd_pins ExecutionStage/SrcData2I] [get_bd_pins Forward/FwdData2]
-  connect_bd_net -net GCLK_1 [get_bd_ports GCLK] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aclk] [get_bd_pins DecodeStage/Clock] [get_bd_pins ExecutionStage/Clock] [get_bd_pins FetchStage/Clock] [get_bd_pins IMemory/clka] [get_bd_pins IMemory/clkb] [get_bd_pins MemStage/Clock] [get_bd_pins RegisterSet/Clock] [get_bd_pins SevenSeg_0/Clock] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk]
+  connect_bd_net -net GCLK_1 [get_bd_ports GCLK] [get_bd_pins AESStage_0/Clock] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aclk] [get_bd_pins DecodeStage/Clock] [get_bd_pins ExecutionStage/Clock] [get_bd_pins FetchStage/Clock] [get_bd_pins IMemory/clka] [get_bd_pins IMemory/clkb] [get_bd_pins MemStage/Clock] [get_bd_pins RegisterSet/Clock] [get_bd_pins SevenSeg_0/Clock] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk]
   connect_bd_net -net IMemory_douta [get_bd_pins IMemory/douta] [get_bd_pins MemMux_0/ROMDataIn]
   connect_bd_net -net IMemory_doutb [get_bd_pins DecodeStage/InstI] [get_bd_pins IMemory/doutb]
   connect_bd_net -net MUX_0_O [get_bd_pins ALU/B] [get_bd_pins MUX/O]
@@ -562,12 +603,23 @@ proc create_root_design { parentCell } {
   connect_bd_net -net MemStage_RamWrData [get_bd_pins AXI_Mem_Interface_0/DataIn] [get_bd_pins MemStage/RamWrData]
   connect_bd_net -net MemStage_RamWriteEn [get_bd_pins AXI_Mem_Interface_0/WriteEn] [get_bd_pins MemStage/RamWriteEn]
   connect_bd_net -net MemStage_StallO [get_bd_pins DecodeStage/Stall] [get_bd_pins ExecutionStage/Stall] [get_bd_pins Fetch/Stall] [get_bd_pins MemStage/StallI] [get_bd_pins MemStage/StallO] [get_bd_pins RegisterSet/Stall]
-  connect_bd_net -net RegisterSet_0_RdData1 [get_bd_pins Forward/SrcData1] [get_bd_pins RegisterSet/RdData1] [get_bd_pins design_aes_0/ClearText]
+  connect_bd_net -net RegisterSet_0_RdData1 [get_bd_pins Forward/SrcData1] [get_bd_pins RegisterSet/RdData1]
   connect_bd_net -net RegisterSet_0_RdData2 [get_bd_pins Forward/SrcData2] [get_bd_pins RegisterSet/RdData2]
+  connect_bd_net -net RegisterSet_AesData1 [get_bd_pins Combine_0/In1] [get_bd_pins RegisterSet/AesData1]
+  connect_bd_net -net RegisterSet_AesData2 [get_bd_pins Combine_0/In2] [get_bd_pins RegisterSet/AesData2]
+  connect_bd_net -net RegisterSet_AesData3 [get_bd_pins Combine_0/In3] [get_bd_pins RegisterSet/AesData3]
+  connect_bd_net -net RegisterSet_AesData4 [get_bd_pins Combine_0/In4] [get_bd_pins RegisterSet/AesData4]
   connect_bd_net -net SevenSeg_0_Pmod0 [get_bd_ports JA] [get_bd_pins SevenSeg_0/Pmod0]
   connect_bd_net -net SevenSeg_0_Pmod1 [get_bd_ports JB] [get_bd_pins SevenSeg_0/Pmod1]
   connect_bd_net -net SevenSeg_0_Pmod2 [get_bd_ports JC] [get_bd_pins SevenSeg_0/Pmod2]
   connect_bd_net -net SevenSeg_0_Pmod3 [get_bd_ports JD] [get_bd_pins SevenSeg_0/Pmod3]
+  connect_bd_net -net Split_0_Out1 [get_bd_pins RegisterSet/AesWrData1] [get_bd_pins Split_0/Out1]
+  connect_bd_net -net Split_0_Out2 [get_bd_pins RegisterSet/AesWrData2] [get_bd_pins Split_0/Out2]
+  connect_bd_net -net Split_0_Out3 [get_bd_pins RegisterSet/AesWrData3] [get_bd_pins Split_0/Out3]
+  connect_bd_net -net Split_0_Out4 [get_bd_pins RegisterSet/AesWrData4] [get_bd_pins Split_0/Out4]
+  connect_bd_net -net design_aes_0_CypherO [get_bd_pins AESStage_0/CypherI] [get_bd_pins design_aes_0/CypherO]
+  connect_bd_net -net design_aes_0_DecryptO [get_bd_pins AESStage_0/AesDecrypt] [get_bd_pins design_aes_0/DecryptO]
+  connect_bd_net -net design_aes_0_EncryptO [get_bd_pins AESStage_0/AesEncrypt] [get_bd_pins design_aes_0/EncryptO]
   connect_bd_net -net xlslice_0_Dout [get_bd_pins IMemory/addra] [get_bd_pins xlslice_0/Dout]
 
   # Create address segments

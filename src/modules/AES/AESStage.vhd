@@ -7,7 +7,8 @@ ENTITY AESStage IS
         Reset      : IN STD_LOGIC;
         AesEncrypt : IN STD_LOGIC;
         AesDecrypt : IN STD_LOGIC;
-        Data       : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        CypherI    : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
+        CypherO    : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
 
         AesStallO : OUT STD_LOGIC
 
@@ -15,7 +16,7 @@ ENTITY AESStage IS
 END AESStage;
 
 ARCHITECTURE Behavioral OF AESStage IS
-    TYPE state_type IS (Idle, Encrypt, Decrypt);
+    TYPE state_type IS (Idle, AesWrite);
     SIGNAL currentState : state_type;
 BEGIN
     PROCESS (Reset, Clock)
@@ -28,21 +29,15 @@ BEGIN
             CASE currentState IS
                 WHEN Idle =>
                     IF AesEncrypt = '1' THEN
-                        -- todo output values for first round
                         AesStallO <= '1';
-                        currentState <= Encrypt;
-                    ELSIF AesDecrypt = '1' THEN
-                        -- todo output values for first decrypt round
-                        AesStallO <= '1';
-                        currentState <= Decrypt;
+                        currentState <= AesWrite;
+                        CypherO <= CypherI;
                     END IF;
-                WHEN Encrypt =>
-                    -- since there is a fix number of 10 count the rounds until no longer busy
-                WHEN Decrypt =>
-                    -- same as for encrypt
+                WHEN AesWrite =>
+                    AesStallO <= '0';
+                    currentState <= Idle;
                 WHEN OTHERS => NULL;
             END CASE;
-
         END IF;
     END PROCESS;
 
