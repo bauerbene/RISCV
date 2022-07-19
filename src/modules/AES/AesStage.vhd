@@ -1,7 +1,8 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-ENTITY AESStage IS
+
+ENTITY AesStage IS
     PORT (
         Clock      : IN STD_LOGIC;
         Reset      : IN STD_LOGIC;
@@ -9,11 +10,12 @@ ENTITY AESStage IS
         AesDecrypt : IN STD_LOGIC;
         CypherI    : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
         CypherO    : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+        Stall      : IN STD_LOGIC;
 
         AesStallO : OUT STD_LOGIC
 
     );
-END AESStage;
+END AesStage;
 
 ARCHITECTURE Behavioral OF AESStage IS
     TYPE state_type IS (Idle, AesWrite);
@@ -25,19 +27,20 @@ BEGIN
             currentState <= Idle;
             AesStallO <= '0';
         ELSIF rising_edge(Clock) THEN
-
-            CASE currentState IS
-                WHEN Idle =>
-                    IF AesEncrypt = '1' THEN
-                        AesStallO <= '1';
-                        currentState <= AesWrite;
-                        CypherO <= CypherI;
-                    END IF;
-                WHEN AesWrite =>
-                    AesStallO <= '0';
-                    currentState <= Idle;
-                WHEN OTHERS => NULL;
-            END CASE;
+            IF Stall = '0' THEN
+                CASE currentState IS
+                    WHEN Idle =>
+                        IF AesEncrypt = '1' THEN
+                            AesStallO <= '1';
+                            currentState <= AesWrite;
+                            CypherO <= CypherI;
+                        END IF;
+                    WHEN AesWrite =>
+                        AesStallO <= '0';
+                        currentState <= Idle;
+                    WHEN OTHERS => NULL;
+                END CASE;
+            END IF;
         END IF;
     END PROCESS;
 

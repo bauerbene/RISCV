@@ -27,6 +27,7 @@ ENTITY ExecutionStage IS
         Set7SegI    : IN STD_LOGIC;
         AESEncryptI : IN STD_LOGIC;
         AESDecryptI : IN STD_LOGIC;
+        AesStall    : IN STD_LOGIC;
 
         FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         SrcData1O   : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -73,7 +74,7 @@ BEGIN
             AESEncryptO <= '0';
             AESDecryptO <= '0';
         ELSIF rising_edge(Clock) THEN
-            IF Stall = '0' THEN
+            IF Stall = '0' AND AesStall = '0' THEN
                 FunctO <= FunctI;
                 SrcData1O <= SrcData1I;
                 SrcData2O <= SrcData2I;

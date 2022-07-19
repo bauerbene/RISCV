@@ -19,6 +19,7 @@ ENTITY MemStage IS
         StallI     : IN STD_LOGIC;
         RamRdData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         RamBusy    : IN STD_LOGIC;
+        AesStall   : IN STD_LOGIC;
 
         DestDataO  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnO  : OUT STD_LOGIC;
@@ -91,7 +92,7 @@ BEGIN
                 WHEN OTHERS => NULL;
             END CASE;
 
-            IF StallI = '0' THEN
+            IF StallI = '0' AND AesStall = '0' THEN
                 DestDataO <= DestDataI;
                 DestWrEnO <= DestWrEnI;
                 DestRegNoO <= DestRegNoI;
