@@ -30,7 +30,7 @@ BEGIN
             IF Stall = '0' THEN
                 CASE currentState IS
                     WHEN Idle =>
-                        IF AesEncrypt = '1' THEN
+                        IF AesEncrypt = '1' OR AesDecrypt = '1' THEN
                             AesStallO <= '1';
                             currentState <= AesWrite;
                             CypherO <= CypherI;

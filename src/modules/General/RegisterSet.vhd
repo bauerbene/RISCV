@@ -50,17 +50,15 @@ BEGIN
     BEGIN
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");
-        ELSIF (WrEn = '1') AND (rising_edge(Clock)) AND (unsigned(WrRegNo) /= 0) AND Stall /= '1' THEN
-            IF AesWr = '0' THEN
-                Registers(to_integer(unsigned(WrRegNo))) <= WrData;
-            ELSE
-                Registers(to_integer(unsigned(x1))) <= AesWrData1;
-                Registers(to_integer(unsigned(x2))) <= AesWrData2;
-                Registers(to_integer(unsigned(x3))) <= AesWrData3;
-                Registers(to_integer(unsigned(x4))) <= AesWrData4;
-            END IF;
+        ELSIF rising_edge(Clock) AND unsigned(WrRegNo) /= 0 AND Stall /= '1' AND WrEn = '1' THEN
+            Registers(to_integer(unsigned(WrRegNo))) <= WrData;
         END IF;
-
+        IF rising_edge(Clock) AND AesWr = '1' THEN
+            Registers(to_integer(unsigned(x1))) <= AesWrData1;
+            Registers(to_integer(unsigned(x2))) <= AesWrData2;
+            Registers(to_integer(unsigned(x3))) <= AesWrData3;
+            Registers(to_integer(unsigned(x4))) <= AesWrData4;
+        END IF;
     END PROCESS;
 
 END Behavioral;

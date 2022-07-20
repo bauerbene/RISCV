@@ -405,7 +405,7 @@ proc create_root_design { parentCell } {
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
-   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/test10esel.coe} \
+   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/Aes_simple_test.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
