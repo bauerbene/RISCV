@@ -273,15 +273,13 @@ BEGIN
                 JumpTarget <= (OTHERS => '-');
                 PCNext <= (OTHERS => '-');
 
-            WHEN opcode_AES =>
-                -- I-Type-Instruction
-                SrcRegNo1 <= Inst(19 DOWNTO 15);
-                DestRegNo <= Inst(11 DOWNTO 7);
-                DestWrEn <= '1';
+            WHEN opcode_CUSTOM =>
+                AESEncrypt <= Inst(12);
+                AESDecrypt <= Inst(13);
 
-                AESEncrypt <= '1';
-                AESDecrypt <= '0';
-
+                SrcRegNo1 <= (OTHERS => '-');
+                DestRegNo <= (OTHERS => '-');
+                DestWrEn <= '0';
                 SelSrc2 <= '0';
                 MemAccess <= '0';
                 MemWrEn <= '0';
