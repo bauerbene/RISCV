@@ -279,6 +279,7 @@ BEGIN
 
                 SrcRegNo1 <= (OTHERS => '-');
                 DestRegNo <= (OTHERS => '-');
+                Funct <= (OTHERS => '-');
                 DestWrEn <= '0';
                 SelSrc2 <= '0';
                 MemAccess <= '0';
