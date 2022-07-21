@@ -31,9 +31,9 @@ BEGIN
 
     PROCESS
     BEGIN
-        BTNL <= '0';
-        WAIT FOR 10 ns;
         BTNL <= '1';
+        WAIT FOR 10 ns;
+        BTNL <= '0';
         WAIT;
     END PROCESS;
 END TB;
