@@ -20,15 +20,15 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2022.1
-set current_vivado_version [version -short]
+#set scripts_vivado_version 2022.1
+#set current_vivado_version [version -short]
 
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+#if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+#   puts ""
+#   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
 
-   return 1
-}
+#   return 1
+#}
 
 ################################################################
 # START
@@ -405,7 +405,7 @@ proc create_root_design { parentCell } {
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
-   CONFIG.Coe_File {/home/benedikt/projects/github/RISCV/src/test/coe/Aes_simple_test.coe} \
+   CONFIG.Coe_File {/cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/Aes_simple_test.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
