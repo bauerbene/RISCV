@@ -40,6 +40,9 @@ BEGIN
         IF Stall = '0' AND AesStall = '0' THEN
             PCNext <= varPCNext;
             ImemAddr <= varPCNext(11 DOWNTO 2);
+        ELSE
+            PCNext <= PCI;
+            ImemAddr <= PCI(11 DOWNTO 2);
         END IF;
     END PROCESS;
 
