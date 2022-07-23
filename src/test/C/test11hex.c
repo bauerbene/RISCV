@@ -37,10 +37,10 @@ int main()
 {
     int i=0;
     while (1) {
-        int j;
-        for (j=0; j<10000; j++) {
+        //int j;
+        //for (j=0; j<3; j++) {
             print_int_7(i);
-        }
+        //}
         i++;
     }
 }
