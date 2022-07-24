@@ -85,7 +85,7 @@ BEGIN
                 WHEN funct_LHU =>
                     WrData <= LHU(ALUDataIn(1 DOWNTO 0), varDataIn);
                 WHEN funct_LW =>
-                    WrData <= MemoryDataIn;
+                    WrData <= varDataIn;
                 WHEN OTHERS =>
                     WrData <= (OTHERS => '-');
             END CASE;
