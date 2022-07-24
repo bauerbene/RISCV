@@ -46,8 +46,10 @@ BEGIN
         IF (Reset = '0') THEN
             Registers <= (1 => x"00000001", OTHERS => x"00000000");
         ELSIF rising_edge(Clock) THEN
-            IF unsigned(WrRegNo) /= 0 AND Stall /= '1' AND WrEn = '1' THEN
+            IF WrRegNo /= "00000" AND Stall /= '1' AND WrEn = '1' THEN
                 Registers(to_integer(unsigned(WrRegNo))) <= WrData;
+            ELSE
+                Registers <= Registers;
             END IF;
             AesData1 <= Registers(to_integer(unsigned(x1)));
             AesData2 <= Registers(to_integer(unsigned(x2)));
