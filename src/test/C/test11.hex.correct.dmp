@@ -1,0 +1,107 @@
+
+test11hex.correct.rv32.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00008137          	lui	sp,0x8
+   4:	0a0000ef          	jal	ra,a4 <main>
+
+00000008 <_exit>:
+   8:	0000006f          	j	8 <_exit>
+
+0000000c <print_int_7>:
+   c:	fe010113          	addi	sp,sp,-32 # 7fe0 <digit+0x7ef0>
+  10:	00812e23          	sw	s0,28(sp)
+  14:	02010413          	addi	s0,sp,32
+  18:	fea42623          	sw	a0,-20(s0)
+  1c:	fec42783          	lw	a5,-20(s0)
+  20:	40c7d793          	srai	a5,a5,0xc
+  24:	00f7f793          	andi	a5,a5,15
+  28:	0f000713          	li	a4,240
+  2c:	00f707b3          	add	a5,a4,a5
+  30:	0007c783          	lbu	a5,0(a5)
+  34:	01879713          	slli	a4,a5,0x18
+  38:	fec42783          	lw	a5,-20(s0)
+  3c:	4087d793          	srai	a5,a5,0x8
+  40:	00f7f793          	andi	a5,a5,15
+  44:	0f000693          	li	a3,240
+  48:	00f687b3          	add	a5,a3,a5
+  4c:	0007c783          	lbu	a5,0(a5)
+  50:	01079793          	slli	a5,a5,0x10
+  54:	00f76733          	or	a4,a4,a5
+  58:	fec42783          	lw	a5,-20(s0)
+  5c:	4047d793          	srai	a5,a5,0x4
+  60:	00f7f793          	andi	a5,a5,15
+  64:	0f000693          	li	a3,240
+  68:	00f687b3          	add	a5,a3,a5
+  6c:	0007c783          	lbu	a5,0(a5)
+  70:	00879793          	slli	a5,a5,0x8
+  74:	00f767b3          	or	a5,a4,a5
+  78:	fec42703          	lw	a4,-20(s0)
+  7c:	00f77713          	andi	a4,a4,15
+  80:	0f000693          	li	a3,240
+  84:	00e68733          	add	a4,a3,a4
+  88:	00074703          	lbu	a4,0(a4)
+  8c:	00e7e7b3          	or	a5,a5,a4
+  90:	78879073          	csrw	0x788,a5
+  94:	00000013          	nop
+  98:	01c12403          	lw	s0,28(sp)
+  9c:	02010113          	addi	sp,sp,32
+  a0:	00008067          	ret
+
+000000a4 <main>:
+  a4:	fe010113          	addi	sp,sp,-32 # x2 = x2 -32 = 0x8000 - 32 = 0x7FE0
+  a8:	00112e23          	sw	ra,28(sp) # 0x7ffc (32764) = 0x08
+  ac:	00812c23          	sw	s0,24(sp) # 0x7ff8 (32760) = x8 = 0
+  b0:	02010413          	addi	s0,sp,32 # x8 = 0x8000
+  b4:	fe042623          	sw	zero,-20(s0) # 0x7fec (32758) = 0
+  b8:	fe042423          	sw	zero,-24(s0) # 0x7fe8 = 0
+  bc:	0180006f          	j	d4 <main+0x30>
+  c0:	fec42503          	lw	a0,-20(s0)
+  c4:	f49ff0ef          	jal	ra,c <print_int_7>
+  c8:	fe842783          	lw	a5,-24(s0)
+  cc:	00178793          	addi	a5,a5,1
+  d0:	fef42423          	sw	a5,-24(s0)
+  d4:	fe842703          	lw	a4,-24(s0) # x14 = 0
+  d8:	00200793          	li	a5,2 # x15 = 2
+  dc:	fee7d2e3          	bge	a5,a4,c0 <main+0x1c>
+  e0:	fec42783          	lw	a5,-20(s0)
+  e4:	00178793          	addi	a5,a5,1
+  e8:	fef42623          	sw	a5,-20(s0)
+  ec:	fcdff06f          	j	b8 <main+0x14>
+
+Disassembly of section .rodata:
+
+000000f0 <digit>:
+  f0:	4f5b063f 077d6d66 	0x77d6d664f5b063f
+  f8:	6f7f                	0x6f7f
+  fa:	5e397c77          	0x5e397c77
+  fe:	7179                	addi	sp,sp,-48
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	3a434347          	fmsub.d	ft6,ft6,ft4,ft7,rmm
+   4:	2820                	fld	fs0,80(s0)
+   6:	2029                	jal	10 <print_int_7+0x4>
+   8:	2e39                	jal	326 <digit+0x236>
+   a:	00302e33          	sgtz	t3,gp
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	1b41                	addi	s6,s6,-16
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <print_int_7+0x8>
+   c:	0011                	c.nop	4
+   e:	0000                	unimp
+  10:	1004                	addi	s1,sp,32
+  12:	7205                	lui	tp,0xfffe1
+  14:	3376                	fld	ft6,376(sp)
+  16:	6932                	flw	fs2,12(sp)
+  18:	7032                	flw	ft0,44(sp)
+  1a:	0030                	addi	a2,sp,8
