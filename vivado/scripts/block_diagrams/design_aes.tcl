@@ -40,7 +40,7 @@ set script_folder [_tcl::get_script_folder]
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# AESKey, AesAddRoundKey, AesDecryptionFirstRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesMux, AesAddRoundKey
+# AESKey, AesAddRoundKey, AesDecryptionFirstRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesDecryptionRound, AesEncryptionLastRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesEncryptionRound, AesMux, AesSync, AesSync, AesSync, AesSync, AesSync, AesSync, AesSync, AesSync, AesSync, AesSync, AesAddRoundKey
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -154,6 +154,16 @@ AesEncryptionRound\
 AesEncryptionRound\
 AesEncryptionRound\
 AesMux\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
+AesSync\
 AesAddRoundKey\
 "
 
@@ -219,12 +229,14 @@ proc create_root_design { parentCell } {
   # Create interface ports
 
   # Create ports
+  set Clock [ create_bd_port -dir I Clock ]
   set CypherI [ create_bd_port -dir I -from 127 -to 0 CypherI ]
   set CypherO [ create_bd_port -dir O -from 127 -to 0 CypherO ]
   set DecryptI [ create_bd_port -dir I DecryptI ]
   set DecryptO [ create_bd_port -dir O DecryptO ]
   set EncryptI [ create_bd_port -dir I EncryptI ]
   set EncryptO [ create_bd_port -dir O EncryptO ]
+  set Reset [ create_bd_port -dir I Reset ]
 
   # Create instance: AESKey_0, and set properties
   set block_name AESKey
@@ -479,6 +491,116 @@ proc create_root_design { parentCell } {
      return 1
    }
   
+  # Create instance: AesSync_0, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_0
+  if { [catch {set AesSync_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_0 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_1, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_1
+  if { [catch {set AesSync_1 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_1 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_2, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_2
+  if { [catch {set AesSync_2 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_2 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_3, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_3
+  if { [catch {set AesSync_3 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_3 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_4, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_4
+  if { [catch {set AesSync_4 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_4 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_5, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_5
+  if { [catch {set AesSync_5 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_5 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_6, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_6
+  if { [catch {set AesSync_6 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_6 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_7, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_7
+  if { [catch {set AesSync_7 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_7 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_8, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_8
+  if { [catch {set AesSync_8 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_8 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
+  # Create instance: AesSync_9, and set properties
+  set block_name AesSync
+  set block_cell_name AesSync_9
+  if { [catch {set AesSync_9 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $AesSync_9 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: LastDecryption, and set properties
   set block_name AesAddRoundKey
   set block_cell_name LastDecryption
@@ -502,32 +624,74 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AESKey_0_KeyR8 [get_bd_pins AESKey_0/KeyR8] [get_bd_pins AesDecryptionRound_1/RoundKey] [get_bd_pins AesEncryptionRound8/RoundKey]
   connect_bd_net -net AESKey_0_KeyR9 [get_bd_pins AESKey_0/KeyR9] [get_bd_pins AesDecryptionRound_0/RoundKey] [get_bd_pins AesEncryptionRound9/RoundKey]
   connect_bd_net -net AESKey_0_KeyR10 [get_bd_pins AESKey_0/KeyR10] [get_bd_pins AesDecryptionFirstRo_0/RoundKey] [get_bd_pins AesEncryptionLastRou_0/RoundKey]
-  connect_bd_net -net AesAddRoundKey_0_CypherO [get_bd_pins AesAddRoundKey_0/CypherO] [get_bd_pins AesEncryptionRound1/CypherI]
-  connect_bd_net -net AesDecryptionFirstRo_0_CypherO [get_bd_pins AesDecryptionFirstRo_0/CypherO] [get_bd_pins AesDecryptionRound_0/CypherI]
-  connect_bd_net -net AesDecryptionRound_0_CypherO [get_bd_pins AesDecryptionRound_0/CypherO] [get_bd_pins AesDecryptionRound_1/CypherI]
-  connect_bd_net -net AesDecryptionRound_1_CypherO [get_bd_pins AesDecryptionRound_1/CypherO] [get_bd_pins AesDecryptionRound_2/CypherI]
-  connect_bd_net -net AesDecryptionRound_2_CypherO [get_bd_pins AesDecryptionRound_2/CypherO] [get_bd_pins AesDecryptionRound_3/CypherI]
-  connect_bd_net -net AesDecryptionRound_3_CypherO [get_bd_pins AesDecryptionRound_3/CypherO] [get_bd_pins AesDecryptionRound_4/CypherI]
-  connect_bd_net -net AesDecryptionRound_4_CypherO [get_bd_pins AesDecryptionRound_4/CypherO] [get_bd_pins AesDecryptionRound_5/CypherI]
-  connect_bd_net -net AesDecryptionRound_5_CypherO [get_bd_pins AesDecryptionRound_5/CypherO] [get_bd_pins AesDecryptionRound_6/CypherI]
-  connect_bd_net -net AesDecryptionRound_6_CypherO [get_bd_pins AesDecryptionRound_6/CypherO] [get_bd_pins AesDecryptionRound_7/CypherI]
-  connect_bd_net -net AesDecryptionRound_7_CypherO [get_bd_pins AesDecryptionRound_7/CypherO] [get_bd_pins AesDecryptionRound_8/CypherI]
-  connect_bd_net -net AesDecryptionRound_8_CypherO [get_bd_pins AesDecryptionRound_8/CypherO] [get_bd_pins LastDecryption/CypherI]
+  connect_bd_net -net AesAddRoundKey_0_CypherO [get_bd_pins AesAddRoundKey_0/CypherO] [get_bd_pins AesSync_0/EncryptCypherI]
+  connect_bd_net -net AesDecryptionFirstRo_0_CypherO [get_bd_pins AesDecryptionFirstRo_0/CypherO] [get_bd_pins AesSync_0/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_0_CypherO [get_bd_pins AesDecryptionRound_0/CypherO] [get_bd_pins AesSync_1/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_1_CypherO [get_bd_pins AesDecryptionRound_1/CypherO] [get_bd_pins AesSync_2/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_2_CypherO [get_bd_pins AesDecryptionRound_2/CypherO] [get_bd_pins AesSync_3/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_3_CypherO [get_bd_pins AesDecryptionRound_3/CypherO] [get_bd_pins AesSync_4/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_4_CypherO [get_bd_pins AesDecryptionRound_4/CypherO] [get_bd_pins AesSync_5/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_5_CypherO [get_bd_pins AesDecryptionRound_5/CypherO] [get_bd_pins AesSync_6/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_6_CypherO [get_bd_pins AesDecryptionRound_6/CypherO] [get_bd_pins AesSync_7/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_7_CypherO [get_bd_pins AesDecryptionRound_7/CypherO] [get_bd_pins AesSync_8/DecryptCypherI]
+  connect_bd_net -net AesDecryptionRound_8_CypherO [get_bd_pins AesDecryptionRound_8/CypherO] [get_bd_pins AesSync_9/DecryptCypherI]
   connect_bd_net -net AesEncryptionLastRou_0_CypherO [get_bd_pins AesEncryptionLastRou_0/CypherO] [get_bd_pins AesMux_0/EncryptedCypherI]
-  connect_bd_net -net AesEncryptionRound9_CypherO [get_bd_pins AesEncryptionLastRou_0/CypherI] [get_bd_pins AesEncryptionRound9/CypherO]
-  connect_bd_net -net AesEncryptionRound_1_CypherO [get_bd_pins AesEncryptionRound1/CypherO] [get_bd_pins AesEncryptionRound2/CypherI]
-  connect_bd_net -net AesEncryptionRound_2_CypherO [get_bd_pins AesEncryptionRound2/CypherO] [get_bd_pins AesEncryptionRound3/CypherI]
-  connect_bd_net -net AesEncryptionRound_3_CypherO [get_bd_pins AesEncryptionRound3/CypherO] [get_bd_pins AesEncryptionRound4/CypherI]
-  connect_bd_net -net AesEncryptionRound_4_CypherO [get_bd_pins AesEncryptionRound4/CypherO] [get_bd_pins AesEncryptionRound5/CypherI]
-  connect_bd_net -net AesEncryptionRound_5_CypherO [get_bd_pins AesEncryptionRound5/CypherO] [get_bd_pins AesEncryptionRound6/CypherI]
-  connect_bd_net -net AesEncryptionRound_6_CypherO [get_bd_pins AesEncryptionRound6/CypherO] [get_bd_pins AesEncryptionRound7/CypherI]
-  connect_bd_net -net AesEncryptionRound_7_CypherO [get_bd_pins AesEncryptionRound7/CypherO] [get_bd_pins AesEncryptionRound8/CypherI]
-  connect_bd_net -net AesEncryptionRound_8_CypherO [get_bd_pins AesEncryptionRound8/CypherO] [get_bd_pins AesEncryptionRound9/CypherI]
+  connect_bd_net -net AesEncryptionRound1_CypherO [get_bd_pins AesEncryptionRound1/CypherO] [get_bd_pins AesSync_1/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound2_CypherO [get_bd_pins AesEncryptionRound2/CypherO] [get_bd_pins AesSync_2/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound3_CypherO [get_bd_pins AesEncryptionRound3/CypherO] [get_bd_pins AesSync_3/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound4_CypherO [get_bd_pins AesEncryptionRound4/CypherO] [get_bd_pins AesSync_4/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound5_CypherO [get_bd_pins AesEncryptionRound5/CypherO] [get_bd_pins AesSync_5/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound6_CypherO [get_bd_pins AesEncryptionRound6/CypherO] [get_bd_pins AesSync_6/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound7_CypherO [get_bd_pins AesEncryptionRound7/CypherO] [get_bd_pins AesSync_7/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound8_CypherO [get_bd_pins AesEncryptionRound8/CypherO] [get_bd_pins AesSync_8/EncryptCypherI]
+  connect_bd_net -net AesEncryptionRound9_CypherO [get_bd_pins AesEncryptionRound9/CypherO] [get_bd_pins AesSync_9/EncryptCypherI]
   connect_bd_net -net AesMux_0_CypherO [get_bd_ports CypherO] [get_bd_pins AesMux_0/CypherO]
+  connect_bd_net -net AesSync_0_DecryptCypherO [get_bd_pins AesDecryptionRound_0/CypherI] [get_bd_pins AesSync_0/DecryptCypherO]
+  connect_bd_net -net AesSync_0_DecryptO [get_bd_pins AesSync_0/DecryptO] [get_bd_pins AesSync_1/DecryptI]
+  connect_bd_net -net AesSync_0_EncryptCypherO [get_bd_pins AesEncryptionRound1/CypherI] [get_bd_pins AesSync_0/EncryptCypherO]
+  connect_bd_net -net AesSync_0_EncryptO [get_bd_pins AesSync_0/EncryptO] [get_bd_pins AesSync_1/EncryptI]
+  connect_bd_net -net AesSync_1_DecryptCypherO [get_bd_pins AesDecryptionRound_1/CypherI] [get_bd_pins AesSync_1/DecryptCypherO]
+  connect_bd_net -net AesSync_1_DecryptO [get_bd_pins AesSync_1/DecryptO] [get_bd_pins AesSync_2/DecryptI]
+  connect_bd_net -net AesSync_1_EncryptCypherO [get_bd_pins AesEncryptionRound2/CypherI] [get_bd_pins AesSync_1/EncryptCypherO]
+  connect_bd_net -net AesSync_1_EncryptO [get_bd_pins AesSync_1/EncryptO] [get_bd_pins AesSync_2/EncryptI]
+  connect_bd_net -net AesSync_2_DecryptCypherO [get_bd_pins AesDecryptionRound_2/CypherI] [get_bd_pins AesSync_2/DecryptCypherO]
+  connect_bd_net -net AesSync_2_DecryptO [get_bd_pins AesSync_2/DecryptO] [get_bd_pins AesSync_3/DecryptI]
+  connect_bd_net -net AesSync_2_EncryptCypherO [get_bd_pins AesEncryptionRound3/CypherI] [get_bd_pins AesSync_2/EncryptCypherO]
+  connect_bd_net -net AesSync_2_EncryptO [get_bd_pins AesSync_2/EncryptO] [get_bd_pins AesSync_3/EncryptI]
+  connect_bd_net -net AesSync_3_DecryptCypherO [get_bd_pins AesDecryptionRound_3/CypherI] [get_bd_pins AesSync_3/DecryptCypherO]
+  connect_bd_net -net AesSync_3_DecryptO [get_bd_pins AesSync_3/DecryptO] [get_bd_pins AesSync_4/DecryptI]
+  connect_bd_net -net AesSync_3_EncryptCypherO [get_bd_pins AesEncryptionRound4/CypherI] [get_bd_pins AesSync_3/EncryptCypherO]
+  connect_bd_net -net AesSync_3_EncryptO [get_bd_pins AesSync_3/EncryptO] [get_bd_pins AesSync_4/EncryptI]
+  connect_bd_net -net AesSync_4_DecryptCypherO [get_bd_pins AesDecryptionRound_4/CypherI] [get_bd_pins AesSync_4/DecryptCypherO]
+  connect_bd_net -net AesSync_4_DecryptO [get_bd_pins AesSync_4/DecryptO] [get_bd_pins AesSync_5/DecryptI]
+  connect_bd_net -net AesSync_4_EncryptCypherO [get_bd_pins AesEncryptionRound5/CypherI] [get_bd_pins AesSync_4/EncryptCypherO]
+  connect_bd_net -net AesSync_4_EncryptO [get_bd_pins AesSync_4/EncryptO] [get_bd_pins AesSync_5/EncryptI]
+  connect_bd_net -net AesSync_5_DecryptCypherO [get_bd_pins AesDecryptionRound_5/CypherI] [get_bd_pins AesSync_5/DecryptCypherO]
+  connect_bd_net -net AesSync_5_DecryptO [get_bd_pins AesSync_5/DecryptO] [get_bd_pins AesSync_6/DecryptI]
+  connect_bd_net -net AesSync_5_EncryptCypherO [get_bd_pins AesEncryptionRound6/CypherI] [get_bd_pins AesSync_5/EncryptCypherO]
+  connect_bd_net -net AesSync_5_EncryptO [get_bd_pins AesSync_5/EncryptO] [get_bd_pins AesSync_6/EncryptI]
+  connect_bd_net -net AesSync_6_DecryptCypherO [get_bd_pins AesDecryptionRound_6/CypherI] [get_bd_pins AesSync_6/DecryptCypherO]
+  connect_bd_net -net AesSync_6_DecryptO [get_bd_pins AesSync_6/DecryptO] [get_bd_pins AesSync_7/DecryptI]
+  connect_bd_net -net AesSync_6_EncryptCypherO [get_bd_pins AesEncryptionRound7/CypherI] [get_bd_pins AesSync_6/EncryptCypherO]
+  connect_bd_net -net AesSync_6_EncryptO [get_bd_pins AesSync_6/EncryptO] [get_bd_pins AesSync_7/EncryptI]
+  connect_bd_net -net AesSync_7_DecryptCypherO [get_bd_pins AesDecryptionRound_7/CypherI] [get_bd_pins AesSync_7/DecryptCypherO]
+  connect_bd_net -net AesSync_7_DecryptO [get_bd_pins AesSync_7/DecryptO] [get_bd_pins AesSync_8/DecryptI]
+  connect_bd_net -net AesSync_7_EncryptCypherO [get_bd_pins AesEncryptionRound8/CypherI] [get_bd_pins AesSync_7/EncryptCypherO]
+  connect_bd_net -net AesSync_7_EncryptO [get_bd_pins AesSync_7/EncryptO] [get_bd_pins AesSync_8/EncryptI]
+  connect_bd_net -net AesSync_8_DecryptCypherO [get_bd_pins AesDecryptionRound_8/CypherI] [get_bd_pins AesSync_8/DecryptCypherO]
+  connect_bd_net -net AesSync_8_DecryptO [get_bd_pins AesSync_8/DecryptO] [get_bd_pins AesSync_9/DecryptI]
+  connect_bd_net -net AesSync_8_EncryptCypherO [get_bd_pins AesEncryptionRound9/CypherI] [get_bd_pins AesSync_8/EncryptCypherO]
+  connect_bd_net -net AesSync_8_EncryptO [get_bd_pins AesSync_8/EncryptO] [get_bd_pins AesSync_9/EncryptI]
+  connect_bd_net -net AesSync_9_DecryptCypherO [get_bd_pins AesSync_9/DecryptCypherO] [get_bd_pins LastDecryption/CypherI]
+  connect_bd_net -net AesSync_9_DecryptO [get_bd_ports DecryptO] [get_bd_pins AesMux_0/AesDecrypt] [get_bd_pins AesSync_9/DecryptO]
+  connect_bd_net -net AesSync_9_EncryptCypherO [get_bd_pins AesEncryptionLastRou_0/CypherI] [get_bd_pins AesSync_9/EncryptCypherO]
+  connect_bd_net -net AesSync_9_EncryptO [get_bd_ports EncryptO] [get_bd_pins AesMux_0/AesEncrypt] [get_bd_pins AesSync_9/EncryptO]
+  connect_bd_net -net Clock_1 [get_bd_ports Clock] [get_bd_pins AesSync_0/Clock] [get_bd_pins AesSync_1/Clock] [get_bd_pins AesSync_2/Clock] [get_bd_pins AesSync_3/Clock] [get_bd_pins AesSync_4/Clock] [get_bd_pins AesSync_5/Clock] [get_bd_pins AesSync_6/Clock] [get_bd_pins AesSync_7/Clock] [get_bd_pins AesSync_8/Clock] [get_bd_pins AesSync_9/Clock]
   connect_bd_net -net CypherI_1 [get_bd_ports CypherI] [get_bd_pins AesAddRoundKey_0/CypherI] [get_bd_pins AesDecryptionFirstRo_0/CypherI]
-  connect_bd_net -net DecryptI_1 [get_bd_ports DecryptI] [get_bd_ports DecryptO] [get_bd_pins AesMux_0/AesDecrypt]
-  connect_bd_net -net EncryptI_1 [get_bd_ports EncryptI] [get_bd_ports EncryptO] [get_bd_pins AesMux_0/AesEncrypt]
+  connect_bd_net -net DecryptI_1 [get_bd_ports DecryptI] [get_bd_pins AesSync_0/DecryptI]
+  connect_bd_net -net EncryptI_1 [get_bd_ports EncryptI] [get_bd_pins AesSync_0/EncryptI]
   connect_bd_net -net LastDecryption_CypherO [get_bd_pins AesMux_0/DecryptedCypherI] [get_bd_pins LastDecryption/CypherO]
+  connect_bd_net -net Reset_1 [get_bd_ports Reset] [get_bd_pins AesSync_0/Reset] [get_bd_pins AesSync_1/Reset] [get_bd_pins AesSync_2/Reset] [get_bd_pins AesSync_3/Reset] [get_bd_pins AesSync_4/Reset] [get_bd_pins AesSync_5/Reset] [get_bd_pins AesSync_6/Reset] [get_bd_pins AesSync_7/Reset] [get_bd_pins AesSync_8/Reset] [get_bd_pins AesSync_9/Reset]
 
   # Create address segments
 
