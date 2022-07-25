@@ -20,15 +20,15 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2021.2
-set current_vivado_version [version -short]
+#set scripts_vivado_version 2022.1
+#set current_vivado_version [version -short]
 
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+#if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+#   puts ""
+#   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
 
-   return 1
-}
+#   return 1
+#}
 
 ################################################################
 # START
@@ -406,7 +406,7 @@ proc create_root_design { parentCell } {
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
-   CONFIG.Coe_File {/cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/test.coe} \
+   CONFIG.Coe_File {/cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/Aes_simple_test.better.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
@@ -550,7 +550,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AXI_Mem_Interface_0_busy [get_bd_pins AXI_Mem_Interface_0/busy] [get_bd_pins MemStage/RamBusy]
   connect_bd_net -net AesStage_0_AesStallO [get_bd_pins AesStage_0/AesStallO] [get_bd_pins DecodeStage/AesStall] [get_bd_pins ExecutionStage/AesStall] [get_bd_pins Fetch/AesStall] [get_bd_pins MemStage/AesStall] [get_bd_pins RegisterSet/AesWr]
   connect_bd_net -net AesStage_0_CypherO [get_bd_pins AesStage_0/CypherO] [get_bd_pins Split_0/I]
-  connect_bd_net -net BTNL_1 [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins AesStage_0/Reset] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins design_aes_0/Reset] [get_bd_pins inverse_0/inv]
+  connect_bd_net -net BTNL_1 [get_bd_pins AXI_Mem_Interface_0/M_AXI_aresetn] [get_bd_pins AesStage_0/Reset] [get_bd_pins DecodeStage/Reset] [get_bd_pins ExecutionStage/Reset] [get_bd_pins FetchStage/Reset] [get_bd_pins MemStage/Reset] [get_bd_pins RegisterSet/Reset] [get_bd_pins SevenSeg_0/Reset] [get_bd_pins axi_bram_ctrl_0/s_axi_aresetn] [get_bd_pins inverse_0/inv]
   connect_bd_net -net BTNL_2 [get_bd_ports BTNL] [get_bd_pins inverse_0/val]
   connect_bd_net -net Combine_0_O [get_bd_pins Combine_0/O] [get_bd_pins design_aes_0/CypherI]
   set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets Combine_0_O]
@@ -573,7 +573,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Decode_AESDecrypt [get_bd_pins Decode/AESDecrypt] [get_bd_pins ExecutionStage/AESDecryptI]
   connect_bd_net -net Decode_AESEncrypt [get_bd_pins Decode/AESEncrypt] [get_bd_pins ExecutionStage/AESEncryptI]
   connect_bd_net -net Decode_InterlockO [get_bd_pins Decode/InterlockO] [get_bd_pins DecodeStage/InterlockI] [get_bd_pins Fetch/InterlockI]
-  connect_bd_net -net Decode_LoadAes [get_bd_pins Decode/LoadAes] [get_bd_pins RegisterSet/LoadAesData]
   connect_bd_net -net Decode_MemAccess [get_bd_pins Decode/MemAccess] [get_bd_pins ExecutionStage/MemAccessI]
   connect_bd_net -net Decode_MemWrEn [get_bd_pins Decode/MemWrEn] [get_bd_pins ExecutionStage/MemWrEnI]
   connect_bd_net -net Decode_Set7Seg [get_bd_pins Decode/Set7Seg] [get_bd_pins ExecutionStage/Set7SegI]
@@ -603,7 +602,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Fetch_ImemAddr [get_bd_pins Fetch/ImemAddr] [get_bd_pins IMemory/addrb]
   connect_bd_net -net Forward_0_FwdData1 [get_bd_pins ExecutionStage/SrcData1I] [get_bd_pins Forward/FwdData1]
   connect_bd_net -net Forward_0_FwdData2 [get_bd_pins ExecutionStage/SrcData2I] [get_bd_pins Forward/FwdData2]
-  connect_bd_net -net GCLK_1 [get_bd_ports GCLK] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aclk] [get_bd_pins AesStage_0/Clock] [get_bd_pins DecodeStage/Clock] [get_bd_pins ExecutionStage/Clock] [get_bd_pins FetchStage/Clock] [get_bd_pins IMemory/clka] [get_bd_pins IMemory/clkb] [get_bd_pins MemStage/Clock] [get_bd_pins RegisterSet/Clock] [get_bd_pins SevenSeg_0/Clock] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins design_aes_0/Clock]
+  connect_bd_net -net GCLK_1 [get_bd_ports GCLK] [get_bd_pins AXI_Mem_Interface_0/M_AXI_aclk] [get_bd_pins AesStage_0/Clock] [get_bd_pins DecodeStage/Clock] [get_bd_pins ExecutionStage/Clock] [get_bd_pins FetchStage/Clock] [get_bd_pins IMemory/clka] [get_bd_pins IMemory/clkb] [get_bd_pins MemStage/Clock] [get_bd_pins RegisterSet/Clock] [get_bd_pins SevenSeg_0/Clock] [get_bd_pins axi_bram_ctrl_0/s_axi_aclk]
   connect_bd_net -net IMemory_douta [get_bd_pins IMemory/douta] [get_bd_pins MemMux_0/ROMDataIn]
   connect_bd_net -net IMemory_doutb [get_bd_pins DecodeStage/InstI] [get_bd_pins IMemory/doutb]
   connect_bd_net -net MUX_0_O [get_bd_pins ALU/B] [get_bd_pins MUX/O]
