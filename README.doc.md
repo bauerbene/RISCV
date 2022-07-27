@@ -14,7 +14,10 @@ Das Aes Modul wurde als eigenes Block Diagram umgesetzt. Im folgenden werden die
 - AesAddRoundKey
     - Dieser Block wird sowohl für die Verschlüsselung (als ersten Schritt), als auch für die Entschlüsselung (als letzten Schritt) benutzt und entspricht der bekannten AddRoundKey-Operation der AES-Verschlüsselung
 
-- 
+- AesEncryptionRoundX
+    - Dieses Modul spiegelt eine einzelne Verschlüsselungsrunde im Aes-Algorithmus wieder. Die Verschlüsselungsrunde besteht aus folgenden 4 Funktionen
+        - SubBytes 
+        - 
 
 
 - interface des Aes Moduls
