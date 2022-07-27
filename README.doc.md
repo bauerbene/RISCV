@@ -85,3 +85,17 @@ Dieser Befehl enspricht einem *store encrypted*. Er verschlüsselt den Inhalt de
     csrc 0xf, x13
 ```
 Dieser Befehl enspricht einem *load decrypted*. Er lädt 4 wörter von der Speicheradress die in x13 steht, Entschlüsselt diese und schreibt sie zurück in xf, x10, x11 und x12.
+
+## Notes for Development
+
+Build the vivado Project:
+1. modify the /vivado/scripts/block_diagrams/design_riscv.tcl
+   - set the absolute path of the .coe file to the correct path on your computer
+2. Start Vivado and open the tcl console
+3. source the /vivado/scripts/build.tcl script. This will automatically build the vivado project
+
+Editing the block designs:\
+After Editing one of the block designs you have to export the new design manually: 
+1. open the modified block design in vivado
+2. go to File -> Export -> Export Block Diagram
+3. Select /vivado/scripts/block_diagrams/<name_of_the_block_design>.tcl as destination and safe
