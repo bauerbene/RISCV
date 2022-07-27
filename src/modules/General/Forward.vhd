@@ -8,14 +8,18 @@ ENTITY Forward IS
         -- from Decode
         SrcRegNo1, SrcRegNo2 : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
+        AesRamAddressRegNo : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+
         -- from RegisterSet
         SrcData1, SrcData2 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         -- Aes Data from RegisterSet
         AesData1, AesData2, AesData3, AesData4 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrRamAddressI                       : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         -- AesDataOut
         AesData1O, AesData2O, AesData3O, AesData4O : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrRamAddressO                           : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         -- from ALU or ExecuteStage
         DestWrEn_EX  : IN STD_LOGIC;
@@ -35,7 +39,7 @@ END Forward;
 ARCHITECTURE Behavioral OF Forward IS
 BEGIN
 
-    PROCESS (SrcRegNo1, SrcRegNo2, SrcData1, SrcData2, DestWrEn_EX, DestRegNo_EX, DestData_EX, DestWrEn_MEM, DestRegNo_MEM, DestData_MEM, AesData1, AesData2, AesData3, AesData4)
+    PROCESS (SrcRegNo1, SrcRegNo2, SrcData1, SrcData2, DestWrEn_EX, DestRegNo_EX, DestData_EX, DestWrEn_MEM, DestRegNo_MEM, DestData_MEM, AesData1, AesData2, AesData3, AesData4, AesWrRamAddressI, AesRamAddressRegNo)
     BEGIN
         IF DestWrEn_EX = '1' AND SrcRegNo1 = DestRegNo_EX AND SrcRegNo1 /= x0 THEN
             FwdData1 <= DestData_EX;
@@ -51,6 +55,14 @@ BEGIN
             FwdData2 <= DestData_MEM;
         ELSE
             FwdData2 <= SrcData2;
+        END IF;
+
+        IF DestWrEn_EX = '1' AND AesRamAddressRegNo = DestRegNo_EX AND AesRamAddressRegNo /= x0 THEN
+            AesWrRamAddressO <= DestData_EX;
+        ELSIF DestWrEn_MEM = '1' AND AesRamAddressRegNo = DestRegNo_MEM AND AesRamAddressRegNo /= x0 THEN
+            AesWrRamAddressO <= DestData_MEM;
+        ELSE
+            AesWrRamAddressO <= AesWrRamAddressI;
         END IF;
 
         IF DestWrEn_EX = '1' AND SrcRegNo1 /= x0 THEN

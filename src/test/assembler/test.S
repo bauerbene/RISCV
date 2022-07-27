@@ -57,10 +57,28 @@ main:
     csrw 0x2, x5
     csrw 0x2, x9
 
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+
     # encrypt memory
     # csrs imm, rs
     # encrypt the next 128 bit memory on position imm + rs 
     #csrs 0x200, x1
+
+    lui x13, 0x2
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    csrs 0x01, x13
 
     # decrypt memory
     # csrc imm, rs

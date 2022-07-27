@@ -7,19 +7,22 @@ USE work.constants.ALL;
 
 ENTITY MemStage IS
     PORT (
-        Clock      : IN STD_LOGIC;
-        Reset      : IN STD_LOGIC;
-        DestDataI  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        DestWrEnI  : IN STD_LOGIC;
-        DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-        MemAccessI : IN STD_LOGIC;
-        MemWrData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        MemByteEna : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        FunctI     : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        StallI     : IN STD_LOGIC;
-        RamRdData  : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        RamBusy    : IN STD_LOGIC;
-        AesStall   : IN STD_LOGIC;
+        Clock        : IN STD_LOGIC;
+        Reset        : IN STD_LOGIC;
+        DestDataI    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        DestWrEnI    : IN STD_LOGIC;
+        DestRegNoI   : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        MemAccessI   : IN STD_LOGIC;
+        MemWrData    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        MemByteEna   : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        FunctI       : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        StallI       : IN STD_LOGIC;
+        RamRdData    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        RamBusy      : IN STD_LOGIC;
+        AesStall     : IN STD_LOGIC;
+        AesWrData    : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrAddress : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrEn      : IN STD_LOGIC;
 
         DestDataO  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         DestWrEnO  : OUT STD_LOGIC;
@@ -72,7 +75,13 @@ BEGIN
                             currentState <= Read;
                             RamReadEn <= '1';
                         END IF;
-
+                    ELSIF AesWrEn = '1' AND AesWrAddress >= ROM_DEPTH THEN
+                        RamAddress <= AesWrAddress(31 DOWNTO 2) & b"00";
+                        StallO <= '1';
+                        currentState <= Write;
+                        RamWriteEn <= '1';
+                        RamByteEna <= "1111";
+                        RamWrData <= AesWrData;
                     END IF;
 
                 WHEN Read =>

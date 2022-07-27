@@ -6,27 +6,29 @@ USE work.constants.ALL;
 
 ENTITY RegisterSet IS
     PORT (
-        RdRegNo1     : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
-        RdRegNo2     : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
-        WrEn         : IN STD_LOGIC;
-        WrRegNo      : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
-        WrData       : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        Stall        : IN STD_LOGIC := '0';
-        RdData1      : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        RdData2      : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        LoadAesData  : IN STD_LOGIC := '0';
-        AesData1     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesData2     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesData3     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesData4     : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        Clock        : IN STD_LOGIC;
-        Reset        : IN STD_LOGIC;
-        AesWr        : IN STD_LOGIC;
-        AesWrData1   : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesWrData2   : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesWrData3   : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesWrData4   : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        AesDestRegNo : IN STD_LOGIC_VECTOR(4 DOWNTO 0)
+        RdRegNo1             : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
+        RdRegNo2             : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
+        WrEn                 : IN STD_LOGIC;
+        WrRegNo              : IN STD_LOGIC_VECTOR (4 DOWNTO 0);
+        WrData               : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Stall                : IN STD_LOGIC := '0';
+        RdData1              : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        RdData2              : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        LoadAesData          : IN STD_LOGIC := '0';
+        AesData1             : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesData2             : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesData3             : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesData4             : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        Clock                : IN STD_LOGIC;
+        Reset                : IN STD_LOGIC;
+        AesWr                : IN STD_LOGIC;
+        AesWrData1           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrData2           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrData3           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesWrData4           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesDestRegNo         : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        AesWrRamAddressRegNo : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        AesWrRamAddress      : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END RegisterSet;
 
@@ -37,7 +39,7 @@ ARCHITECTURE Behavioral OF RegisterSet IS
 
 BEGIN
 
-    PROCESS (RdRegNo1, RdRegNo2, Registers, LoadAesData)
+    PROCESS (RdRegNo1, RdRegNo2, Registers, LoadAesData, AesWrRamAddressRegNo)
     BEGIN
         RdData1 <= Registers(to_integer(unsigned(RdRegNo1)));
         RdData2 <= Registers(to_integer(unsigned(RdRegNo2)));
@@ -47,6 +49,7 @@ BEGIN
             AesData3 <= Registers(to_integer(unsigned(RdRegNo1)) + 2);
             AesData4 <= Registers(to_integer(unsigned(RdRegNo1)) + 3);
         END IF;
+        AesWrRamAddress <= Registers(to_integer(unsigned(AesWrRamAddressRegNo)));
     END PROCESS;
 
     PROCESS (Reset, Clock)
