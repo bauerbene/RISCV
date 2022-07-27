@@ -13,10 +13,61 @@ Disassembly of section .text:
   14:	22218193          	addi	gp,gp,546 # 22222 <main+0x22222>
   18:	00011237          	lui	tp,0x11
   1c:	11120213          	addi	tp,tp,273 # 11111 <main+0x11111>
-  20:	00109073          	fsflags	ra
-  24:	00209073          	fsrm	ra
-  28:	2000a073          	csrs	hstatus,ra
-  2c:	2000b073          	csrc	hstatus,ra
+  20:	000992b7          	lui	t0,0x99
+  24:	77728293          	addi	t0,t0,1911 # 99777 <main+0x99777>
+  28:	00088337          	lui	t1,0x88
+  2c:	77730313          	addi	t1,t1,1911 # 88777 <main+0x88777>
+  30:	000773b7          	lui	t2,0x77
+  34:	77738393          	addi	t2,t2,1911 # 77777 <main+0x77777>
+  38:	00066437          	lui	s0,0x66
+  3c:	66640413          	addi	s0,s0,1638 # 66666 <main+0x66666>
+  40:	000114b7          	lui	s1,0x11
+  44:	11148493          	addi	s1,s1,273 # 11111 <main+0x11111>
+  48:	00022537          	lui	a0,0x22
+  4c:	22250513          	addi	a0,a0,546 # 22222 <main+0x22222>
+  50:	000335b7          	lui	a1,0x33
+  54:	33358593          	addi	a1,a1,819 # 33333 <main+0x33333>
+  58:	00044637          	lui	a2,0x44
+  5c:	44460613          	addi	a2,a2,1092 # 44444 <main+0x44444>
+  60:	00000013          	nop
+  64:	00000013          	nop
+  68:	00109073          	fsflags	ra
+  6c:	00129073          	fsflags	t0
+  70:	00149073          	fsflags	s1
+  74:	00000013          	nop
+  78:	00000013          	nop
+  7c:	00000013          	nop
+  80:	00000013          	nop
+  84:	00000013          	nop
+  88:	00000013          	nop
+  8c:	00000013          	nop
+  90:	00000013          	nop
+  94:	00000013          	nop
+  98:	00000013          	nop
+  9c:	00209073          	fsrm	ra
+  a0:	00229073          	fsrm	t0
+  a4:	00249073          	fsrm	s1
+  a8:	00000013          	nop
+  ac:	00000013          	nop
+  b0:	00000013          	nop
+  b4:	00000013          	nop
+  b8:	00000013          	nop
+  bc:	00000013          	nop
+  c0:	00000013          	nop
+  c4:	00000013          	nop
+  c8:	00000013          	nop
+  cc:	00000013          	nop
+  d0:	000026b7          	lui	a3,0x2
+  d4:	00000013          	nop
+  d8:	00000013          	nop
+  dc:	00000013          	nop
+  e0:	00000013          	nop
+  e4:	0016a073          	csrs	fflags,a3
+  e8:	00000013          	nop
+  ec:	00000013          	nop
+  f0:	00000013          	nop
+  f4:	00000013          	nop
+  f8:	00f6b073          	csrc	0xf,a3
 
 Disassembly of section .riscv.attributes:
 

@@ -12,27 +12,29 @@ ENTITY Decode IS
         Clear      : IN STD_LOGIC;
 
         -- out
-        Funct            : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
-        SrcRegNo1        : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        SrcRegNo2        : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        DestWrEn         : OUT STD_LOGIC;
-        DestRegNo        : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-        Aux              : OUT STD_LOGIC;
-        PCNext           : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        Jump             : OUT STD_LOGIC;
-        JumpRel          : OUT STD_LOGIC;
-        JumpTarget       : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        MemAccess        : OUT STD_LOGIC;
-        MemWrEn          : OUT STD_LOGIC;
-        InterlockO       : OUT STD_LOGIC;
-        Imm              : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        SelSrc2          : OUT STD_LOGIC;
-        Set7Seg          : OUT STD_LOGIC;
-        AESEncrypt       : OUT STD_LOGIC;
-        AESDecrypt       : OUT STD_LOGIC;
-        LoadAes          : OUT STD_LOGIC;
-        WriteAesToRam    : OUT STD_LOGIC;
-        RamWrAdressRegNo : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+        Funct             : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
+        SrcRegNo1         : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        SrcRegNo2         : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        DestWrEn          : OUT STD_LOGIC;
+        DestRegNo         : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
+        Aux               : OUT STD_LOGIC;
+        PCNext            : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        Jump              : OUT STD_LOGIC;
+        JumpRel           : OUT STD_LOGIC;
+        JumpTarget        : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        MemAccess         : OUT STD_LOGIC;
+        MemWrEn           : OUT STD_LOGIC;
+        InterlockO        : OUT STD_LOGIC;
+        Imm               : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        SelSrc2           : OUT STD_LOGIC;
+        Set7Seg           : OUT STD_LOGIC;
+        AESEncrypt        : OUT STD_LOGIC;
+        AESDecrypt        : OUT STD_LOGIC;
+        LoadAes           : OUT STD_LOGIC;
+        WriteAesToRam     : OUT STD_LOGIC;
+        RamWrAddressRegNo : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        RamRdAddressRegNo : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+        AesRdFromRam      : OUT STD_LOGIC
     );
 END Decode;
 
@@ -67,7 +69,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_OP_IMM =>
                 -- I-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
@@ -97,7 +101,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_LUI =>
                 -- U-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(Inst(31 DOWNTO 12) & x"000");
@@ -122,7 +128,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_AUIPC =>
                 -- U-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(signed(Inst(31 DOWNTO 12) & x"000") + signed(PC));
@@ -147,7 +155,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_JAL =>
                 -- J-Type instruction
                 JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(19 DOWNTO 12) & Inst(20) & Inst(30 DOWNTO 21) & "0"));
@@ -172,7 +182,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_JALR =>
                 -- I-Type instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
@@ -198,7 +210,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_BRANCH =>
                 -- B-Type Instruction
                 JumpTarget <= STD_LOGIC_VECTOR(signed(PC) + signed(Inst(31) & Inst(7) & Inst(30 DOWNTO 25) & Inst(11 DOWNTO 8) & "0"));
@@ -223,7 +237,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_LOAD =>
                 -- I-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 20)), 32));
@@ -248,7 +264,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_STORE =>
                 -- S-Type Instruction
                 Imm <= STD_LOGIC_VECTOR(resize(signed(Inst(31 DOWNTO 25) & Inst(11 DOWNTO 7)), 32));
@@ -274,7 +292,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN opcode_SYSTEM =>
                 IF Inst(31 DOWNTO 20) = x"788" AND Inst(14 DOWNTO 12) = "001" AND Inst(11 DOWNTO 7) = "00000" THEN -- seven segment instruction
                     SrcRegNo1 <= Inst(19 DOWNTO 15);
@@ -283,7 +303,9 @@ BEGIN
                     AESDecrypt <= '0';
                     LoadAes <= '0';
                     WriteAesToRam <= '0';
-                    RamWrAdressRegNo <= (OTHERS => '-');
+                    RamWrAddressRegNo <= (OTHERS => '-');
+                    RamRdAddressRegNo <= (OTHERS => '-');
+                    AesRdFromRam <= '0';
 
                 ELSIF Inst(31 DOWNTO 20) = x"001" AND Inst(14 DOWNTO 12) = "001" THEN -- encrypt register instruction
                     SrcRegNo1 <= Inst(19 DOWNTO 15);
@@ -292,7 +314,9 @@ BEGIN
                     Set7Seg <= '0';
                     LoadAes <= '1';
                     WriteAesToRam <= '0';
-                    RamWrAdressRegNo <= (OTHERS => '-');
+                    RamWrAddressRegNo <= (OTHERS => '-');
+                    RamRdAddressRegNo <= (OTHERS => '-');
+                    AesRdFromRam <= '0';
                 ELSIF Inst(31 DOWNTO 20) = x"002" AND Inst(14 DOWNTO 12) = "001" THEN -- decrypt register instruction
                     SrcRegNo1 <= Inst(19 DOWNTO 15);
                     AesEncrypt <= '0';
@@ -300,7 +324,9 @@ BEGIN
                     Set7Seg <= '0';
                     LoadAes <= '1';
                     WriteAesToRam <= '0';
-                    RamWrAdressRegNo <= (OTHERS => '-');
+                    RamWrAddressRegNo <= (OTHERS => '-');
+                    RamRdAddressRegNo <= (OTHERS => '-');
+                    AesRdFromRam <= '0';
                 ELSIF Inst(14 DOWNTO 12) = "010" THEN -- store encrypted instruction
                     SrcRegNo1 <= Inst(24 DOWNTO 20);
                     AesEncrypt <= '1';
@@ -308,8 +334,19 @@ BEGIN
                     Set7Seg <= '0';
                     LoadAes <= '1';
                     WriteAesToRam <= '1';
-                    RamWrAdressRegNo <= Inst(19 DOWNTO 15);
-
+                    RamWrAddressRegNo <= Inst(19 DOWNTO 15);
+                    RamRdAddressRegNo <= (OTHERS => '-');
+                    AesRdFromRam <= '0';
+                ELSIF Inst(14 DOWNTO 12) = "011" THEN -- load decrypted instruction
+                    SrcRegNo1 <= Inst(24 DOWNTO 20);
+                    AesEncrypt <= '0';
+                    AesDecrypt <= '1';
+                    Set7Seg <= '0';
+                    LoadAes <= '0';
+                    WriteAesToRam <= '0';
+                    RamWrAddressRegNo <= (OTHERS => '-');
+                    RamRdAddressRegNo <= Inst(19 DOWNTO 15);
+                    AesRdFromRam <= '1';
                 ELSE
                     SrcRegNo1 <= (OTHERS => '-');
                     Set7Seg <= '0';
@@ -317,7 +354,9 @@ BEGIN
                     AesDecrypt <= '0';
                     LoadAes <= '0';
                     WriteAesToRam <= '0';
-                    RamWrAdressRegNo <= (OTHERS => '-');
+                    RamWrAddressRegNo <= (OTHERS => '-');
+                    RamRdAddressRegNo <= (OTHERS => '-');
+                    AesRdFromRam <= '0';
                 END IF;
 
                 DestWrEn <= '0';
@@ -356,7 +395,9 @@ BEGIN
                 Set7Seg <= '0';
                 LoadAes <= '0';
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
             WHEN OTHERS =>
                 DestWrEn <= '0';
                 MemWrEn <= '0';
@@ -379,7 +420,9 @@ BEGIN
                 JumpTarget <= (OTHERS => '-');
                 PCNext <= (OTHERS => '-');
                 WriteAesToRam <= '0';
-                RamWrAdressRegNo <= (OTHERS => '-');
+                RamWrAddressRegNo <= (OTHERS => '-');
+                RamRdAddressRegNo <= (OTHERS => '-');
+                AesRdFromRam <= '0';
         END CASE;
 
         IF Clear = '1' OR InterlockI = '1' THEN

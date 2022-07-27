@@ -83,7 +83,11 @@ main:
     # decrypt memory
     # csrc imm, rs
     # decrypt the next 128 bit memory on position imm  +rs
-    #csrc 0x200, x1
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    csrc 0xf, x13
     
 
 

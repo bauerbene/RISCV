@@ -39,45 +39,47 @@ BEGIN
             AesStallO <= '0';
             DestRegNoO <= (OTHERS => '-');
         ELSIF rising_edge(Clock) THEN
-            IF Stall = '0' THEN
-                CASE currentState IS
-                    WHEN Idle =>
-                        IF (AesEncrypt = '1' OR AesDecrypt = '1') AND WrCypherToRam = '0' THEN
-                            AesStallO <= '1';
-                            currentState <= AesWriteRegister;
-                            CypherO <= CypherI;
-                            DestRegNoO <= DestRegNoI;
-                        ELSIF (AesEncrypt = '1' OR AesDecrypt = '1') AND WrCypherToRam = '1' THEN
-                            AesStallO <= '1';
-                            currentState <= AesWriteRam;
-                            CypherO <= CypherI;
-                            AesMemAccessO <= '1';
-                            AesMemAddress <= RamWrAddress;
-                            AesMemWrData <= CypherI(127 DOWNTO 96);
-                            CypherToWriteToRam := CypherI;
-                            addressCounter := to_integer(unsigned(RamWrAddress));
-                            initialAddress := addressCounter;
-                        END IF;
-                    WHEN AesWriteRegister =>
-                        AesStallO <= '0';
-                        currentState <= Idle;
-                    WHEN AesWriteRam =>
-                        addressCounter := addressCounter + 4;
-                        bitCounter := bitCounter + 32;
-                        AesMemAddress <= STD_LOGIC_VECTOR(to_unsigned(initialAddress + addressCounter, 32));
-                        AesMemAccessO <= '1';
-                        AesMemWrData <= CypherToWriteToRam(127 - bitCounter DOWNTO 127 - bitCounter - 31);
+
+            CASE currentState IS
+                WHEN Idle =>
+                    IF (AesEncrypt = '1' OR AesDecrypt = '1') AND WrCypherToRam = '0' THEN
+                        AesStallO <= '1';
+                        currentState <= AesWriteRegister;
                         CypherO <= CypherI;
-                        IF addressCounter = initialAddress + 12 THEN
+                        DestRegNoO <= DestRegNoI;
+                    ELSIF (AesEncrypt = '1' OR AesDecrypt = '1') AND WrCypherToRam = '1' THEN
+                        AesStallO <= '1';
+                        currentState <= AesWriteRam;
+                        CypherO <= CypherI;
+                        AesMemAccessO <= '1';
+                        AesMemAddress <= RamWrAddress;
+                        AesMemWrData <= CypherI(127 DOWNTO 96);
+                        CypherToWriteToRam := CypherI;
+                        addressCounter := 0;
+                        initialAddress := to_integer(unsigned(RamWrAddress));
+                    END IF;
+                WHEN AesWriteRegister =>
+                    AesStallO <= '0';
+                    currentState <= Idle;
+                WHEN AesWriteRam =>
+                    IF Stall = '0' THEN
+                        addressCounter := addressCounter + 4;
+                        IF addressCounter = 16 THEN
                             AesStallO <= '0';
                             currentState <= Idle;
                             bitCounter := 0;
                             addressCounter := 0;
                             AesMemAccessO <= '0';
+                        ELSE
+                            bitCounter := bitCounter + 32;
+                            AesMemAddress <= STD_LOGIC_VECTOR(to_unsigned(initialAddress + addressCounter, 32));
+                            AesMemAccessO <= '1';
+                            AesMemWrData <= CypherToWriteToRam(127 - bitCounter DOWNTO 127 - bitCounter - 31);
+                            CypherO <= CypherI;
                         END IF;
-                    WHEN OTHERS => NULL;
-                END CASE;
-            END IF;
+                    END IF;
+                WHEN OTHERS => NULL;
+            END CASE;
         END IF;
     END PROCESS;
 

@@ -28,7 +28,9 @@ ENTITY RegisterSet IS
         AesWrData4           : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         AesDestRegNo         : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         AesWrRamAddressRegNo : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-        AesWrRamAddress      : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        AesWrRamAddress      : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        AesRdRamAddressRegNo : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        AesRdRamAddress      : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END RegisterSet;
 
@@ -50,6 +52,7 @@ BEGIN
             AesData4 <= Registers(to_integer(unsigned(RdRegNo1)) + 3);
         END IF;
         AesWrRamAddress <= Registers(to_integer(unsigned(AesWrRamAddressRegNo)));
+        AesRdRamAddress <= Registers(to_integer(unsigned(AesRdRamAddressRegNo)));
     END PROCESS;
 
     PROCESS (Reset, Clock)
