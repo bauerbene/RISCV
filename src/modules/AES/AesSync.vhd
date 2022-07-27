@@ -4,16 +4,22 @@ USE IEEE.numeric_std.ALL;
 
 ENTITY AesSync IS
     PORT (
-        Clock          : IN STD_LOGIC;
-        Reset          : IN STD_LOGIC;
+        Clock : IN STD_LOGIC;
+        Reset : IN STD_LOGIC;
+
+        AesStall : IN STD_LOGIC;
+
         EncryptCypherI : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
-        EncryptCypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         DecryptCypherI : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
-        DecryptCypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         EncryptI       : IN STD_LOGIC;
         DecryptI       : IN STD_LOGIC;
+        DestRegNoI     : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+
+        EncryptCypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
+        DecryptCypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         EncryptO       : OUT STD_LOGIC;
-        DecryptO       : OUT STD_LOGIC
+        DecryptO       : OUT STD_LOGIC;
+        DestRegNoO     : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
     );
 END AesSync;
 
@@ -27,11 +33,15 @@ BEGIN
             DecryptCypherO <= (OTHERS => '-');
             EncryptO <= '0';
             DecryptO <= '0';
+            DestRegNoO <= (OTHERS => '-');
         ELSIF rising_edge(Clock) THEN
-            EncryptCypherO <= EncryptCypherI;
-            DecryptCypherO <= DecryptCypherI;
-            EncryptO <= EncryptI;
-            DecryptO <= DecryptI;
+            IF AesStall = '0' THEN
+                EncryptCypherO <= EncryptCypherI;
+                DecryptCypherO <= DecryptCypherI;
+                EncryptO <= EncryptI;
+                DecryptO <= DecryptI;
+                DestRegNoO <= DestRegNoI;
+            END IF;
         END IF;
     END PROCESS;
 

@@ -25,8 +25,6 @@ ENTITY ExecutionStage IS
         SelSrc2I    : IN STD_LOGIC;
         Stall       : IN STD_LOGIC;
         Set7SegI    : IN STD_LOGIC;
-        AESEncryptI : IN STD_LOGIC;
-        AESDecryptI : IN STD_LOGIC;
         AesStall    : IN STD_LOGIC;
 
         FunctO      : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -44,9 +42,7 @@ ENTITY ExecutionStage IS
         ClearO      : OUT STD_LOGIC;
         ImmO        : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         SelSrc2O    : OUT STD_LOGIC;
-        Set7SegO    : OUT STD_LOGIC;
-        AESEncryptO : OUT STD_LOGIC;
-        AESDecryptO : OUT STD_LOGIC
+        Set7SegO    : OUT STD_LOGIC
     );
 END ExecutionStage;
 
@@ -71,8 +67,6 @@ BEGIN
             SelSrc2O <= '0';
             ClearO <= '0';
             Set7SegO <= '0';
-            AESEncryptO <= '0';
-            AESDecryptO <= '0';
         ELSIF rising_edge(Clock) THEN
             IF Stall = '0' AND AesStall = '0' THEN
                 FunctO <= FunctI;
@@ -91,8 +85,6 @@ BEGIN
                 SelSrc2O <= SelSrc2I;
                 ClearO <= ClearI;
                 Set7SegO <= Set7SegI;
-                AESEncryptO <= AESEncryptI;
-                AESDecryptO <= AESDecryptI;
             END IF;
         END IF;
     END PROCESS;

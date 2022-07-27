@@ -11,6 +11,8 @@ ENTITY AesStage IS
         CypherI    : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
         CypherO    : OUT STD_LOGIC_VECTOR(127 DOWNTO 0);
         Stall      : IN STD_LOGIC;
+        DestRegNoI : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        DestRegNoO : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
 
         AesStallO : OUT STD_LOGIC
 
@@ -26,6 +28,7 @@ BEGIN
         IF Reset = '0' THEN
             currentState <= Idle;
             AesStallO <= '0';
+            DestRegNoO <= (OTHERS => '-');
         ELSIF rising_edge(Clock) THEN
             IF Stall = '0' THEN
                 CASE currentState IS
@@ -34,6 +37,7 @@ BEGIN
                             AesStallO <= '1';
                             currentState <= AesWrite;
                             CypherO <= CypherI;
+                            DestRegNoO <= DestRegNoI;
                         END IF;
                     WHEN AesWrite =>
                         AesStallO <= '0';

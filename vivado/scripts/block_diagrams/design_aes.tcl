@@ -20,15 +20,15 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-#set scripts_vivado_version 2022.1
-#set current_vivado_version [version -short]
+set scripts_vivado_version 2021.2
+set current_vivado_version [version -short]
 
-#if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-#   puts ""
-#   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+   puts ""
+   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
 
-#   return 1
-#}
+   return 1
+}
 
 ################################################################
 # START
@@ -229,11 +229,14 @@ proc create_root_design { parentCell } {
   # Create interface ports
 
   # Create ports
+  set AesStall [ create_bd_port -dir I AesStall ]
   set Clock [ create_bd_port -dir I Clock ]
   set CypherI [ create_bd_port -dir I -from 127 -to 0 CypherI ]
   set CypherO [ create_bd_port -dir O -from 127 -to 0 CypherO ]
   set DecryptI [ create_bd_port -dir I DecryptI ]
   set DecryptO [ create_bd_port -dir O DecryptO ]
+  set DestRegNoI [ create_bd_port -dir I -from 4 -to 0 DestRegNoI ]
+  set DestRegNoO [ create_bd_port -dir O -from 4 -to 0 DestRegNoO ]
   set EncryptI [ create_bd_port -dir I EncryptI ]
   set EncryptO [ create_bd_port -dir O EncryptO ]
   set Reset [ create_bd_port -dir I Reset ]
@@ -646,49 +649,61 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AesEncryptionRound8_CypherO [get_bd_pins AesEncryptionRound8/CypherO] [get_bd_pins AesSync_8/EncryptCypherI]
   connect_bd_net -net AesEncryptionRound9_CypherO [get_bd_pins AesEncryptionRound9/CypherO] [get_bd_pins AesSync_9/EncryptCypherI]
   connect_bd_net -net AesMux_0_CypherO [get_bd_ports CypherO] [get_bd_pins AesMux_0/CypherO]
+  connect_bd_net -net AesStall_1 [get_bd_ports AesStall] [get_bd_pins AesSync_0/AesStall] [get_bd_pins AesSync_1/AesStall] [get_bd_pins AesSync_2/AesStall] [get_bd_pins AesSync_3/AesStall] [get_bd_pins AesSync_4/AesStall] [get_bd_pins AesSync_5/AesStall] [get_bd_pins AesSync_6/AesStall] [get_bd_pins AesSync_7/AesStall] [get_bd_pins AesSync_8/AesStall] [get_bd_pins AesSync_9/AesStall]
   connect_bd_net -net AesSync_0_DecryptCypherO [get_bd_pins AesDecryptionRound_0/CypherI] [get_bd_pins AesSync_0/DecryptCypherO]
   connect_bd_net -net AesSync_0_DecryptO [get_bd_pins AesSync_0/DecryptO] [get_bd_pins AesSync_1/DecryptI]
+  connect_bd_net -net AesSync_0_DestRegNoO [get_bd_pins AesSync_0/DestRegNoO] [get_bd_pins AesSync_1/DestRegNoI]
   connect_bd_net -net AesSync_0_EncryptCypherO [get_bd_pins AesEncryptionRound1/CypherI] [get_bd_pins AesSync_0/EncryptCypherO]
   connect_bd_net -net AesSync_0_EncryptO [get_bd_pins AesSync_0/EncryptO] [get_bd_pins AesSync_1/EncryptI]
   connect_bd_net -net AesSync_1_DecryptCypherO [get_bd_pins AesDecryptionRound_1/CypherI] [get_bd_pins AesSync_1/DecryptCypherO]
   connect_bd_net -net AesSync_1_DecryptO [get_bd_pins AesSync_1/DecryptO] [get_bd_pins AesSync_2/DecryptI]
+  connect_bd_net -net AesSync_1_DestRegNoO [get_bd_pins AesSync_1/DestRegNoO] [get_bd_pins AesSync_2/DestRegNoI]
   connect_bd_net -net AesSync_1_EncryptCypherO [get_bd_pins AesEncryptionRound2/CypherI] [get_bd_pins AesSync_1/EncryptCypherO]
   connect_bd_net -net AesSync_1_EncryptO [get_bd_pins AesSync_1/EncryptO] [get_bd_pins AesSync_2/EncryptI]
   connect_bd_net -net AesSync_2_DecryptCypherO [get_bd_pins AesDecryptionRound_2/CypherI] [get_bd_pins AesSync_2/DecryptCypherO]
   connect_bd_net -net AesSync_2_DecryptO [get_bd_pins AesSync_2/DecryptO] [get_bd_pins AesSync_3/DecryptI]
+  connect_bd_net -net AesSync_2_DestRegNoO [get_bd_pins AesSync_2/DestRegNoO] [get_bd_pins AesSync_3/DestRegNoI]
   connect_bd_net -net AesSync_2_EncryptCypherO [get_bd_pins AesEncryptionRound3/CypherI] [get_bd_pins AesSync_2/EncryptCypherO]
   connect_bd_net -net AesSync_2_EncryptO [get_bd_pins AesSync_2/EncryptO] [get_bd_pins AesSync_3/EncryptI]
   connect_bd_net -net AesSync_3_DecryptCypherO [get_bd_pins AesDecryptionRound_3/CypherI] [get_bd_pins AesSync_3/DecryptCypherO]
   connect_bd_net -net AesSync_3_DecryptO [get_bd_pins AesSync_3/DecryptO] [get_bd_pins AesSync_4/DecryptI]
+  connect_bd_net -net AesSync_3_DestRegNoO [get_bd_pins AesSync_3/DestRegNoO] [get_bd_pins AesSync_4/DestRegNoI]
   connect_bd_net -net AesSync_3_EncryptCypherO [get_bd_pins AesEncryptionRound4/CypherI] [get_bd_pins AesSync_3/EncryptCypherO]
   connect_bd_net -net AesSync_3_EncryptO [get_bd_pins AesSync_3/EncryptO] [get_bd_pins AesSync_4/EncryptI]
   connect_bd_net -net AesSync_4_DecryptCypherO [get_bd_pins AesDecryptionRound_4/CypherI] [get_bd_pins AesSync_4/DecryptCypherO]
   connect_bd_net -net AesSync_4_DecryptO [get_bd_pins AesSync_4/DecryptO] [get_bd_pins AesSync_5/DecryptI]
+  connect_bd_net -net AesSync_4_DestRegNoO [get_bd_pins AesSync_4/DestRegNoO] [get_bd_pins AesSync_5/DestRegNoI]
   connect_bd_net -net AesSync_4_EncryptCypherO [get_bd_pins AesEncryptionRound5/CypherI] [get_bd_pins AesSync_4/EncryptCypherO]
   connect_bd_net -net AesSync_4_EncryptO [get_bd_pins AesSync_4/EncryptO] [get_bd_pins AesSync_5/EncryptI]
   connect_bd_net -net AesSync_5_DecryptCypherO [get_bd_pins AesDecryptionRound_5/CypherI] [get_bd_pins AesSync_5/DecryptCypherO]
   connect_bd_net -net AesSync_5_DecryptO [get_bd_pins AesSync_5/DecryptO] [get_bd_pins AesSync_6/DecryptI]
+  connect_bd_net -net AesSync_5_DestRegNoO [get_bd_pins AesSync_5/DestRegNoO] [get_bd_pins AesSync_6/DestRegNoI]
   connect_bd_net -net AesSync_5_EncryptCypherO [get_bd_pins AesEncryptionRound6/CypherI] [get_bd_pins AesSync_5/EncryptCypherO]
   connect_bd_net -net AesSync_5_EncryptO [get_bd_pins AesSync_5/EncryptO] [get_bd_pins AesSync_6/EncryptI]
   connect_bd_net -net AesSync_6_DecryptCypherO [get_bd_pins AesDecryptionRound_6/CypherI] [get_bd_pins AesSync_6/DecryptCypherO]
   connect_bd_net -net AesSync_6_DecryptO [get_bd_pins AesSync_6/DecryptO] [get_bd_pins AesSync_7/DecryptI]
+  connect_bd_net -net AesSync_6_DestRegNoO [get_bd_pins AesSync_6/DestRegNoO] [get_bd_pins AesSync_7/DestRegNoI]
   connect_bd_net -net AesSync_6_EncryptCypherO [get_bd_pins AesEncryptionRound7/CypherI] [get_bd_pins AesSync_6/EncryptCypherO]
   connect_bd_net -net AesSync_6_EncryptO [get_bd_pins AesSync_6/EncryptO] [get_bd_pins AesSync_7/EncryptI]
   connect_bd_net -net AesSync_7_DecryptCypherO [get_bd_pins AesDecryptionRound_7/CypherI] [get_bd_pins AesSync_7/DecryptCypherO]
   connect_bd_net -net AesSync_7_DecryptO [get_bd_pins AesSync_7/DecryptO] [get_bd_pins AesSync_8/DecryptI]
+  connect_bd_net -net AesSync_7_DestRegNoO [get_bd_pins AesSync_7/DestRegNoO] [get_bd_pins AesSync_8/DestRegNoI]
   connect_bd_net -net AesSync_7_EncryptCypherO [get_bd_pins AesEncryptionRound8/CypherI] [get_bd_pins AesSync_7/EncryptCypherO]
   connect_bd_net -net AesSync_7_EncryptO [get_bd_pins AesSync_7/EncryptO] [get_bd_pins AesSync_8/EncryptI]
   connect_bd_net -net AesSync_8_DecryptCypherO [get_bd_pins AesDecryptionRound_8/CypherI] [get_bd_pins AesSync_8/DecryptCypherO]
   connect_bd_net -net AesSync_8_DecryptO [get_bd_pins AesSync_8/DecryptO] [get_bd_pins AesSync_9/DecryptI]
+  connect_bd_net -net AesSync_8_DestRegNoO [get_bd_pins AesSync_8/DestRegNoO] [get_bd_pins AesSync_9/DestRegNoI]
   connect_bd_net -net AesSync_8_EncryptCypherO [get_bd_pins AesEncryptionRound9/CypherI] [get_bd_pins AesSync_8/EncryptCypherO]
   connect_bd_net -net AesSync_8_EncryptO [get_bd_pins AesSync_8/EncryptO] [get_bd_pins AesSync_9/EncryptI]
   connect_bd_net -net AesSync_9_DecryptCypherO [get_bd_pins AesSync_9/DecryptCypherO] [get_bd_pins LastDecryption/CypherI]
   connect_bd_net -net AesSync_9_DecryptO [get_bd_ports DecryptO] [get_bd_pins AesMux_0/AesDecrypt] [get_bd_pins AesSync_9/DecryptO]
+  connect_bd_net -net AesSync_9_DestRegNoO [get_bd_ports DestRegNoO] [get_bd_pins AesSync_9/DestRegNoO]
   connect_bd_net -net AesSync_9_EncryptCypherO [get_bd_pins AesEncryptionLastRou_0/CypherI] [get_bd_pins AesSync_9/EncryptCypherO]
   connect_bd_net -net AesSync_9_EncryptO [get_bd_ports EncryptO] [get_bd_pins AesMux_0/AesEncrypt] [get_bd_pins AesSync_9/EncryptO]
   connect_bd_net -net Clock_1 [get_bd_ports Clock] [get_bd_pins AesSync_0/Clock] [get_bd_pins AesSync_1/Clock] [get_bd_pins AesSync_2/Clock] [get_bd_pins AesSync_3/Clock] [get_bd_pins AesSync_4/Clock] [get_bd_pins AesSync_5/Clock] [get_bd_pins AesSync_6/Clock] [get_bd_pins AesSync_7/Clock] [get_bd_pins AesSync_8/Clock] [get_bd_pins AesSync_9/Clock]
   connect_bd_net -net CypherI_1 [get_bd_ports CypherI] [get_bd_pins AesAddRoundKey_0/CypherI] [get_bd_pins AesDecryptionFirstRo_0/CypherI]
   connect_bd_net -net DecryptI_1 [get_bd_ports DecryptI] [get_bd_pins AesSync_0/DecryptI]
+  connect_bd_net -net DestRegNoI_1 [get_bd_ports DestRegNoI] [get_bd_pins AesSync_0/DestRegNoI]
   connect_bd_net -net EncryptI_1 [get_bd_ports EncryptI] [get_bd_pins AesSync_0/EncryptI]
   connect_bd_net -net LastDecryption_CypherO [get_bd_pins AesMux_0/DecryptedCypherI] [get_bd_pins LastDecryption/CypherO]
   connect_bd_net -net Reset_1 [get_bd_ports Reset] [get_bd_pins AesSync_0/Reset] [get_bd_pins AesSync_1/Reset] [get_bd_pins AesSync_2/Reset] [get_bd_pins AesSync_3/Reset] [get_bd_pins AesSync_4/Reset] [get_bd_pins AesSync_5/Reset] [get_bd_pins AesSync_6/Reset] [get_bd_pins AesSync_7/Reset] [get_bd_pins AesSync_8/Reset] [get_bd_pins AesSync_9/Reset]
