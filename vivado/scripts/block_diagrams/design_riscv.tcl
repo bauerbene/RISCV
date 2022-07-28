@@ -418,7 +418,7 @@ proc create_root_design { parentCell } {
   set IMemory [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 IMemory ]
   set_property -dict [ list \
    CONFIG.Byte_Size {9} \
-   CONFIG.Coe_File {/cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/test.coe} \
+   CONFIG.Coe_File {/cfs/home/b/a/bauerben/projects/github/RISCV/src/test/coe/final.coe} \
    CONFIG.EN_SAFETY_CKT {false} \
    CONFIG.Enable_32bit_Address {false} \
    CONFIG.Enable_B {Always_Enabled} \
@@ -648,7 +648,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Split_0_Out4 [get_bd_pins RegisterSet/AesWrData4] [get_bd_pins Split_0/Out4]
   connect_bd_net -net design_aes_0_CypherO [get_bd_pins AesStage_0/CypherI] [get_bd_pins design_aes_0/CypherO]
   connect_bd_net -net design_aes_0_DecryptO [get_bd_pins AesStage_0/AesDecrypt] [get_bd_pins design_aes_0/DecryptO]
-  connect_bd_net -net design_aes_0_DestRegNoO [get_bd_pins AesStage_0/DestRegNoI] [get_bd_pins design_aes_0/DestRegNoO]
+  #connect_bd_net -net design_aes_0_DestRegNoO [get_bd_pins AesStage_0/DestRegNoI] [get_bd_pins design_aes_0/DestRegNoO]
   connect_bd_net -net design_aes_0_EncryptO [get_bd_pins AesStage_0/AesEncrypt] [get_bd_pins design_aes_0/EncryptO]
   connect_bd_net -net xlslice_0_Dout [get_bd_pins IMemory/addra] [get_bd_pins xlslice_0/Dout]
 

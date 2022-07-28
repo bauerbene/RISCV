@@ -27,18 +27,13 @@ main:
     lui x12, 0x44
     addi x12, x12, 0x444
 
-    # 2 nops
-    addi x0, x0, 0
-    addi x0, x0, 0
-
     # encrypt register
-    # csrw 0x1, rs
     # encrypt input of x1 & x2 & x3 & x4 and write result to x1, - x4
     csrw 0x1, x1
     csrw 0x1, x5
     csrw 0x1, x9
 
-    # 10 nops
+    # 10 nops needed because encrypt register is not blocking
     addi x0, x0, 0
     addi x0, x0, 0
     addi x0, x0, 0
@@ -51,22 +46,21 @@ main:
     addi x0, x0, 0
 
     # decrypt register
-    # csrw 0x2, rs
     # decrypt input of x1 & x2 & x3 & x4 and write result to x1 - x4
     csrw 0x2, x1
     csrw 0x2, x5
     csrw 0x2, x9
 
-    # encrypt memory
-    # csrs imm, rs
-    # encrypt the next 128 bit memory on position imm + rs 
-    #csrs 0x200, x1
+    # 10 nops needed because decrypt register is not blocking
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
 
-    # decrypt memory
-    # csrc imm, rs
-    # decrypt the next 128 bit memory on position imm  +rs
-    #csrc 0x200, x1
-    
-
-
-
+    j main
