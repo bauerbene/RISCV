@@ -27,19 +27,14 @@ main:
     lui x12, 0x44
     addi x12, x12, 0x444
 
-    # 2 nops
-    addi x0, x0, 0
-    addi x0, x0, 0
-
     # encrypt register
     # csrw 0x1, rs
-    # encrypt input of x1 & x2 & x3 & x4 and write result to x1, - x4
+    # encrypt input of rs & rs+1 & rs+2 & rs+3 and write result to rs - rs+3
     csrw 0x1, x1
     csrw 0x1, x5
     csrw 0x1, x9
 
-    # 10 nops
-    addi x0, x0, 0
+    # 10 nops (needed since encrypt is non blocking)
     addi x0, x0, 0
     addi x0, x0, 0
     addi x0, x0, 0
@@ -68,26 +63,35 @@ main:
     addi x0, x0, 0
     addi x0, x0, 0
 
-    # encrypt memory
+    # store encrypted
     # csrs imm, rs
-    # encrypt the next 128 bit memory on position imm + rs 
-    #csrs 0x200, x1
+    # encrypt the rs1 - rs4 and write encrypted to memory (address in rs2)
+    #csrs 0rs1, rs2
 
+    # encrypt 0x1 - 0x3 and write it to 0x2000 in memory
     lui x13, 0x2
-    addi x0, x0, 0
-    addi x0, x0, 0
-    addi x0, x0, 0
-    addi x0, x0, 0
     csrs 0x01, x13
 
-    # decrypt memory
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+    addi x0, x0, 0
+
+    lw x15, 0(x13)
+    lw x16, 4(x13)
+    lw x17, 8(x13)
+    lw x18, 12(x13)
+    # load decrypted
     # csrc imm, rs
-    # decrypt the next 128 bit memory on position imm  +rs
-    addi x0, x0, 0
-    addi x0, x0, 0
-    addi x0, x0, 0
-    addi x0, x0, 0
-    csrc 0xf, x13
+    # load from rs2 the next 128 bits encrypt those and write it back to rs1 - rs3
+    # csrc 0rs1, rs2
+    j main
     
 
 
