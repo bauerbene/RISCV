@@ -8,6 +8,8 @@ Das Simulierte Programm befindet sich in ${workspaceFolder}/src/test/coe/final_w
 
 Die Abgabe ist auf dem Branch temp (aktuell ausgecheckter Branch). Fall Ansätze für die in der Doku erwähnten *store encrypted* bzw. *load decrypted* interessant sein sollten, befinden diese sich auf dem master branch.
 
+Die Dokumentation ist in ${workspaceFolder}/README.doc.pdf zu finden (oder als Markdown in ${workspaceFolder}/README.doc.md)
+
 
 # Notes for Development
 
