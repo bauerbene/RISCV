@@ -1,22 +1,9 @@
-# Adding new vhdl source files to Vivado Project
+# Infos zur Abgabe
 
-1. Create and implement the vhdl code in the src directory
-2. add the following lines to the build.tcl
+Das Vivado Project befindet sich in ${worspaceFolder}/vivado/riscv_project/RISCV.xpr
 
-in the set files area (starting at line 5) and in the source_1 area (starting at line 97) add
-```
- "[file normalize "$origin_dir/../../../src/path/to/new/file/new_file.vhd"]"\
+Da die RISCV Pipeline nicht auf dem Board funktioniert, gibt es nur eine Simulation. Für die Simulation gibt es eine gespeicherte Waveform "final.wcfg", welche sich im Projekt befindet. Dabei sind die relevanten Register, sowie alle Aes Stufen damit man das pipelining des AesModuls gut nachverfolgen kann.
 
-```
+Das Simulierte Programm befindet sich in ${workspaceFolder}/src/test/coe/final_with_correct_nops.coe bzw. die zugehörige assembler datei in ${workspaceFolder}/src/test/assembler/final_with_correct_nops.S
 
-3. add file properties 
-
-```
-set file "$origin_dir/../../../src/path/to/new/file/new_file.vhd"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
-```
-
-# Running on a different computer
-1. in the config of the IMemory moduel in riscv_bd.tcl change the path of the .coe file to the absolute path on the curren computer
+Die Abgabe ist auf dem Branch temp. Fall Ansätze für die in der Doku erwähnten *store encrypted* bzw *load decrypted* interessant sein sollten, befinden diese sich auf dem master branch
