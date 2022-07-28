@@ -7,8 +7,7 @@ ENTITY AesEncryptionRound IS
     PORT (
         CypherI  : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
         RoundKey : IN STD_LOGIC_VECTOR(127 DOWNTO 0);
-
-        CypherO : OUT STD_LOGIC_VECTOR(127 DOWNTO 0)
+        CypherO  : OUT STD_LOGIC_VECTOR(127 DOWNTO 0)
     );
 END AesEncryptionRound;
 
